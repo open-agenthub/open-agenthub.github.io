@@ -289,7 +289,7 @@ class Component extends DCLogic {
   state = { visible: 1, helmVisible: 0, qsVisible: 0 };
 
   helmL = [
-    { c: '#c9c6bf', t: '$ helm repo add agenthub https://charts.open-agenthub.dev' },
+    { c: '#c9c6bf', t: '$ helm repo add agenthub https://open-agenthub.github.io/open-agenthub' },
     { c: '#c9c6bf', t: '$ helm install agenthub agenthub/open-agenthub' },
     { c: '#7dc47d', t: '✓ release "agenthub" deployed   ns=agenthub' },
     { c: null,      t: '→ open https://hub.your-org.dev ' }
@@ -314,7 +314,7 @@ class Component extends DCLogic {
   ];
 
   qsL = [
-    { c: '#c9c6bf', t: '$ curl -fsSL https://get.open-agenthub.dev | sh' },
+    { c: '#c9c6bf', t: '$ curl -fsSL https://open-agenthub.github.io/install.sh | sh' },
     { c: '#7dc47d', t: '✓ k3s installed (single node)' },
     { c: '#7dc47d', t: '✓ agenthub deployed' },
     { c: null,      t: '→ open https://your-host:8443 ' }
