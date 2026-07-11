@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AGB — Open AgentHub</title>
+  <link href="./fonts/fonts.css" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: #0d0f12; }
+    body { font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif; }
+    * { box-sizing: border-box; }
+    a { color: #f2a33c; text-decoration: none; }
+    a:hover { color: #ffc069; text-decoration: underline; }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; background: #0d0f12; color: #e8e6e1">
+  <nav style="display: flex; align-items: center; justify-content: space-between; max-width: 760px; margin: 0 auto; padding: 20px 24px">
+    <a href="./" style="display: flex; align-items: center; gap: 10px; color: #e8e6e1" style-hover="text-decoration: none; color: #e8e6e1">
+      <span style="width: 28px; height: 28px; border: 2px solid #f2a33c; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: #f2a33c">&gt;_</span>
+      <span style="font-weight: 600; font-size: 17px">Open AgentHub</span>
+    </a>
+    <a href="./" style="font-family: 'JetBrains Mono', monospace; font-size: 13.5px; color: #a3a099" style-hover="color: #f2a33c; text-decoration: none">← Zurück</a>
+  </nav>
+
+  <main style="max-width: 760px; margin: 0 auto; padding: 48px 24px 96px">
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #f2a33c; margin: 0 0 12px">// rechtliches</p>
+    <h1 style="font-size: clamp(30px, 4.5vw, 42px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px">Allgemeine Geschäftsbedingungen</h1>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #6c6f76; margin: 0 0 40px">Stand: Juli 2026 · [Entwurf — vor Verwendung anwaltlich prüfen lassen]</p>
+
+    <div style="font-size: 15px; line-height: 1.75; color: #c9c6bf; display: flex; flex-direction: column; gap: 30px">
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 1 Geltungsbereich, Anbieter</h2>
+        <p style="margin: 0; color: #a3a099">(1) Diese AGB gelten für die Nutzung der Software „Open AgentHub" sowie für den Bezug der Enterprise-Edition durch Unternehmer im Sinne des § 14 BGB. Anbieter ist Maik Boltze, Eichendorffstr. 7, 06114 Halle (Saale) („Anbieter").</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Die Enterprise-Edition richtet sich ausschließlich an Unternehmer; ein Verkauf an Verbraucher (§ 13 BGB) erfolgt nicht.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(3) Entgegenstehende oder abweichende Bedingungen des Kunden finden keine Anwendung, es sei denn, der Anbieter stimmt ihrer Geltung ausdrücklich schriftlich zu.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 2 Vertragsgegenstand, Lizenzen</h2>
+        <p style="margin: 0; color: #a3a099">(1) Die Community-Edition wird unentgeltlich unter der AGPL-3.0-Lizenz bereitgestellt. Für sie gelten ausschließlich die Bedingungen dieser Open-Source-Lizenz; ein Vertragsverhältnis mit dem Anbieter über Support, Wartung oder bestimmte Eigenschaften kommt nicht zustande.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Die Enterprise-Edition wird gegen Entgelt unter einer kommerziellen Lizenz („ee-Lizenz") zur Nutzung auf eigener Infrastruktur des Kunden (Self-Hosting) überlassen. Der Anbieter betreibt die Software nicht für den Kunden und schuldet keine Verfügbarkeit.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 3 Bereitstellung „wie besehen", Beschaffenheit</h2>
+        <p style="margin: 0; color: #a3a099">(1) Die Software wird in dem bei Überlassung vorhandenen Zustand („as is") bereitgestellt. Als vereinbarte Beschaffenheit gilt ausschließlich die zum Zeitpunkt des Vertragsschlusses veröffentlichte Dokumentation. Öffentliche Äußerungen, Werbung oder Roadmaps stellen keine Beschaffenheitsvereinbarung und keine Garantie dar.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Der Kunde ist für den Betrieb, die Konfiguration, die Absicherung seiner Infrastruktur (insbesondere Kubernetes-Cluster, Zugangsdaten, Netzwerk) und für regelmäßige Datensicherungen selbst verantwortlich.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(3) Der Kunde nimmt zur Kenntnis, dass die Software KI-Coding-Agenten ausführt, deren Ausgaben und Handlungen nicht deterministisch sind. Die Überprüfung und Freigabe von Arbeitsergebnissen der Agenten (z.&thinsp;B. Commits, Pull Requests, ausgeführte Befehle) obliegt allein dem Kunden.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 4 Gewährleistung (Enterprise-Edition)</h2>
+        <p style="margin: 0; color: #a3a099">(1) Bei Mängeln leistet der Anbieter zunächst Nacherfüllung nach seiner Wahl durch Beseitigung des Mangels oder Bereitstellung einer neuen Programmversion. Schlägt die Nacherfüllung fehl, kann der Kunde mindern oder vom Vertrag zurücktreten.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Die Verjährungsfrist für Mängelansprüche beträgt zwölf Monate ab Bereitstellung, außer in den in § 5 Abs. 1 genannten Fällen.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(3) Für die unentgeltliche Community-Edition haftet der Anbieter für Sach- und Rechtsmängel nur bei arglistigem Verschweigen des Mangels (§§ 523, 524 BGB entsprechend).</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 5 Haftungsbeschränkung</h2>
+        <p style="margin: 0; color: #a3a099">(1) Der Anbieter haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit, bei schuldhafter Verletzung von Leben, Körper oder Gesundheit, nach dem Produkthaftungsgesetz, bei arglistigem Verschweigen eines Mangels sowie im Umfang einer übernommenen Garantie.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Bei leicht fahrlässiger Verletzung einer wesentlichen Vertragspflicht (Kardinalpflicht) — d.&thinsp;h. einer Pflicht, deren Erfüllung die ordnungsgemäße Durchführung des Vertrags überhaupt erst ermöglicht und auf deren Einhaltung der Kunde regelmäßig vertrauen darf — ist die Haftung auf den vertragstypischen, bei Vertragsschluss vorhersehbaren Schaden begrenzt.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(3) Im Übrigen ist die Haftung für leichte Fahrlässigkeit ausgeschlossen. Ausgeschlossen ist insbesondere — soweit nicht Abs. 1 oder Abs. 2 greift — die Haftung für entgangenen Gewinn, Datenverlust, Betriebsunterbrechung, mittelbare Schäden und Folgeschäden, einschließlich Schäden durch Handlungen der vom Kunden eingesetzten KI-Agenten.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(4) Die Haftung für Datenverlust ist der Höhe nach auf den Wiederherstellungsaufwand begrenzt, der bei ordnungsgemäßer, regelmäßiger Datensicherung durch den Kunden angefallen wäre.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(5) Die vorstehenden Beschränkungen gelten auch zugunsten der Erfüllungs- und Verrichtungsgehilfen des Anbieters.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 6 Laufzeit, Kündigung (Enterprise-Edition)</h2>
+        <p style="margin: 0; color: #a3a099">(1) Der Vertrag läuft auf unbestimmte Zeit und verlängert sich monatlich, sofern er nicht mit einer Frist von 30 Tagen zum Monatsende gekündigt wird. Etwaige kostenlose Testphasen werden gesondert vereinbart bzw. im Bestellprozess ausgewiesen.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt.</p>
+      </section>
+
+      <section>
+        <h2 style="font-size: 16px; font-weight: 600; color: #e8e6e1; margin: 0 0 10px">§ 7 Schlussbestimmungen</h2>
+        <p style="margin: 0; color: #a3a099">(1) Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts.</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(2) Ausschließlicher Gerichtsstand für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist — soweit gesetzlich zulässig — Halle (Saale).</p>
+        <p style="margin: 10px 0 0; color: #a3a099">(3) Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.</p>
+      </section>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+</body>
+</html>

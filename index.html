@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open AgentHub — A home for your coding agent</title>
+  <link href="./fonts/fonts.css" rel="stylesheet">
+  <style>
+    html, body { margin: 0; padding: 0; background: #0d0f12; }
+    body { font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif; }
+    * { box-sizing: border-box; }
+    a { color: #f2a33c; text-decoration: none; }
+    a:hover { color: #ffc069; text-decoration: underline; }
+    @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+    @keyframes lineIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    ::selection { background: rgba(242,163,60,0.35); }
+  </style>
+</helmet>
+
+<div style="min-height: 100vh; background: #0d0f12; color: #e8e6e1; overflow-x: hidden">
+
+  <!-- ============ NAV ============ -->
+  <nav style="display: flex; align-items: center; justify-content: space-between; max-width: 1120px; margin: 0 auto; padding: 20px 24px">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 28px; height: 28px; border: 2px solid {{ accent }}; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; color: {{ accent }}">&gt;_</div>
+      <span style="font-weight: 600; font-size: 17px; letter-spacing: -0.01em">Open AgentHub</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 24px; font-size: 14.5px">
+      <a href="#features" style="color: #a3a099" style-hover="color: #e8e6e1; text-decoration: none">Features</a>
+      <a href="#how" style="color: #a3a099" style-hover="color: #e8e6e1; text-decoration: none">How it works</a>
+      <a href="#pricing" style="color: #a3a099" style-hover="color: #e8e6e1; text-decoration: none">Pricing</a>
+      <a href="https://github.com/open-agenthub/open-agenthub" style="color: #e8e6e1; border: 1px solid #2c2f35; border-radius: 8px; padding: 7px 14px; font-size: 13.5px; font-family: 'JetBrains Mono', monospace" style-hover="border-color: {{ accent }}; color: {{ accent }}; text-decoration: none">GitHub ↗</a>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header style="max-width: 1120px; margin: 0 auto; padding: 72px 24px 88px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
+    <div style="flex: 1 1 420px; min-width: 320px">
+      <div style="display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: {{ accent }}; border: 1px solid rgba(242,163,60,0.35); border-radius: 999px; padding: 5px 14px; margin-bottom: 28px">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ accent }}; display: inline-block"></span>
+        open source · self-hosted · AGPL-3.0
+      </div>
+      <h1 style="font-size: clamp(38px, 5.5vw, 60px); line-height: 1.05; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 18px">A home for your <span style="color: {{ accent }}">coding agent.</span></h1>
+      <p style="font-size: clamp(18px, 2.2vw, 22px); color: #c9c6bf; margin: 0 0 22px; font-weight: 500">Be your own digital team lead.</p>
+      <p style="font-size: 16px; line-height: 1.65; color: #a3a099; margin: 0 0 36px; max-width: 520px; text-wrap: pretty">Everybody uses coding agents — but only while the laptop is open. What about the other 16 hours? The weekend? Open AgentHub gives your agent a permanent, secure home in your Kubernetes cluster: it works 24/7 with your repos, credentials and tools — and you supervise from your phone.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 14px">
+        <a href="https://github.com/open-agenthub/open-agenthub" style="background: {{ accent }}; color: #0d0f12; font-weight: 600; font-size: 15px; padding: 13px 26px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px" style-hover="background: #ffc069; text-decoration: none; color: #0d0f12">Deploy from GitHub</a>
+        <a href="#how" style="color: #e8e6e1; font-size: 15px; padding: 13px 26px; border-radius: 10px; border: 1px solid #2c2f35; display: inline-flex; align-items: center" style-hover="border-color: #4a4e56; text-decoration: none; color: #e8e6e1">See how it works</a>
+      </div>
+    </div>
+
+    <!-- terminal window -->
+    <div style="flex: 1 1 460px; min-width: 320px">
+      <div style="background: #14161a; border: 1px solid #26292f; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,0.5); overflow: hidden">
+        <!-- browser chrome -->
+        <div style="display: flex; align-items: center; gap: 8px; padding: 11px 16px; border-bottom: 1px solid #22252b; background: #101216">
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #3a3e45"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #3a3e45"></span>
+          <span style="width: 11px; height: 11px; border-radius: 50%; background: #3a3e45"></span>
+          <div style="margin-left: 12px; flex: 1; display: flex; align-items: center; gap: 7px; background: #0d0f12; border: 1px solid #22252b; border-radius: 7px; padding: 5px 12px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6c6f76">
+            <span style="color: #4a4e56">🔒</span> hub.your-org.dev/sessions/payments-api
+          </div>
+        </div>
+        <!-- session header inside the web app -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-bottom: 1px solid #22252b">
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0">
+            <span style="font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">payments-api</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #a3a099; border: 1px solid #2c2f35; border-radius: 999px; padding: 2px 9px; white-space: nowrap">autonomous</span>
+          </div>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: #7dc47d; white-space: nowrap"><span style="width: 6px; height: 6px; border-radius: 50%; background: #7dc47d; display: inline-block"></span>running</span>
+        </div>
+        <!-- terminal panel of the session -->
+        <div style="padding: 20px 20px 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.9; min-height: 272px; background: #0d0f12">
+          {{ terminalLines }}
+        </div>
+      </div>
+      <p style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c6f76; margin: 14px 0 0">03:12 — your agent, working the night shift</p>
+    </div>
+  </header>
+
+  <!-- ============ INSTALL ============ -->
+  <section id="install" style="border-top: 1px solid #1c1f24">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 88px 24px">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin: 0 0 12px">// how to start</p>
+      <h2 style="font-size: clamp(28px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px">Installed in one command</h2>
+      <p style="color: #a3a099; font-size: 16px; margin: 0 0 40px; max-width: 560px; text-wrap: pretty">Already on Kubernetes? One Helm release. No cluster yet? The all-in-one quickstart brings its own.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px">
+
+        <!-- helm install -->
+        <div>
+          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px">
+            <h3 style="font-size: 17px; font-weight: 600; margin: 0">I have a cluster</h3>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6c6f76">helm install</span>
+          </div>
+          <div style="background: #0d0f12; border: 1px solid #26292f; border-radius: 12px; overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #22252b; background: #101216">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6c6f76">terminal</span>
+            </div>
+            <div style="padding: 18px 18px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.9; min-height: 190px">
+              {{ helmLines }}
+            </div>
+          </div>
+        </div>
+
+        <!-- quickstart -->
+        <div>
+          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px">
+            <h3 style="font-size: 17px; font-weight: 600; margin: 0">I don&rsquo;t have Kubernetes</h3>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6c6f76">all-in-one quickstart</span>
+          </div>
+          <div style="background: #0d0f12; border: 1px solid #26292f; border-radius: 12px; overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #22252b; background: #101216">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6c6f76">terminal</span>
+            </div>
+            <div style="padding: 18px 18px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.9; min-height: 190px">
+              {{ quickstartLines }}
+            </div>
+          </div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c6f76; margin: 12px 0 0">recommended: 4 vCPU · 6 GB RAM — good for up to 6 users</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section id="features" style="border-top: 1px solid #1c1f24; background: #0f1115">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 88px 24px">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin: 0 0 12px">// features</p>
+      <h2 style="font-size: clamp(28px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px">Everything an agent needs to live and work</h2>
+      <p style="color: #a3a099; font-size: 16px; margin: 0 0 48px; max-width: 560px; text-wrap: pretty">Cloud chat AIs can't reach your git workspaces, can't commit, can't run your tests. Your cluster can.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
+        <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
+          <div style="background: #14161a; border: 1px solid #22252b; border-radius: 14px; padding: 26px" style-hover="border-color: rgba(242,163,60,0.45)">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin-bottom: 14px">{{ f.tag }}</div>
+            <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; letter-spacing: -0.01em">{{ f.title }}</h3>
+            <p style="font-size: 14.5px; line-height: 1.65; color: #a3a099; margin: 0; text-wrap: pretty">{{ f.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ USE CASES ============ -->
+  <section id="usecases" style="border-top: 1px solid #1c1f24">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 88px 24px">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin: 0 0 12px">// use cases</p>
+      <h2 style="font-size: clamp(28px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 12px">What your agent does while you sleep</h2>
+      <p style="color: #a3a099; font-size: 16px; margin: 0 0 40px; max-width: 560px; text-wrap: pretty">Coding is just the start. Give a session your backlog and your tools — via MCP servers — and it becomes a teammate.</p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px">
+
+        <!-- jira -->
+        <div>
+          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px">
+            <h3 style="font-size: 17px; font-weight: 600; margin: 0">Work through the backlog</h3>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6c6f76">scheduled · nightly</span>
+          </div>
+          <div style="background: #0d0f12; border: 1px solid #26292f; border-radius: 12px; overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #22252b; background: #101216">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6c6f76">session · backlog-gardener</span>
+            </div>
+            <div style="padding: 18px 18px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.9; min-height: 210px">
+              {{ jiraLines }}
+            </div>
+          </div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c6f76; margin: 12px 0 0">tickets in, reviewed PRs out — one at a time</p>
+        </div>
+
+        <!-- mcp -->
+        <div>
+          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px">
+            <h3 style="font-size: 17px; font-weight: 600; margin: 0">Bring your tools via MCP</h3>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6c6f76">per-session servers</span>
+          </div>
+          <div style="background: #0d0f12; border: 1px solid #26292f; border-radius: 12px; overflow: hidden">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #22252b; background: #101216">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #3a3e45"></span>
+              <span style="margin-left: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6c6f76">session · incident-triage</span>
+            </div>
+            <div style="padding: 18px 18px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; line-height: 1.9; min-height: 210px">
+              {{ mcpLines }}
+            </div>
+          </div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c6f76; margin: 12px 0 0">attach any MCP server — issue tracker, DB, observability</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how" style="border-top: 1px solid #1c1f24">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 88px 24px">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin: 0 0 12px">// how it works</p>
+      <h2 style="font-size: clamp(28px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 48px">Three steps to a working agent</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <div style="flex: 1 1 280px; display: flex; gap: 16px; min-width: 260px">
+            <div style="background: #14161a; border: 1px solid #22252b; border-radius: 14px; padding: 26px; flex: 1; position: relative">
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 600; color: {{ accent }}; margin-bottom: 14px">{{ s.num }}</div>
+              <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px">{{ s.title }}</h3>
+              <p style="font-size: 14.5px; line-height: 1.6; color: #a3a099; margin: 0; text-wrap: pretty">{{ s.body }}</p>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #6c6f76; margin-top: 16px; background: #0d0f12; border-radius: 8px; padding: 10px 12px; border: 1px solid #1c1f24; overflow-x: auto; white-space: nowrap">{{ s.cmd }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRICING ============ -->
+  <section id="pricing" style="border-top: 1px solid #1c1f24; background: #0f1115">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 88px 24px">
+      <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin: 0 0 12px">// pricing</p>
+      <h2 style="font-size: clamp(28px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 48px">Free for everyone. Fair for teams.</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 860px">
+
+        <div style="background: #14161a; border: 1px solid #22252b; border-radius: 16px; padding: 34px; display: flex; flex-direction: column; gap: 0">
+          <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 6px">Community</h3>
+          <div style="font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin: 10px 0 4px">Free <span style="font-size: 15px; font-weight: 400; color: #a3a099">forever</span></div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #6c6f76; margin: 0 0 24px">AGPL-3.0 · self-hosted</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14.5px; color: #c9c6bf; margin-bottom: 30px">
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Unlimited sessions</div>
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> All core features</div>
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Your cluster, your data</div>
+          </div>
+          <a href="https://github.com/open-agenthub/open-agenthub" style="margin-top: auto; text-align: center; border: 1px solid #2c2f35; color: #e8e6e1; padding: 13px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; display: block" style-hover="border-color: {{ accent }}; color: {{ accent }}; text-decoration: none">Deploy from GitHub</a>
+        </div>
+
+        <div style="background: #14161a; border: 1px solid rgba(242,163,60,0.5); border-radius: 16px; padding: 34px; display: flex; flex-direction: column; position: relative">
+          <div style="position: absolute; top: -12px; left: 30px; background: {{ accent }}; color: #0d0f12; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; padding: 4px 12px; border-radius: 999px">3-MONTH FREE TRIAL</div>
+          <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 6px">Enterprise</h3>
+          <div style="font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin: 10px 0 4px">€6 <span style="font-size: 15px; font-weight: 400; color: #a3a099">/ user / month</span></div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #6c6f76; margin: 0 0 24px">commercial ee license</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14.5px; color: #c9c6bf; margin-bottom: 30px">
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Everything in Community</div>
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Session sharing across your org</div>
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Org management</div>
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Slack integration</div>
+          </div>
+          <a href="mailto:hello@open-agenthub.dev?subject=Enterprise%20free%20trial" style="margin-top: auto; text-align: center; background: {{ accent }}; color: #0d0f12; padding: 13px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; display: block" style-hover="background: #ffc069; text-decoration: none; color: #0d0f12">Start free trial</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="border-top: 1px solid #1c1f24">
+    <div style="max-width: 1120px; margin: 0 auto; padding: 40px 24px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <div style="width: 22px; height: 22px; border: 2px solid #4a4e56; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: #6c6f76">&gt;_</div>
+        <span style="font-size: 13.5px; color: #6c6f76; font-family: 'JetBrains Mono', monospace">Open AgentHub</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 28px; font-size: 13.5px; font-family: 'JetBrains Mono', monospace">
+        <a href="https://github.com/open-agenthub/open-agenthub" style="color: #a3a099" style-hover="color: {{ accent }}; text-decoration: none">GitHub ↗</a>
+        <a href="https://github.com/open-agenthub/open-agenthub/blob/main/LICENSE" style="color: #a3a099" style-hover="color: {{ accent }}; text-decoration: none">License: AGPL-3.0 + commercial ee</a>
+        <a href="mailto:hello@open-agenthub.dev" style="color: #a3a099" style-hover="color: {{ accent }}; text-decoration: none">Contact</a>
+        <a href="agb.html" style="color: #a3a099" style-hover="color: {{ accent }}; text-decoration: none">AGB</a>
+        <a href="impressum.html" style="color: #a3a099" style-hover="color: {{ accent }}; text-decoration: none">Impressum</a>
+        <a href="datenschutz.html" style="color: #a3a099" style-hover="color: {{ accent }}; text-decoration: none">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#f2a33c&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#f2a33c&quot;,&quot;#5fd18a&quot;,&quot;#5aa9f5&quot;,&quot;#e06c75&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;animateTerminal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
+class Component extends DCLogic {
+  state = { visible: 1, helmVisible: 0, qsVisible: 0 };
+
+  helmL = [
+    { c: '#c9c6bf', t: '$ helm repo add agenthub https://charts.open-agenthub.dev' },
+    { c: '#c9c6bf', t: '$ helm install agenthub agenthub/open-agenthub' },
+    { c: '#7dc47d', t: '✓ release "agenthub" deployed   ns=agenthub' },
+    { c: null,      t: '→ open https://hub.your-org.dev ' }
+  ];
+
+  jiraL = [
+    { c: '#7dc47d', t: '✓ mcp attached: jira' },
+    { c: '#a3a099', t: 'agent │ 4 tickets assigned — starting with highest priority' },
+    { c: '#a3a099', t: 'agent │ PAY-231 "rounding error in invoice totals"' },
+    { c: '#a3a099', t: 'agent │ branch fix/pay-231 — tests green' },
+    { c: '#7dc47d', t: 'agent │ PR #483 opened, PAY-231 → in review' },
+    { c: null,      t: 'agent │ next: PAY-235 "add CSV export" ' }
+  ];
+
+  mcpL = [
+    { c: '#7dc47d', t: '✓ mcp attached: sentry · postgres-ro · slack' },
+    { c: '#a3a099', t: 'agent │ sentry: top crash last 24h — #4211 (checkout)' },
+    { c: '#a3a099', t: 'agent │ querying db: 312 affected orders since 02:10' },
+    { c: '#a3a099', t: 'agent │ root cause: null coupon on retry path' },
+    { c: '#7dc47d', t: 'agent │ posted summary to #incidents' },
+    { c: null,      t: 'you (phone) │ ship the fix? ' }
+  ];
+
+  qsL = [
+    { c: '#c9c6bf', t: '$ curl -fsSL https://get.open-agenthub.dev | sh' },
+    { c: '#7dc47d', t: '✓ k3s installed (single node)' },
+    { c: '#7dc47d', t: '✓ agenthub deployed' },
+    { c: null,      t: '→ open https://your-host:8443 ' }
+  ];
+
+  lines = [
+    { c: '#7dc47d', t: '✓ session started   pod=agents/jana   image=dev-base:1.4' },
+    { c: '#a3a099', t: 'agent │ cloning repo, restoring credentials…' },
+    { c: '#a3a099', t: 'agent │ running test suite — 214 passed, 1 flaky' },
+    { c: '#a3a099', t: 'agent │ fixing flaky retry-backoff test in billing_test.go' },
+    { c: '#7dc47d', t: 'agent │ committed 3f2a1c9 "fix: stabilize retry backoff test"' },
+    { c: '#7dc47d', t: 'agent │ opened PR #482 — awaiting your review' },
+    { c: null,      t: 'you (from your phone) │ approve & merge? ' }
+  ];
+
+  componentDidMount() {
+    const animate = this.props.animateTerminal ?? true;
+    if (!animate) {
+      this.setState({ visible: this.lines.length, helmVisible: this.helmL.length, qsVisible: this.qsL.length });
+      return;
+    }
+    this.timer = setInterval(() => {
+      this.setState(s => {
+        if (s.visible >= this.lines.length) return null;
+        return { visible: s.visible + 1 };
+      });
+    }, 900);
+    const el = document.getElementById('install');
+    if (el && 'IntersectionObserver' in window) {
+      this.io = new IntersectionObserver((entries) => {
+        if (entries.some(e => e.isIntersecting)) {
+          this.io.disconnect();
+          this.installTimer = setInterval(() => {
+            this.setState(s => {
+              const done = s.helmVisible >= this.helmL.length && s.qsVisible >= this.qsL.length;
+              if (done) { clearInterval(this.installTimer); return null; }
+              return {
+                helmVisible: Math.min(s.helmVisible + 1, this.helmL.length),
+                qsVisible: Math.min(s.qsVisible + 1, this.qsL.length)
+              };
+            });
+          }, 800);
+        }
+      }, { threshold: 0.3 });
+      this.io.observe(el);
+    } else {
+      this.setState({ helmVisible: this.helmL.length, qsVisible: this.qsL.length });
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    clearInterval(this.installTimer);
+    if (this.io) this.io.disconnect();
+  }
+
+  buildTerm(lines, count, accent, withCursor) {
+    const shown = lines.slice(0, count);
+    return React.createElement('div', null,
+      shown.map((l, i) => React.createElement(
+        'div',
+        { key: i, style: { color: l.c || accent, animation: 'lineIn 0.35s ease both', whiteSpace: 'pre-wrap', wordBreak: 'break-word' } },
+        l.t,
+        (withCursor && i === shown.length - 1) ? React.createElement('span', {
+          style: { display: 'inline-block', width: '8px', height: '15px', background: accent, verticalAlign: 'text-bottom', marginLeft: '2px', animation: 'blink 1s step-end infinite' }
+        }) : null
+      ))
+    );
+  }
+
+  renderVals() {
+    const accent = this.props.accentColor ?? '#f2a33c';
+
+    const terminalLines = this.buildTerm(this.lines, this.state.visible, accent, true);
+    const helmLines = this.buildTerm(this.helmL, this.state.helmVisible, accent, true);
+    const quickstartLines = this.buildTerm(this.qsL, this.state.qsVisible, accent, true);
+    const jiraLines = this.buildTerm(this.jiraL, this.jiraL.length, accent, true);
+    const mcpLines = this.buildTerm(this.mcpL, this.mcpL.length, accent, true);
+
+    return {
+      accent,
+      terminalLines,
+      helmLines,
+      quickstartLines,
+      jiraLines,
+      mcpLines,
+      features: [
+        { tag: '[01] // always-on', title: 'Sessions run 24/7', body: 'Isolated Kubernetes pods with access to your repos, credentials and tools — no laptop required.' },
+        { tag: '[02] // supervise', title: 'Watch from your phone', body: 'Follow the live terminal and answer your agent’s questions from anywhere.' },
+        { tag: '[03] // modes', title: 'Interactive · autonomous · cron', body: 'Pair with your agent, let it run solo, or schedule sessions — let it work the night shift.' },
+        { tag: '[04] // your stack', title: 'Bring your own image', body: 'Any container image; opt-in root mode to install whatever tooling the job needs.' },
+        { tag: '[05] // locked down', title: 'Security by default', body: 'Unprivileged pods, network policies, per-user secrets, OIDC login.' },
+        { tag: '[06] // one login', title: 'Claude login persists', body: 'Your Claude subscription login carries across sessions — log in once, never again.' }
+      ],
+      steps: [
+        { num: '01', title: 'Store your credentials', body: 'Git tokens, agent login, secrets — stored per user, encrypted in your cluster.', cmd: 'Settings → Credentials → Add' },
+        { num: '02', title: 'Start a session', body: 'Pick a repo, a mode (interactive, autonomous, cron) and a container image.', cmd: 'New session → repo · mode · image' },
+        { num: '03', title: 'Supervise from anywhere', body: 'Open the live terminal on your phone, review PRs, answer questions.', cmd: '→ https://hub.your-org.dev' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
