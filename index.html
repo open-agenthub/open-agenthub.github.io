@@ -252,7 +252,8 @@
     <div style="max-width: 1120px; margin: 0 auto; padding: 88px 24px">
       <p style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin: 0 0 12px">// pricing</p>
       <h2 style="font-size: clamp(28px, 3.6vw, 40px); font-weight: 700; letter-spacing: -0.02em; margin: 0 0 48px">Free for everyone. Fair for teams.</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 860px">
+      <!-- Enterprise card hidden for now: restore max-width to 860px when re-enabling it. -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 420px">
 
         <div style="background: #14161a; border: 1px solid #22252b; border-radius: 16px; padding: 34px; display: flex; flex-direction: column; gap: 0">
           <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 6px">Community</h3>
@@ -266,6 +267,7 @@
           <a href="https://github.com/open-agenthub/open-agenthub" style="margin-top: auto; text-align: center; border: 1px solid #2c2f35; color: #e8e6e1; padding: 13px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; display: block" style-hover="border-color: {{ accent }}; color: {{ accent }}; text-decoration: none">Deploy from GitHub</a>
         </div>
 
+        <!-- Enterprise offer hidden for now — remove this comment wrapper to bring it back.
         <div style="background: #14161a; border: 1px solid rgba(242,163,60,0.5); border-radius: 16px; padding: 34px; display: flex; flex-direction: column; position: relative">
           <div style="position: absolute; top: -12px; left: 30px; background: {{ accent }}; color: #0d0f12; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; padding: 4px 12px; border-radius: 999px">3-MONTH FREE TRIAL</div>
           <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 6px">Enterprise</h3>
@@ -279,6 +281,8 @@
           </div>
           <a href="mailto:open-agenthub@mail.on-mb.com?subject=Enterprise%20free%20trial" style="margin-top: auto; text-align: center; background: {{ accent }}; color: #0d0f12; padding: 13px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; display: block" style-hover="background: #ffc069; text-decoration: none; color: #0d0f12">Start free trial</a>
         </div>
+        -->
+
 
       </div>
     </div>
