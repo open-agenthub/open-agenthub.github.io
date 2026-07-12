@@ -16,11 +16,11 @@
     html, body { margin: 0; padding: 0; background: #0d0f12; }
     body { font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif; }
     * { box-sizing: border-box; }
-    a { color: #f2a33c; text-decoration: none; }
-    a:hover { color: #ffc069; text-decoration: underline; }
+    a { color: #5aa9f5; text-decoration: none; }
+    a:hover { color: #7fc0ff; text-decoration: underline; }
     @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
     @keyframes lineIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-    ::selection { background: rgba(242,163,60,0.35); }
+    ::selection { background: rgba(90,169,245,0.35); }
   </style>
 </helmet>
 
@@ -62,7 +62,7 @@
   <!-- ============ HERO ============ -->
   <header style="max-width: 1120px; margin: 0 auto; padding: 72px 24px 88px; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
     <div style="flex: 1 1 420px; min-width: 320px">
-      <div style="display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: {{ accent }}; border: 1px solid rgba(242,163,60,0.35); border-radius: 999px; padding: 5px 14px; margin-bottom: 28px">
+      <div style="display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: {{ accent }}; border: 1px solid rgba(90,169,245,0.35); border-radius: 999px; padding: 5px 14px; margin-bottom: 28px">
         <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ accent }}; display: inline-block"></span>
         open source · self-hosted · AGPL-3.0
       </div>
@@ -70,7 +70,7 @@
       <p style="font-size: clamp(18px, 2.2vw, 22px); color: #c9c6bf; margin: 0 0 22px; font-weight: 500">Be your own digital team lead.</p>
       <p style="font-size: 16px; line-height: 1.65; color: #a3a099; margin: 0 0 36px; max-width: 520px; text-wrap: pretty">Everybody uses coding agents — but only while the laptop is open. What about the other 16 hours? The weekend? Open AgentHub gives your agent a permanent, secure home in your Kubernetes cluster: it works 24/7 with your repos, credentials and tools — and you supervise from your phone.</p>
       <div style="display: flex; flex-wrap: wrap; gap: 14px">
-        <a href="https://github.com/open-agenthub/open-agenthub" style="background: {{ accent }}; color: #0d0f12; font-weight: 600; font-size: 15px; padding: 13px 26px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px" style-hover="background: #ffc069; text-decoration: none; color: #0d0f12">Deploy from GitHub</a>
+        <a href="https://github.com/open-agenthub/open-agenthub" style="background: {{ accent }}; color: #0d0f12; font-weight: 600; font-size: 15px; padding: 13px 26px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px" style-hover="background: #7fc0ff; text-decoration: none; color: #0d0f12">Deploy from GitHub</a>
         <a href="#how" style="color: #e8e6e1; font-size: 15px; padding: 13px 26px; border-radius: 10px; border: 1px solid #2c2f35; display: inline-flex; align-items: center" style-hover="border-color: #4a4e56; text-decoration: none; color: #e8e6e1">See how it works</a>
       </div>
     </div>
@@ -169,7 +169,7 @@
       <p style="color: #a3a099; font-size: 16px; margin: 0 0 48px; max-width: 560px; text-wrap: pretty">Cloud chat AIs can't reach your git workspaces, can't commit, can't run your tests. Your cluster can.</p>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px">
         <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
-          <div style="background: #14161a; border: 1px solid #22252b; border-radius: 14px; padding: 26px" style-hover="border-color: rgba(242,163,60,0.45)">
+          <div style="background: #14161a; border: 1px solid #22252b; border-radius: 14px; padding: 26px" style-hover="border-color: rgba(90,169,245,0.45)">
             <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ accent }}; margin-bottom: 14px">{{ f.tag }}</div>
             <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; letter-spacing: -0.01em">{{ f.title }}</h3>
             <p style="font-size: 14.5px; line-height: 1.65; color: #a3a099; margin: 0; text-wrap: pretty">{{ f.body }}</p>
@@ -273,7 +273,7 @@
         </div>
 
         <!-- Enterprise offer hidden for now — remove this comment wrapper to bring it back.
-        <div style="background: #14161a; border: 1px solid rgba(242,163,60,0.5); border-radius: 16px; padding: 34px; display: flex; flex-direction: column; position: relative">
+        <div style="background: #14161a; border: 1px solid rgba(90,169,245,0.5); border-radius: 16px; padding: 34px; display: flex; flex-direction: column; position: relative">
           <div style="position: absolute; top: -12px; left: 30px; background: {{ accent }}; color: #0d0f12; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 600; padding: 4px 12px; border-radius: 999px">3-MONTH FREE TRIAL</div>
           <h3 style="font-size: 20px; font-weight: 600; margin: 0 0 6px">Enterprise</h3>
           <div style="font-size: 34px; font-weight: 700; letter-spacing: -0.02em; margin: 10px 0 4px">€6 <span style="font-size: 15px; font-weight: 400; color: #a3a099">/ user / month</span></div>
@@ -284,7 +284,7 @@
             <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Org management</div>
             <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Slack integration</div>
           </div>
-          <a href="mailto:open-agenthub@mail.on-mb.com?subject=Enterprise%20free%20trial" style="margin-top: auto; text-align: center; background: {{ accent }}; color: #0d0f12; padding: 13px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; display: block" style-hover="background: #ffc069; text-decoration: none; color: #0d0f12">Start free trial</a>
+          <a href="mailto:open-agenthub@mail.on-mb.com?subject=Enterprise%20free%20trial" style="margin-top: auto; text-align: center; background: {{ accent }}; color: #0d0f12; padding: 13px 20px; border-radius: 10px; font-weight: 600; font-size: 15px; display: block" style-hover="background: #7fc0ff; text-decoration: none; color: #0d0f12">Start free trial</a>
         </div>
         -->
 
@@ -332,7 +332,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#f2a33c&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#f2a33c&quot;,&quot;#5fd18a&quot;,&quot;#5aa9f5&quot;,&quot;#e06c75&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;animateTerminal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#5aa9f5&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#5aa9f5&quot;,&quot;#5fd18a&quot;,&quot;#f2a33c&quot;,&quot;#e06c75&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;animateTerminal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
 class Component extends DCLogic {
   state = { visible: 1, helmVisible: 0, qsVisible: 0, os: (() => {
     const ua = navigator.userAgent;
@@ -455,7 +455,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const accent = this.props.accentColor ?? '#f2a33c';
+    const accent = this.props.accentColor ?? '#5aa9f5';
 
     const terminalLines = this.buildTerm(this.lines, this.state.visible, accent, true);
     const helmLines = this.buildTerm(this.helmL, this.state.helmVisible, accent, true);
