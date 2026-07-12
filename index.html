@@ -134,9 +134,14 @@
 
         <!-- quickstart -->
         <div>
-          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap">
             <h3 style="font-size: 17px; font-weight: 600; margin: 0">I don&rsquo;t have Kubernetes</h3>
             <span style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #6c6f76">all-in-one quickstart</span>
+            <div style="margin-left: auto; display: flex; gap: 4px; background: #14161a; border: 1px solid #26292f; border-radius: 8px; padding: 3px">
+              <sc-for list="{{ osOptions }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.select }}" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; border: none; cursor: pointer; border-radius: 6px; padding: 5px 12px; background: {{ o.bg }}; color: {{ o.color }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
           </div>
           <div style="background: #0d0f12; border: 1px solid #26292f; border-radius: 12px; overflow: hidden">
             <div style="display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #22252b; background: #101216">
@@ -329,7 +334,12 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#f2a33c&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#f2a33c&quot;,&quot;#5fd18a&quot;,&quot;#5aa9f5&quot;,&quot;#e06c75&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;animateTerminal&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Hero&quot;}}">
 class Component extends DCLogic {
-  state = { visible: 1, helmVisible: 0, qsVisible: 0 };
+  state = { visible: 1, helmVisible: 0, qsVisible: 0, os: (() => {
+    const ua = navigator.userAgent;
+    if (/Windows/i.test(ua)) return 'windows';
+    if (/Mac|iPhone|iPad/i.test(ua)) return 'mac';
+    return 'linux';
+  })() };
 
   helmL = [
     { c: '#c9c6bf', t: '$ helm repo add agenthub https://open-agenthub.github.io/open-agenthub' },
@@ -356,12 +366,28 @@ class Component extends DCLogic {
     { c: null,      t: 'you (phone) │ ship the fix? ' }
   ];
 
-  qsL = [
-    { c: '#c9c6bf', t: '$ curl -fsSL https://open-agenthub.github.io/install.sh | sh' },
-    { c: '#7dc47d', t: '✓ k3s installed (single node)' },
-    { c: '#7dc47d', t: '✓ agenthub deployed' },
-    { c: null,      t: '→ open https://your-host:8443 ' }
-  ];
+  qsMap = {
+    linux: [
+      { c: '#c9c6bf', t: '$ curl -fsSL https://open-agenthub.github.io/install.sh | sh' },
+      { c: '#7dc47d', t: '✓ k3s installed (single node)' },
+      { c: '#7dc47d', t: '✓ agenthub deployed' },
+      { c: null,      t: '→ open http://localhost:8080 ' }
+    ],
+    mac: [
+      { c: '#c9c6bf', t: '$ curl -fsSL https://open-agenthub.github.io/install.sh | sh' },
+      { c: '#a3a099', t: '# uses Docker Desktop' },
+      { c: '#7dc47d', t: '✓ k3d cluster created · agenthub deployed' },
+      { c: null,      t: '→ open http://localhost:8080 ' }
+    ],
+    windows: [
+      { c: '#c9c6bf', t: 'PS> iwr -useb https://open-agenthub.github.io/install.ps1 | iex' },
+      { c: '#a3a099', t: '# uses Docker Desktop' },
+      { c: '#7dc47d', t: '✓ k3d cluster created · agenthub deployed' },
+      { c: null,      t: '→ open http://localhost:8080 ' }
+    ]
+  };
+
+  get qsL() { return this.qsMap[this.state.os] || this.qsMap.linux; }
 
   lines = [
     { c: '#7dc47d', t: '✓ session started   pod=agents/jana   image=dev-base:1.4' },
@@ -436,6 +462,16 @@ class Component extends DCLogic {
     const quickstartLines = this.buildTerm(this.qsL, this.state.qsVisible, accent, true);
     const jiraLines = this.buildTerm(this.jiraL, this.jiraL.length, accent, true);
     const mcpLines = this.buildTerm(this.mcpL, this.mcpL.length, accent, true);
+    const osOptions = [
+      { key: 'linux', label: 'Linux' },
+      { key: 'mac', label: 'macOS' },
+      { key: 'windows', label: 'Windows' }
+    ].map(o => ({
+      ...o,
+      bg: o.key === this.state.os ? accent : 'transparent',
+      color: o.key === this.state.os ? '#0d0f12' : '#a3a099',
+      select: () => this.setState({ os: o.key, qsVisible: this.qsMap[o.key].length })
+    }));
 
     return {
       accent,
@@ -444,6 +480,7 @@ class Component extends DCLogic {
       quickstartLines,
       jiraLines,
       mcpLines,
+      osOptions,
       features: [
         { tag: '[01] // always-on', title: 'Sessions run 24/7', body: 'Isolated Kubernetes pods with access to your repos, credentials and tools — no laptop required.' },
         { tag: '[02] // supervise', title: 'Watch from your phone', body: 'Follow the live terminal and answer your agent’s questions from anywhere.' },
