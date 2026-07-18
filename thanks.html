@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thank you — Open AgentHub</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #0d0f12; }
+  body { font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif; color: #e8e6e1; }
+  * { box-sizing: border-box; }
+  a { color: #5aa9f5; text-decoration: none; }
+  a:hover { color: #7fc0ff; text-decoration: underline; }
+  ::selection { background: rgba(90,169,245,0.35); }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+  .nav { display: flex; align-items: center; gap: 10px; margin-bottom: 56px; }
+  .nav b { font-size: 17px; }
+  h1 { font-size: 34px; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .sub { color: #9aa1ab; font-size: 16px; line-height: 1.6; margin: 0 0 32px; }
+  .card { background: #14171c; border: 1px solid #262b33; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; }
+  .card h2 { font-size: 15px; margin: 0 0 10px; color: #e8e6e1; }
+  pre { margin: 0; padding: 14px 16px; font: 12px/1.6 'JetBrains Mono', monospace; color: #b8c0cc;
+        white-space: pre-wrap; word-break: break-all; max-height: 200px; overflow-y: auto;
+        background: #0d0f12; border: 1px solid #2c3140; border-radius: 10px; }
+  .copy { margin-top: 10px; display: inline-block; background: #5aa9f5; color: #0d0f12; font-weight: 600;
+          font-size: 13px; padding: 8px 16px; border-radius: 8px; border: 0; cursor: pointer; font-family: inherit; }
+  .copy:hover { background: #7fc0ff; }
+  ol { color: #b8c0cc; line-height: 1.8; padding-left: 20px; margin: 0; }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #8cc5fa; }
+  .muted { color: #9aa1ab; font-size: 13.5px; line-height: 1.6; }
+  .pending, .nokey { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <svg width="30" height="23" viewBox="0 0 40 30" fill="none"><g fill="#5b5f66"><circle cx="8.5" cy="8" r="2.9"/><path d="M3.9 16 a4.6 4.6 0 0 1 9.2 0 Z"/></g><g fill="#5b5f66"><circle cx="31.5" cy="8" r="2.9"/><path d="M26.9 16 a4.6 4.6 0 0 1 9.2 0 Z"/></g><g fill="#5aa9f5"><circle cx="20" cy="7" r="3.3"/><path d="M14.8 16.5 a5.2 5.2 0 0 1 10.4 0 Z"/></g></svg>
+    <b>Open AgentHub</b>
+  </div>
+
+  <div class="licensed">
+    <h1>Thank you! 🎉</h1>
+    <p class="sub">Your enterprise subscription is active. We also sent this license key to your
+    billing email, so nothing is lost if you close this page.</p>
+
+    <div class="card">
+      <h2>Your license key</h2>
+      <pre id="license-key">…</pre>
+      <button class="copy" id="copy-btn">Copy license key</button>
+    </div>
+
+    <div class="card">
+      <h2>Activate it in your instance</h2>
+      <ol>
+        <li>Open your Open AgentHub instance as an admin.</li>
+        <li>Go to <code>Settings → License</code>.</li>
+        <li>Paste the key and press <code>Activate</code> — all seats unlock immediately.</li>
+      </ol>
+    </div>
+
+    <p class="muted">No instance yet? <a href="./index.html#get-started">Install Open AgentHub</a> first —
+    the license activates inside the app, no config files needed.</p>
+  </div>
+
+  <div class="pending">
+    <h1>Almost there…</h1>
+    <p class="sub">Your payment is still being confirmed. As soon as it settles you will receive the
+    license key by email at your billing address — activate it under <code>Settings → License</code>.</p>
+  </div>
+
+  <div class="nokey">
+    <h1>Thank you!</h1>
+    <p class="sub">Your checkout completed. The license key has been sent to your billing email —
+    activate it in your instance under <code>Settings → License</code>.</p>
+  </div>
+</div>
+<script>
+  // The key arrives as a URL fragment (#license=...) so it never reaches server logs.
+  var params = new URLSearchParams(location.hash.replace(/^#/, ''))
+  var token = params.get('license')
+  var pending = params.get('checkout') === 'pending'
+  function show(cls) {
+    document.querySelector('.licensed').style.display = cls === 'licensed' ? '' : 'none'
+    document.querySelector('.pending').style.display = cls === 'pending' ? 'block' : 'none'
+    document.querySelector('.nokey').style.display = cls === 'nokey' ? 'block' : 'none'
+  }
+  if (token) {
+    document.getElementById('license-key').textContent = token
+    document.getElementById('copy-btn').addEventListener('click', function () {
+      navigator.clipboard.writeText(token).then(function () {
+        document.getElementById('copy-btn').textContent = 'Copied ✓'
+      })
+    })
+    show('licensed')
+    // Keep the key out of the address bar / browser history once rendered.
+    history.replaceState(null, '', location.pathname)
+  } else {
+    show(pending ? 'pending' : 'nokey')
+  }
+</script>
+</body>
+</html>
