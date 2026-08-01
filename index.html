@@ -68,7 +68,7 @@
       </div>
       <h1 style="font-size: clamp(38px, 5.5vw, 60px); line-height: 1.05; font-weight: 700; letter-spacing: -0.03em; margin: 0 0 18px">A home for your <span style="color: {{ accent }}">coding agent.</span></h1>
       <p style="font-size: clamp(18px, 2.2vw, 22px); color: #c9c6bf; margin: 0 0 22px; font-weight: 500">Be your own digital team lead.</p>
-      <p style="font-size: 16px; line-height: 1.65; color: #a3a099; margin: 0 0 36px; max-width: 520px; text-wrap: pretty">Everybody uses coding agents — but only while the laptop is open. What about the other 16 hours? The weekend? Open AgentHub gives Claude, Codex, or Cursor a permanent, secure home in your Kubernetes cluster: they work 24/7 with your repos, credentials and tools — and you supervise from your phone.</p>
+      <p style="font-size: 16px; line-height: 1.65; color: #a3a099; margin: 0 0 36px; max-width: 520px; text-wrap: pretty">Everybody uses coding agents — but only while the laptop is open. What about the other 16 hours? The weekend? Open AgentHub gives Claude, Codex, Cursor, or OpenClaw a permanent, secure home in your Kubernetes cluster: they work 24/7 with your repos, credentials and tools — and you supervise from your phone.</p>
       <div style="display: flex; flex-wrap: wrap; gap: 14px">
         <a href="https://github.com/open-agenthub/open-agenthub" style="background: {{ accent }}; color: #0d0f12; font-weight: 600; font-size: 15px; padding: 13px 26px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px" style-hover="background: #7fc0ff; text-decoration: none; color: #0d0f12">Deploy from GitHub</a>
         <a href="#how" style="color: #e8e6e1; font-size: 15px; padding: 13px 26px; border-radius: 10px; border: 1px solid #2c2f35; display: inline-flex; align-items: center" style-hover="border-color: #4a4e56; text-decoration: none; color: #e8e6e1">See how it works</a>
@@ -266,7 +266,7 @@
           <p style="font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #6c6f76; margin: 0 0 24px">AGPL-3.0 · self-hosted</p>
           <div style="display: flex; flex-direction: column; gap: 12px; font-size: 14.5px; color: #c9c6bf; margin-bottom: 30px">
             <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Unlimited sessions</div>
-            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Claude · Codex · Cursor</div>
+            <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Claude · Codex · Cursor · OpenClaw</div>
             <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> All core features</div>
             <div style="display: flex; gap: 10px"><span style="color: {{ accent }}">✓</span> Your cluster, your data</div>
           </div>
@@ -484,7 +484,7 @@ class Component extends DCLogic {
       osOptions,
       features: [
         { tag: '[01] // always-on', title: 'Sessions run 24/7', body: 'Isolated Kubernetes pods with access to your repos, credentials and tools — no laptop required.' },
-        { tag: '[02] // agents', title: 'Claude · Codex · Cursor', body: 'Pick the agent that fits the job. Subscription or API-key billing per session — your login persists across pods.' },
+        { tag: '[02] // agents', title: 'Claude · Codex · Cursor · OpenClaw', body: 'Pick the agent that fits the job. Subscription or API-key billing per session — your login persists across pods.' },
         { tag: '[03] // supervise', title: 'Watch from your phone', body: 'Follow the live terminal and answer your agent’s questions from anywhere.' },
         { tag: '[04] // modes', title: 'Interactive · autonomous · cron', body: 'Pair with your agent, let it run solo, or schedule sessions — let it work the night shift.' },
         { tag: '[05] // your stack', title: 'Bring your own image', body: 'Any container image; opt-in root mode to install whatever tooling the job needs.' },
@@ -492,7 +492,7 @@ class Component extends DCLogic {
       ],
       steps: [
         { num: '01', title: 'Store your credentials', body: 'Git tokens, agent login, secrets — stored per user, encrypted in your cluster.', cmd: 'Settings → Credentials → Add' },
-        { num: '02', title: 'Start a session', body: 'Pick Claude, Codex, or Cursor, a repo, a mode (interactive, autonomous, cron) and a container image.', cmd: 'New session → agent · repo · mode · image' },
+        { num: '02', title: 'Start a session', body: 'Pick Claude, Codex, Cursor, or OpenClaw, a repo, a mode (interactive, autonomous, cron) and a container image.', cmd: 'New session → agent · repo · mode · image' },
         { num: '03', title: 'Supervise from anywhere', body: 'Open the live terminal on your phone, review PRs, answer questions.', cmd: '→ https://hub.your-org.dev' }
       ]
     };
