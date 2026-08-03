@@ -76,10 +76,17 @@
   </div>
 </div>
 <script>
+  // Public base URL of the license service (mints tokens, verifies Stripe sessions).
+  var LICENSE_SERVICE = 'https://license.instances.open-agenthub.on-mb.com'
+
   // The key arrives as a URL fragment (#license=...) so it never reaches server logs.
   var params = new URLSearchParams(location.hash.replace(/^#/, ''))
   var token = params.get('license')
   var pending = params.get('checkout') === 'pending'
+  // Fallback: an older/misconfigured checkout link can drop the buyer here straight from
+  // Stripe with a ?session_id= query and no fragment. In that case route back through the
+  // service's success endpoint, which mints the token and redirects here again with it.
+  var sessionId = new URLSearchParams(location.search).get('session_id')
   function show(cls) {
     document.querySelector('.licensed').style.display = cls === 'licensed' ? '' : 'none'
     document.querySelector('.pending').style.display = cls === 'pending' ? 'block' : 'none'
@@ -95,6 +102,8 @@
     show('licensed')
     // Keep the key out of the address bar / browser history once rendered.
     history.replaceState(null, '', location.pathname)
+  } else if (!pending && sessionId) {
+    location.replace(LICENSE_SERVICE + '/api/checkout/success?session_id=' + encodeURIComponent(sessionId))
   } else {
     show(pending ? 'pending' : 'nokey')
   }
