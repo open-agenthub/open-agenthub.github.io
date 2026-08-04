@@ -8,15 +8,22 @@ and in your messenger if you set one up. **Auto approve** answers those prompts 
 
 **For a new session** — tick *Auto approve* in the new-session dialog.
 
-**For a session that is already running** — use the toggle in the bar above the terminal,
-or the checkbox in *Edit session*. It takes effect immediately, with no restart: the
-backend evaluates the flag on every permission request rather than baking it into the pod.
+**Straight from a prompt** — when the agent asks for permission, the prompt offers
+**Allow everything** next to *Allow* and *Allow (don't ask again)*. This is the quickest
+path: you are already looking at the prompt, and it answers this one along with every
+prompt after it.
+
+**For a session that is already running** — the *Auto approve* toggle in *Edit session*.
+
+Either way it takes effect immediately, with no restart: the backend evaluates the flag on
+every permission request rather than baking it into the pod.
 
 Switching it on also clears the prompts that are already waiting. Without that they would
 keep the agent blocked for the rest of its poll window, because auto approve only
 short-circuits *new* requests.
 
-You can turn it off again at any time; the next request prompts as usual.
+While it is on, a banner sits above the terminal with a **Turn off** button. The next
+request after that prompts as usual.
 
 ## When to use it
 
@@ -41,7 +48,7 @@ A reasonable rule of thumb:
 
 ## Related: allow always
 
-The per-prompt **Allow (don't ask again)** button is the narrower tool. It whitelists that
-one tool for the rest of the session and keeps prompting for everything else. If you find
-yourself approving the same two tools over and over, that is usually the better answer
-than auto approve.
+**Allow (don't ask again)**, right next to it in the prompt, is the narrower tool. It
+whitelists that one tool for the rest of the session and keeps prompting for everything
+else. If you find yourself approving the same two tools over and over, that is usually the
+better answer than auto approve.
