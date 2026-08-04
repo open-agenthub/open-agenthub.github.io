@@ -1,0 +1,5 @@
+# Docs toolchain. The built site under docs/ IS committed — GitHub Pages serves this
+# repository straight from the branch root, so there is no build step on their side.
+docs-src/node_modules/
+docs-src/.vitepress/cache/
+docs-src/.vitepress/dist/
