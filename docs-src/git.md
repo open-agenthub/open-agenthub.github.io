@@ -69,26 +69,70 @@ secret.
 ::: code-group
 
 ```text [GitLab]
-User Settings → Applications
+User Settings → Applications → Add new application
 
 Redirect URI:  https://<your-host>/api/git/callback/gitlab
 Confidential:  yes — the token exchange sends a client secret
-Scopes:        api, read_user
-
-"api" is needed to list your projects, "read_user" to identify you.
+Scopes:        tick "api" and "read_user"
 ```
 
 ```text [GitHub]
-Settings → Developer settings → OAuth Apps
+Settings → Developer settings → OAuth Apps → New OAuth App
 
 Authorization callback URL:  https://<your-host>/api/git/callback/github
-Scopes:                      repo, read:user
+Scopes:                      nothing to tick — the request decides
 ```
 
 :::
 
-Leaving `scopes` empty in the values file uses those defaults, so you normally do not set
-it at all.
+::: warning GitLab rejects scopes it was not registered with
+GitLab pins the allowed scopes **when you create the application**, and refuses anything
+beyond them:
+
+> The requested scope is invalid, unknown, or malformed.
+
+If you see that on the GitLab consent screen, the application is missing a tick — not your
+configuration. Open the application in GitLab, tick `api` and `read_user`, save, and try
+again. Whatever you tick has to be a superset of what the values file requests.
+
+GitHub works the other way round: an OAuth App declares no scopes up front, so the
+authorize request alone decides and this failure mode does not exist there.
+:::
+
+Leaving `scopes` empty uses the provider defaults — `api read_user` for GitLab,
+`repo read:user` for GitHub — which is enough to browse repositories, clone, and push.
+
+### Scopes for agents that maintain their own repository
+
+If you want sessions to open pull requests, cut releases, and read CI results with `gh`,
+the GitHub defaults are not quite enough:
+
+```yaml
+scopes: "repo workflow read:org read:user"
+```
+
+| Scope | Why |
+| --- | --- |
+| `repo` | Commits, pushes, releases, and reading Actions runs — all repo-scoped |
+| `workflow` | **Required to push any commit that touches `.github/workflows/`.** Without it GitHub rejects the push outright, so an agent cannot change its own CI |
+| `read:org` | Lets `gh` see organisation repositories |
+| `read:user` | Identifies the account; part of the default |
+
+The narrower GitLab equivalent, if you would rather not grant the broad `api` scope, is
+`read_api read_repository write_repository read_user` — tick exactly those in the
+application too.
+
+Changing scopes later does not affect accounts that are already connected: existing tokens
+keep the scopes they were issued with. Disconnect and reconnect to pick up new ones.
+
+### Making `gh` and `glab` work inside a session
+
+Sessions get their CLI credentials from the git credential store, which is assembled from
+the **providers of the repositories attached to that session**. So a session only has an
+authenticated `gh` if at least one of its repositories was chosen through the repository
+picker — picking it there is what records the provider. A repository typed in as a plain
+URL has no provider attached, and `gh` will be unauthenticated even though the account is
+connected.
 
 ### Self-hosted instances
 

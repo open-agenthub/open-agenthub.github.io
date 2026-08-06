@@ -57,6 +57,36 @@ curl -s https://<your-host>/api/config
 
 `"gitEnabled": true` means the backend sees a usable provider.
 
+### Connect just returns me to the start page
+
+No error, no entry in the backend log — because the request never reached the backend. The
+authorize URL was relative, so the browser navigated back into the app, the SPA fallback
+answered with `index.html`, and the router rewrote the address bar.
+
+The cause is a provider whose `baseUrl` is set to an **empty string** rather than left out:
+
+```yaml
+providers:
+  - id: gitlab
+    baseUrl: ""     # ← this, not "unset"
+```
+
+Omit the key entirely to use the public instance. Fixed in the chart and the backend since
+this was found, but an older release combined with an explicit `baseUrl: ""` still shows
+it. Check what actually reached the pod:
+
+```bash
+kubectl -n agenthub exec deploy/agenthub-backend -- printenv | grep BaseUrl
+```
+
+The variable should be absent, or hold a real URL — never present but empty.
+
+### "The requested scope is invalid, unknown, or malformed"
+
+GitLab only grants scopes that were ticked when the application was registered. Open the
+application in GitLab and tick the ones your values file asks for — see
+[Git integrations](/git#at-the-provider). GitHub cannot produce this error.
+
 ### OAuth breaks after every restart
 
 `git.stateKey` is unset, so a random key is generated at startup and the signed state from
