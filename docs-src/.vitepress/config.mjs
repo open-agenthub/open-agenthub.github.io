@@ -30,7 +30,8 @@ export default defineConfig({
       {
         text: 'Running sessions',
         items: [
-          { text: 'Auto approve', link: '/auto-approve' }
+          { text: 'Auto approve', link: '/auto-approve' },
+          { text: 'Previewing a page', link: '/preview' }
         ]
       },
       {
