@@ -92,6 +92,7 @@ Everyone in a linked group can reply to sessions and approve permission prompts.
 
 | Command | Effect |
 | --- | --- |
+| `/new <prompt>` | Start a new autonomous session working on the prompt |
 | `/sessions` | List sessions in this chat |
 | `/use <tag>` | Route plain replies to that session |
 | `!status` | Show session status |
@@ -131,7 +132,8 @@ six-digit code sent via Signal.
 
 **Quote** a session message to answer that session; plain replies go to the newest session,
 or the one picked with `!use`. React 👍/👎 on a permission prompt to allow or deny, and
-quote-reply `always` for allow-always. Commands: `!sessions`, `!use <tag>`, `!status`.
+quote-reply `always` for allow-always. Commands: `!new <prompt>` (start an autonomous
+session), `!sessions`, `!use <tag>`, `!status`.
 
 ## Desktop notifications
 
