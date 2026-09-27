@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manage your subscription — Open AgentHub</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #0d0f12; }
+  body { font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif; color: #e8e6e1; }
+  * { box-sizing: border-box; }
+  a { color: #5aa9f5; text-decoration: none; }
+  a:hover { color: #7fc0ff; text-decoration: underline; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+  .nav { display: flex; align-items: center; gap: 10px; margin-bottom: 56px; }
+  .nav b { font-size: 17px; }
+  h1 { font-size: 34px; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .sub { color: #9aa1ab; font-size: 16px; line-height: 1.6; margin: 0 0 32px; }
+  .card { background: #14171c; border: 1px solid #262b33; border-radius: 14px; padding: 22px 24px; margin-bottom: 20px; }
+  .card h2 { font-size: 15px; margin: 0 0 10px; color: #e8e6e1; }
+  textarea { width: 100%; min-height: 96px; padding: 12px 14px; background: #0d0f12; color: #b8c0cc;
+             border: 1px solid #2c3140; border-radius: 10px; resize: vertical;
+             font: 12px/1.6 'JetBrains Mono', monospace; }
+  .btn { margin-top: 12px; display: inline-block; background: #5aa9f5; color: #0d0f12; font-weight: 600;
+         font-size: 13px; padding: 9px 18px; border-radius: 8px; border: 0; cursor: pointer; font-family: inherit; }
+  .btn:hover { background: #7fc0ff; }
+  .btn[disabled] { opacity: .55; cursor: default; }
+  .muted { color: #9aa1ab; font-size: 13.5px; line-height: 1.6; }
+  .note { margin-top: 12px; font-size: 13.5px; line-height: 1.6; display: none; }
+  .note.err { color: #f2a33c; }
+  .note.ok { color: #7fd48a; }
+  ul { color: #b8c0cc; line-height: 1.8; padding-left: 20px; margin: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <svg width="30" height="23" viewBox="0 0 40 30" fill="none"><g fill="#5b5f66"><circle cx="8.5" cy="8" r="2.9"/><path d="M3.9 16 a4.6 4.6 0 0 1 9.2 0 Z"/></g><g fill="#5b5f66"><circle cx="31.5" cy="8" r="2.9"/><path d="M26.9 16 a4.6 4.6 0 0 1 9.2 0 Z"/></g><g fill="#5aa9f5"><circle cx="20" cy="7" r="3.3"/><path d="M14.8 16.5 a5.2 5.2 0 0 1 10.4 0 Z"/></g></svg>
+    <b>Open AgentHub</b>
+  </div>
+
+  <h1>Manage your subscription</h1>
+  <p class="sub">Opens the Stripe billing portal, where you can change seats or payment details,
+  download invoices, and cancel.</p>
+
+  <div class="card">
+    <h2>Your license key</h2>
+    <textarea id="key" spellcheck="false" placeholder="Paste the license key from your purchase email…"></textarea>
+    <button class="btn" id="go">Open billing portal</button>
+    <p class="note" id="note"></p>
+    <p class="muted" style="margin-top:14px">The key identifies your subscription, so it stays in
+    your browser — it is sent only to the license service to open the portal.</p>
+  </div>
+
+  <div class="card">
+    <h2>Lost the key?</h2>
+    <p class="muted" style="margin:0 0 10px">Admins can open the portal straight from a licensed
+    instance under <code>Settings → License</code>. Otherwise we can email the portal link to the
+    address that was used at checkout.</p>
+    <textarea id="email" spellcheck="false" style="min-height:0;height:44px"
+              placeholder="Billing email address…"></textarea>
+    <button class="btn" id="mail">Email me the link</button>
+    <p class="note" id="note2"></p>
+  </div>
+
+  <p class="muted">Questions? <a href="mailto:open-agenthub@mail.on-mb.com">open-agenthub@mail.on-mb.com</a></p>
+</div>
+<script>
+  var LICENSE_SERVICE = 'https://license.instances.open-agenthub.on-mb.com'
+
+  // The purchase email links here with the key in the fragment. Fragments are never sent to a
+  // server, so the key reaches this script and nothing else.
+  var params = new URLSearchParams(location.hash.replace(/^#/, ''))
+  var fromLink = params.get('license')
+  if (fromLink) {
+    document.getElementById('key').value = fromLink
+    history.replaceState(null, '', location.pathname)
+  }
+
+  function say(el, text, cls) {
+    el.textContent = text
+    el.className = 'note ' + cls
+    el.style.display = 'block'
+  }
+
+  document.getElementById('go').addEventListener('click', function () {
+    var btn = this
+    var note = document.getElementById('note')
+    var token = document.getElementById('key').value.trim()
+    if (!token) return say(note, 'Paste your license key first.', 'err')
+
+    btn.disabled = true
+    say(note, 'Opening…', '')
+    fetch(LICENSE_SERVICE + '/api/portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ licenseToken: token })
+    }).then(function (r) {
+      return r.json().catch(function () { return {} })
+    }).then(function (data) {
+      if (data && data.url) { location.href = data.url; return }
+      btn.disabled = false
+      // No url means the key did not verify — the service then falls back to emailing.
+      say(note, data && data.message
+        ? data.message
+        : 'That key could not be verified. Use the email option below instead.', 'err')
+    }).catch(function () {
+      btn.disabled = false
+      say(note, 'Could not reach the license service. Please try again.', 'err')
+    })
+  })
+
+  document.getElementById('mail').addEventListener('click', function () {
+    var btn = this
+    var note = document.getElementById('note2')
+    var email = document.getElementById('email').value.trim()
+    if (!email) return say(note, 'Enter the billing email address first.', 'err')
+
+    btn.disabled = true
+    fetch(LICENSE_SERVICE + '/api/portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function () {
+      // Deliberately the same message either way: the response must not reveal whether an
+      // address has a subscription.
+      say(note, 'If that address has a subscription, the portal link is on its way.', 'ok')
+    }).catch(function () {
+      btn.disabled = false
+      say(note, 'Could not reach the license service. Please try again.', 'err')
+    })
+  })
+</script>
+</body>
+</html>

@@ -26,6 +26,7 @@
   .copy { margin-top: 10px; display: inline-block; background: #5aa9f5; color: #0d0f12; font-weight: 600;
           font-size: 13px; padding: 8px 16px; border-radius: 8px; border: 0; cursor: pointer; font-family: inherit; }
   .copy:hover { background: #7fc0ff; }
+  a.copy, a.copy:hover { color: #0d0f12; text-decoration: none; }
   ol { color: #b8c0cc; line-height: 1.8; padding-left: 20px; margin: 0; }
   code { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #8cc5fa; }
   .muted { color: #9aa1ab; font-size: 13.5px; line-height: 1.6; }
@@ -59,6 +60,13 @@
       </ol>
     </div>
 
+    <div class="card">
+      <h2>Manage or cancel</h2>
+      <p class="muted" style="margin:0 0 10px">Change seats or payment details, download invoices,
+      or cancel the subscription at any time in the billing portal.</p>
+      <a class="copy" id="manage-link" href="./manage.html">Manage subscription</a>
+    </div>
+
     <p class="muted">No instance yet? <a href="./index.html#get-started">Install Open AgentHub</a> first —
     the license activates inside the app, no config files needed.</p>
   </div>
@@ -73,6 +81,8 @@
     <h1>Thank you!</h1>
     <p class="sub">Your checkout completed. The license key has been sent to your billing email —
     activate it in your instance under <code>Settings → License</code>.</p>
+    <p class="muted">Need to change seats, download an invoice, or cancel?
+    <a href="./manage.html">Manage your subscription</a>.</p>
   </div>
 </div>
 <script>
@@ -99,6 +109,10 @@
         document.getElementById('copy-btn').textContent = 'Copied ✓'
       })
     })
+    // Hand the key to the manage page in the fragment — it is what proves the subscription is
+    // yours, and a fragment is never sent to a server.
+    document.getElementById('manage-link').href =
+      './manage.html#license=' + encodeURIComponent(token)
     show('licensed')
     // Keep the key out of the address bar / browser history once rendered.
     history.replaceState(null, '', location.pathname)
