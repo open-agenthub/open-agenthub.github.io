@@ -88,7 +88,7 @@ Codex uses `codex login --device-auth`, Cursor uses `agent login`, and OpenClaw 
 Everything — host, TLS issuer, images, S3, OIDC, resource limits — is in
 [`helm/open-agenthub/values.yaml`](https://github.com/open-agenthub/open-agenthub/blob/main/helm/open-agenthub/values.yaml).
 
-Optional S3/MinIO credentials unlock session resume, history for finished sessions, and
+Optional S3-compatible object storage unlocks session resume, history for finished sessions, and
 artifact uploads.
 
 Keep your environment-specific values in a file rather than a growing pile of `--set`
