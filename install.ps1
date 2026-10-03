@@ -25,6 +25,8 @@ $HelmRepo  = 'https://open-agenthub.github.io/open-agenthub'
 $Namespace = 'agenthub'
 $Cluster   = 'agenthub'
 $Context   = "k3d-$Cluster"
+$HostPort  = 8080
+$AppUrl    = "http://localhost:$HostPort"
 $Bin       = Join-Path $env:LOCALAPPDATA 'open-agenthub\bin'
 $Chart     = if ($env:AGENTHUB_CHART) { $env:AGENTHUB_CHART } else { 'agenthub/open-agenthub' }
 $WithObjectStorage = $env:AGENTHUB_OBJECT_STORAGE -ne '0'
@@ -86,14 +88,49 @@ if (-not (Get-Command helm -ErrorAction SilentlyContinue)) {
 # --- Kubernetes: single-node k3d cluster inside Docker Desktop -------------------
 # Every kubectl/helm call below pins --kube-context, so whatever cluster your
 # current context points at is never touched.
+
+# k3s 1.35 and newer refuse to start their kubelet on a cgroup v1 host, so pin the
+# newest release that still runs there. Docker Desktop on WSL2 reports cgroup v1
+# unless %USERPROFILE%\.wslconfig sets "kernelCommandLine = cgroup_no_v1=all" under
+# [wsl2]. Without the pin the server container crash-loops while `docker ps` keeps
+# showing it as "Up", and the create below waits for an API server that never comes.
+$imageArgs = @()
+if ((& docker info --format '{{.CgroupVersion}}' 2>$null) -eq '1') {
+    $cgroupV1Image = 'rancher/k3s:v1.34.9-k3s1'
+    Say "host uses cgroup v1 - pinning k3s to $cgroupV1Image"
+    Say '       for cgroup v2, put "kernelCommandLine = cgroup_no_v1=all" under'
+    Say '       [wsl2] in %USERPROFILE%\.wslconfig, then run: wsl --shutdown'
+    $imageArgs = @('--image', $cgroupV1Image)
+}
+
 $clusters = (& k3d cluster list --no-headers 2>$null) -join "`n"
 if ($clusters -notmatch "(?m)^$Cluster\s") {
     Say "creating k3d cluster `"$Cluster`" (inside Docker Desktop)"
-    & k3d cluster create $Cluster --wait
-    Assert-Ok 'k3d cluster creation'
+    # Publishing the bundled Traefik on a host port is what lets the UI, the API and
+    # the MCP endpoints share one origin. Two kubectl port-forwards would need a
+    # process per terminal, die on reboot, and split the API onto a second origin
+    # that the ingress-only /mcp and /.well-known paths never reach.
+    # --timeout turns a cluster that cannot come up into an error instead of a wait
+    # with no end.
+    & k3d cluster create $Cluster @imageArgs -p "${HostPort}:80@loadbalancer" --wait --timeout 5m
+    if ($LASTEXITCODE -ne 0) {
+        Say 'hint: the real reason is in the server log, which outlives the failure:'
+        Say "       docker logs k3d-$Cluster-server-0"
+        Say "       then remove the half-built cluster: k3d cluster delete $Cluster"
+        Fail 'k3d cluster creation failed'
+    }
 } else {
     Say "k3d cluster `"$Cluster`" already exists - using it"
     & k3d cluster start $Cluster --wait *> $null
+
+    # Clusters created before the port mapping existed keep working otherwise, so
+    # publish it rather than asking for a rebuild that would drop their data.
+    $published = (& docker port "k3d-$Cluster-serverlb" 80/tcp 2>$null) -join "`n"
+    if ($published -notmatch "(?m):$HostPort$") {
+        Say "cluster predates the port mapping - publishing $HostPort now"
+        & k3d node edit "k3d-$Cluster-serverlb" --port-add "${HostPort}:80" *> $null
+        Assert-Ok "publishing port $HostPort"
+    }
 }
 & kubectl --context $Context get nodes *> $null
 Assert-Ok "reaching the cluster (context $Context)"
@@ -105,8 +142,14 @@ if (-not $pgpw) { $pgpw = New-HexSecret 24 }
 $helmArgs = @(
     '--set-string', "postgres.password=$pgpw",
     '--set', 'postgres.persistence=true',
-    # No ingress controller for it in this cluster; the UI is reached via port-forward.
-    '--set', 'ingress.enabled=false'
+    # k3d ships Traefik, and the cluster publishes it on $HostPort, so the chart
+    # ingress can serve the whole origin.
+    '--set', 'ingress.enabled=true',
+    '--set-string', 'ingress.className=traefik',
+    '--set-string', 'ingress.host=localhost',
+    # Spelled out because it otherwise defaults to https://<ingress.host> - neither
+    # the scheme nor the port this setup answers on.
+    '--set-string', "frontendOrigin=$AppUrl"
 )
 
 if ($WithObjectStorage) {
@@ -175,16 +218,19 @@ if ($WithObjectStorage) {
 }
 
 Say ''
-Say 'done! Open AgentHub is running.'
+Say "done! Open AgentHub is running at $AppUrl"
 Say ''
 Say 'next steps:'
-Say '  1. Reach the UI (no ingress configured):'
-Say "       kubectl --context $Context -n $Namespace port-forward svc/agenthub-frontend 8080:80"
-Say '     then open http://localhost:8080'
-Say '     For production, set ingress.host + TLS: https://github.com/open-agenthub/open-agenthub'
-Say '  2. Auth is DISABLED by default (dev mode). Enable your OIDC provider:'
+Say '  1. Auth is DISABLED by default (dev mode). Enable your OIDC provider:'
 Say "       helm --kube-context $Context upgrade agenthub $Chart -n $Namespace --reuse-values --set oidc.authority=https://<provider>/realms/<realm>"
-Say '  3. In the UI: store your credentials, start your first session.'
+Say '  2. In the UI: store your credentials, start your first session.'
+Say '  3. For a real deployment, put it behind your own host + TLS:'
+Say '       https://github.com/open-agenthub/open-agenthub'
+Say ''
+Say 'the cluster comes back with Docker Desktop. After a "k3d cluster stop" start it'
+Say "with: k3d cluster start $Cluster"
 Say ''
 Say "note: tools live in $Bin (only on PATH in this session)"
+
+Start-Process $AppUrl
 }
