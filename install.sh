@@ -12,6 +12,8 @@
 #
 # Optional environment variables:
 #   AGENTHUB_KUBE_CONTEXT=<ctx>  deploy into this existing kubectl context instead
+#   AGENTHUB_CLUSTER=k3d         use the k3d path on Linux too (CI uses it to test the
+#                                macOS path; needs Docker)
 #   AGENTHUB_OBJECT_STORAGE=0    skip the bundled object storage (not recommended)
 #   AGENTHUB_CHART=<ref>         chart to install (default: agenthub/open-agenthub)
 set -eu
@@ -52,13 +54,15 @@ elif [ "$OS" = "Linux" ] && command -v k3s >/dev/null 2>&1; then
   say "k3s already installed — using it"
   export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
   CTX=default
-elif [ "$OS" = "Darwin" ]; then
+elif [ "$OS" = "Darwin" ] || [ "${AGENTHUB_CLUSTER:-}" = "k3d" ]; then
   # macOS: single-node cluster in Docker via k3d (k3s does not run natively on macOS).
   docker info >/dev/null 2>&1 || fail "Docker is not running — install/start Docker Desktop first: https://www.docker.com/products/docker-desktop/"
+  # Fresh Apple Silicon Macs may not have it yet; kubectl and k3d both install there.
+  [ -d /usr/local/bin ] || $SUDO mkdir -p /usr/local/bin
   if ! command -v kubectl >/dev/null 2>&1; then
     say "installing kubectl"
     KVER="$(curl -Ls https://dl.k8s.io/release/stable.txt)"
-    curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/${KVER}/bin/darwin/${ARCH}/kubectl"
+    curl -fsSLo /tmp/kubectl "https://dl.k8s.io/release/${KVER}/bin/$(printf %s "$OS" | tr "[:upper:]" "[:lower:]")/${ARCH}/kubectl"
     $SUDO install -m 0755 /tmp/kubectl /usr/local/bin/kubectl && rm -f /tmp/kubectl
   fi
   if ! command -v k3d >/dev/null 2>&1; then

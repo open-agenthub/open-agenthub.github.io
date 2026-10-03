@@ -1,0 +1,100 @@
+name: Test install scripts
+
+# Pushes and pull requests test the scripts in this checkout. The nightly run tests
+# exactly what users get — the published one-liners against the published Helm
+# repository and images — so a broken Pages deploy, chart release or image build shows
+# up here before a user hits it.
+on:
+  push:
+    branches: [main]
+    paths: ["install.sh", "install.ps1", ".github/scripts/**", ".github/workflows/install-test.yml"]
+  pull_request:
+    paths: ["install.sh", "install.ps1", ".github/scripts/**", ".github/workflows/install-test.yml"]
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # Hosted Windows runners cannot run Linux containers, so install.ps1 runs against
+  # mocked tools there — under both PowerShell editions users actually have.
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the published script
+        if: github.event_name == 'schedule'
+        shell: pwsh
+        run: Invoke-WebRequest -UseBasicParsing https://open-agenthub.github.io/install.ps1 -OutFile install.ps1
+
+      - name: Windows PowerShell 5.1
+        shell: powershell
+        run: .github/scripts/install-ps1-mock.ps1 -Script install.ps1
+
+      - name: PowerShell 7
+        shell: pwsh
+        run: .github/scripts/install-ps1-mock.ps1 -Script install.ps1
+
+  # Real installs. macOS runners have no Docker, so the macOS path (k3d inside Docker)
+  # runs on Linux via AGENTHUB_CLUSTER=k3d; arm64 stands in for Apple Silicon images.
+  linux:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: "Linux amd64 (k3s)", runner: ubuntu-latest, cluster: k3s }
+          - { name: "Linux arm64 (k3s)", runner: ubuntu-24.04-arm, cluster: k3s }
+          - { name: "macOS path (k3d)", runner: ubuntu-latest, cluster: k3d }
+    env:
+      AGENTHUB_CLUSTER: ${{ matrix.cluster == 'k3d' && 'k3d' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the published script
+        if: github.event_name == 'schedule'
+        run: curl -fsSL https://open-agenthub.github.io/install.sh -o install.sh
+
+      - name: Install
+        run: sh install.sh
+
+      - name: Point kubectl at the new cluster
+        run: |
+          if [ "${{ matrix.cluster }}" = k3s ]; then
+            echo "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> "$GITHUB_ENV"
+            echo "CTX=default" >> "$GITHUB_ENV"
+          else
+            echo "CTX=k3d-agenthub" >> "$GITHUB_ENV"
+          fi
+
+      - name: Smoke test
+        run: bash .github/scripts/install-smoke.sh "$CTX"
+
+      - name: Re-run keeps every secret
+        run: |
+          snapshot() {
+            kubectl --context "$CTX" -n agenthub get secret postgres-secret agenthub-secrets garage-secrets \
+              -o jsonpath='{.items[*].data}' | sha256sum
+          }
+          before="$(snapshot)"
+          sh install.sh
+          after="$(snapshot)"
+          [ "$before" = "$after" ] || { echo "::error::a re-run changed the generated secrets"; exit 1; }
+
+      - name: Smoke test after the re-run
+        run: bash .github/scripts/install-smoke.sh "$CTX"
+
+      - name: Diagnostics
+        if: failure()
+        run: |
+          kubectl --context "$CTX" get nodes -o wide || true
+          kubectl --context "$CTX" -n agenthub get all,pvc,events || true
+          for p in $(kubectl --context "$CTX" -n agenthub get pods -o name 2>/dev/null); do
+            echo "::group::$p"; kubectl --context "$CTX" -n agenthub describe "$p" | tail -30
+            kubectl --context "$CTX" -n agenthub logs "$p" --all-containers --tail=100 || true; echo "::endgroup::"
+          done
