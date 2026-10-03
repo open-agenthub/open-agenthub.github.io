@@ -12,30 +12,54 @@ helm install agenthub agenthub/open-agenthub -n agenthub --create-namespace \
   --set ingress.host=hub.your-org.example
 ```
 
+Keep the generated Postgres password — Postgres keeps the password it was initialised with,
+so every later upgrade has to pass the same one.
+
+::: tip Object storage is strongly recommended
+Without S3-compatible object storage the hub runs, but sessions cannot be resumed in a fresh
+pod, finished sessions keep no history, and uploaded files and artifacts disappear with the
+agent pod. Point `s3.*` at a provider you already run, or let the chart deploy Garage
+(`objectStorage.enabled=true` plus a one-time bootstrap — see the
+[README](https://github.com/open-agenthub/open-agenthub#object-storage)). The quickstart
+below sets it up automatically.
+:::
+
 ## You don't have Kubernetes
 
-The all-in-one quickstart installs k3s (single node) plus Open AgentHub on a Linux host.
-Recommended: 4 vCPU / 6 GB RAM, which comfortably serves about six users.
+The all-in-one quickstart sets up a single-node cluster and deploys Open AgentHub with
+persistent Postgres **and** object storage. Recommended: 4 vCPU / 6 GB RAM, which
+comfortably serves about six users.
+
+Linux (installs k3s) and macOS (k3d in Docker Desktop):
 
 ```bash
 curl -fsSL https://open-agenthub.github.io/install.sh | sh
 ```
 
-On Windows, with Docker Desktop and k3d:
+Windows (k3d in Docker Desktop; Windows PowerShell 5.1 or PowerShell 7):
 
 ```powershell
 iwr -useb https://open-agenthub.github.io/install.ps1 | iex
 ```
 
+The scripts are safe to re-run — generated passwords and storage keys are kept — and never
+deploy into whatever cluster your current kubectl context points at. To deploy into an
+existing cluster instead, set `AGENTHUB_KUBE_CONTEXT=<context>` (Linux/macOS).
+`AGENTHUB_OBJECT_STORAGE=0` skips object storage, which is not recommended.
+
 ## First steps
 
 ### 1. Open the UI
 
-With an ingress, browse to `https://<your-host>`. Without one, forward the port:
+With an ingress, browse to `https://<your-host>`. Without one (the quickstart default),
+forward the port and open `http://localhost:8080`:
 
 ```bash
 kubectl -n agenthub port-forward svc/agenthub-frontend 8080:80
 ```
+
+The quickstart prints this command with the right `--context`. The frontend proxies `/api`
+and `/ws` to the backend, so this one port-forward is all you need.
 
 ### 2. Turn on authentication
 
@@ -88,8 +112,8 @@ Codex uses `codex login --device-auth`, Cursor uses `agent login`, and OpenClaw 
 Everything — host, TLS issuer, images, S3, OIDC, resource limits — is in
 [`helm/open-agenthub/values.yaml`](https://github.com/open-agenthub/open-agenthub/blob/main/helm/open-agenthub/values.yaml).
 
-Optional S3-compatible object storage unlocks session resume, history for finished sessions, and
-artifact uploads.
+S3-compatible object storage — recommended for every install — unlocks session resume,
+history for finished sessions, persistent session files and artifact uploads.
 
 Keep your environment-specific values in a file rather than a growing pile of `--set`
 flags. It makes upgrades reproducible and sidesteps the `--reuse-values` trap entirely:
