@@ -156,7 +156,7 @@
               {{ quickstartLines }}
             </div>
           </div>
-          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c6f76; margin: 12px 0 0">recommended: 4 vCPU · 6 GB RAM — good for up to 6 users</p>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6c6f76; margin: 12px 0 0">recommended: 4 vCPU · 6 GB RAM — good for up to 6 users · includes persistent object storage (recommended for every install)</p>
         </div>
 
       </div>
@@ -347,7 +347,9 @@ class Component extends DCLogic {
 
   helmL = [
     { c: '#c9c6bf', t: '$ helm repo add agenthub https://open-agenthub.github.io/open-agenthub' },
-    { c: '#c9c6bf', t: '$ helm install agenthub agenthub/open-agenthub' },
+    { c: '#c9c6bf', t: '$ helm install agenthub agenthub/open-agenthub \\' },
+    { c: '#c9c6bf', t: '    -n agenthub --create-namespace \\' },
+    { c: '#c9c6bf', t: '    --set postgres.password=$(openssl rand -hex 16)' },
     { c: '#7dc47d', t: '✓ release "agenthub" deployed   ns=agenthub' },
     { c: null,      t: '→ open https://hub.your-org.dev ' }
   ];
@@ -375,19 +377,22 @@ class Component extends DCLogic {
       { c: '#c9c6bf', t: '$ curl -fsSL https://open-agenthub.github.io/install.sh | sh' },
       { c: '#7dc47d', t: '✓ k3s installed (single node)' },
       { c: '#7dc47d', t: '✓ agenthub deployed' },
-      { c: null,      t: '→ open http://localhost:8080 ' }
+      { c: '#7dc47d', t: '✓ postgres + object storage ready (persistent)' },
+      { c: null,      t: '→ port-forward, then open http://localhost:8080 ' }
     ],
     mac: [
       { c: '#c9c6bf', t: '$ curl -fsSL https://open-agenthub.github.io/install.sh | sh' },
       { c: '#a3a099', t: '# uses Docker Desktop' },
       { c: '#7dc47d', t: '✓ k3d cluster created · agenthub deployed' },
-      { c: null,      t: '→ open http://localhost:8080 ' }
+      { c: '#7dc47d', t: '✓ postgres + object storage ready (persistent)' },
+      { c: null,      t: '→ port-forward, then open http://localhost:8080 ' }
     ],
     windows: [
       { c: '#c9c6bf', t: 'PS> iwr -useb https://open-agenthub.github.io/install.ps1 | iex' },
       { c: '#a3a099', t: '# uses Docker Desktop' },
       { c: '#7dc47d', t: '✓ k3d cluster created · agenthub deployed' },
-      { c: null,      t: '→ open http://localhost:8080 ' }
+      { c: '#7dc47d', t: '✓ postgres + object storage ready (persistent)' },
+      { c: null,      t: '→ port-forward, then open http://localhost:8080 ' }
     ]
   };
 
