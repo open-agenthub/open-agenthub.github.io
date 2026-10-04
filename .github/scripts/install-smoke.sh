@@ -42,14 +42,28 @@ done
 # --- It actually answers ---------------------------------------------------------
 # From inside the cluster rather than through a port-forward: a forward that dies mid-request
 # fails the run for a reason that has nothing to do with the chart.
+#
+# Retried rather than asked once. "Available" on a Deployment only means the pod is running,
+# and the frontend carries no readiness probe — nginx may not have bound its port yet when the
+# first request arrives. A smoke test that races is worse than none, because the failure looks
+# like a broken chart.
 probe() {
   local name="$1" url="$2" expect="$3"
-  local code
-  code="$($KCTL run "smoke-$name-$$" --rm -i --restart=Never --quiet \
-    --image=curlimages/curl:8.11.1 --command -- \
-    curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$url" 2>/dev/null | tr -d '\r\n')"
-  [ "$code" = "$expect" ] || fail "$name answered HTTP ${code:-<nothing>}, expected $expect ($url)"
-  say "$name answered HTTP $code"
+  local code attempt=0 out=''
+  while [ $attempt -lt 20 ]; do
+    attempt=$((attempt + 1))
+    out="$($KCTL run "smoke-$name-$attempt-$$" --rm -i --restart=Never --quiet \
+      --image=curlimages/curl:8.11.1 --command -- \
+      curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$url" 2>&1 || true)"
+    code="$(printf '%s' "$out" | tr -d '\r\n' | tail -c 3)"
+    [ "$code" = "$expect" ] && { say "$name answered HTTP $code (attempt $attempt)"; return 0; }
+    sleep 5
+  done
+  # The last response in full, not just the parsed code: when this fires it is usually because
+  # kubectl could not run the probe at all, and the bare code hides that.
+  printf '  [smoke] last probe output: %s\n' "$out" >&2
+  $KCTL get endpoints -o wide >&2 2>/dev/null || true
+  fail "$name never answered HTTP $expect ($url)"
 }
 
 # Auth is disabled in the quickstart's dev mode, so the API answers an unauthenticated read.
