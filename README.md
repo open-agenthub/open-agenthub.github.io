@@ -49,3 +49,40 @@ branch → `main` / root**. No build step required.
 (GitHub Pages root site). As `open-agenthub/pages` it would be served under
 `…/pages/` instead — rename the repository accordingly. All in-page links are
 relative, so both layouts render fine.
+
+## Landing page and SEO
+
+The homepage is static semantic HTML with `landing.css`. It does not load the
+Design runtime, React or Babel. The runtime and vendor files remain available
+for the other existing pages. All fonts remain locally hosted.
+
+The homepage includes a descriptive title, description, canonical URL,
+Open Graph/Twitter metadata and SoftwareApplication JSON-LD. `robots.txt` points
+to the root `sitemap.xml`, which lists the homepage and public guide pages.
+Update that sitemap when documentation routes change; do not add transactional
+or error pages. Indexing and rankings still need verification in Search Console;
+no ranking or conversion improvement is claimed from these changes alone.
+
+`assets/social-card.html` is the editable source of `social-card.png` (1200×630).
+The workflow illustration on the homepage is explicitly illustrative, not a
+customer outcome or screenshot. Do not add unverified usage or productivity
+claims. Enterprise pricing is not advertised; the edition distinction is stated.
+
+Validation with Node (no package install needed):
+
+```bash
+node scripts/check-site.mjs
+```
+
+Optional browser rendering (requires an existing Chromium CDP endpoint; uses
+its active tab, so use a dedicated preview browser):
+
+```bash
+node scripts/render-preview.mjs http://BROWSER_HOST:9222
+```
+
+This embeds local CSS, fonts and icons for preview, regenerates the social card,
+checks heading/anchor semantics and horizontal overflow at 1440, 390 and 320px,
+and saves viewport screenshots under `/tmp/agenthub-<width>.png`. It does not
+publish the website. Review screenshots before deployment. GitHub Pages serves
+`main`, so pushing changes there publishes them.
