@@ -30,6 +30,8 @@ export default defineConfig({
       {
         text: 'Running sessions',
         items: [
+          { text: 'Provider login', link: '/provider-login' },
+          { text: 'Continue locally', link: '/local-sessions' },
           { text: 'Auto approve', link: '/auto-approve' },
           { text: 'Previewing a page', link: '/preview' }
         ]
@@ -38,7 +40,8 @@ export default defineConfig({
         text: 'Integrations',
         items: [
           { text: 'Chat (Telegram & Signal)', link: '/chat' },
-          { text: 'Git (GitHub & GitLab)', link: '/git' }
+          { text: 'Git (GitHub & GitLab)', link: '/git' },
+          { text: 'MCP clients', link: '/mcp' }
         ]
       },
       {

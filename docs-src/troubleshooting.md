@@ -106,6 +106,20 @@ Prompts expire after about 30 minutes. Answer in the web terminal, in your messe
 switch on [auto approve](/auto-approve) — enabling it also resolves the prompts that are
 already pending.
 
+## Provider login
+
+### `/login` is unavailable in the Workspace interface
+
+On 1.0.0-rc.1, select the **Terminal** interface preference, then create an Interactive
+session and complete the provider's own login there. An existing Workspace chat session
+may have no Terminal tab. See [Provider login](/provider-login) for the commands.
+
+## Local continuation and MCP
+
+For missing archives, incompatible transcripts, and HTTP 409 during a return upload, see
+[local transfer troubleshooting](/local-sessions#troubleshooting). For HTTP 503, OAuth
+redirect errors, and stdio token configuration, see [MCP checks](/mcp#first-checks).
+
 ## Reading the logs
 
 ```bash

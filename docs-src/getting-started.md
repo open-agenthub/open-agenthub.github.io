@@ -103,9 +103,10 @@ key), and a session mode:
 | Autonomous | Runs a prompt to completion under a policy allowlist. |
 | Scheduled | Creates a CronJob that starts the task on a schedule. |
 
-An interactive subscription session can complete the provider login in its own terminal:
-Codex uses `codex login --device-auth`, Cursor uses `agent login`, and OpenClaw uses
-`openclaw models auth add`.
+Complete the first provider login in an Interactive session using the **Terminal** interface.
+See [Provider login](/provider-login) for agent-specific commands, stored accounts, and the
+1.0.0-rc.1 Workspace workaround. To continue a conversation on your workstation, see
+[Continue locally](/local-sessions); to control sessions from an external client, see [MCP](/mcp).
 
 ## Where configuration lives
 

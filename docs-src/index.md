@@ -32,6 +32,9 @@ The most common setup tasks after installing:
 
 - [Chat integrations](/chat) — get session updates and approve permissions from your phone.
 - [Git integrations](/git) — let sessions clone and push without a manual token.
+- [Provider login](/provider-login) — sign in through an Interactive session terminal.
+- [Continue locally](/local-sessions) — take Claude Code or Codex history to your workstation.
+- [MCP clients](/mcp) — connect external clients over HTTP or stdio.
 - [Auto approve](/auto-approve) — let a session run its tools without asking.
 
 ## Editions
