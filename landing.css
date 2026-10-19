@@ -743,3 +743,38 @@ code {
 }
 
 }
+
+/* Optional repository support CTA; quickstart remains the primary action. */
+.nav-github.star-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-color: #78915c;
+  color: var(--accent);
+}
+@media (max-width: 760px) {
+  .nav-links {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    font-size: 13px;
+  }
+  .nav-links > a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    text-align: center;
+  }
+  .nav-links .star-cta {
+    grid-column: 1 / -1;
+  }
+}
+
+.workflow-link { margin: 8px 0 0; font-size: 13px; }
+.workflow-link a { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.trust-strip p { text-align: center; }
