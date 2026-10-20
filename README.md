@@ -86,3 +86,20 @@ checks heading/anchor semantics and horizontal overflow at 1440, 390 and 320px,
 and saves viewport screenshots under `/tmp/agenthub-<width>.png`. It does not
 publish the website. Review screenshots before deployment. GitHub Pages serves
 `main`, so pushing changes there publishes them.
+
+## Blog
+
+`blog/index.html` lists the published articles; each article is a plain HTML
+`blog/<slug>/index.html` using the existing local fonts and landing-page tokens
+plus `blog/blog.css`. Static HTML keeps articles readable and indexable without
+adding a framework or a client runtime. Update the homepage entry points and
+`sitemap.xml` when adding an article. Use its public directory URL as canonical.
+
+The first article is based on the reviewed marketing draft at commit b7f7809
+in `open-agenthub/marketing`, branch `marketing/blog-first-article`. Publication
+excludes internal editorial notes. It covers a proposed first experiment, not a
+customer result; installation and transfer facts were checked against the existing
+website guides. New release-sensitive statements require their own source check.
+
+Validate local links, canonical metadata and headings, then inspect desktop/mobile
+rendering. Publishing these routes does not establish Google indexing or rankings.
