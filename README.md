@@ -110,3 +110,8 @@ video keeps it usable without a third-party player or login. A public YouTube li
 can be added after the production uploader verifies it; never ship placeholder
 video IDs or embed a private review URL. The article distinguishes the actual
 PHP development-server lab from production PHP-FPM/Apache and an overnight run.
+
+The PHP article now offers its verified public YouTube video through a
+click-to-load player (`blog/youtube-player.js`), with the original native player
+as an alternative. No YouTube player request occurs until the reader loads it.
+Check the exact public video ID and the native caption fallback when editing.
