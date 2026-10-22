@@ -103,3 +103,10 @@ website guides. New release-sensitive statements require their own source check.
 
 Validate local links, canonical metadata and headings, then inspect desktop/mobile
 rendering. Publishing these routes does not establish Google indexing or rankings.
+
+The PHP security-update article at `blog/wordpress-php-security-update/` includes
+its exact reviewed MP4, local poster, English WebVTT and transcript. Native HTML
+video keeps it usable without a third-party player or login. A public YouTube link
+can be added after the production uploader verifies it; never ship placeholder
+video IDs or embed a private review URL. The article distinguishes the actual
+PHP development-server lab from production PHP-FPM/Apache and an overnight run.
