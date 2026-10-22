@@ -1,0 +1,130 @@
+WEBVTT
+
+00:00:00.100 --> 00:00:05.395
+A WordPress update won't fix this PHP
+flaw. Can we patch the runtime and
+
+00:00:05.395 --> 00:00:10.395
+prove the site still works? This is a
+disposable lab rehearsal, with
+
+00:00:10.395 --> 00:00:13.189
+synthetic data, not a customer rescue.
+
+00:00:13.337 --> 00:00:18.306
+PHP's October twenty-first security
+release fixes two critical remote
+
+00:00:18.306 --> 00:00:22.915
+code execution vulnerabilities. WordPress
+says no core update is
+
+00:00:22.915 --> 00:00:28.028
+required for these issues. Check your
+host's advisory: vendor backports
+
+00:00:28.028 --> 00:00:30.476
+may use different package numbers.
+
+00:00:30.692 --> 00:00:36.088
+In this demonstration I first take the
+test site offline. A static gate
+
+00:00:36.088 --> 00:00:40.952
+returns five oh three before PHP receives
+the request. WordPress
+
+00:00:40.952 --> 00:00:46.349
+maintenance mode alone would still run
+PHP. Private review access stays
+
+00:00:46.349 --> 00:00:47.033
+separate.
+
+00:00:47.261 --> 00:00:52.323
+The starting web runtime is PHP eight
+point three point thirty-five. I
+
+00:00:52.323 --> 00:00:57.385
+back up the site files and database, then
+restore both into a separate
+
+00:00:57.385 --> 00:01:02.230
+disposable target. A backup that has never
+been restored is still a
+
+00:01:02.230 --> 00:01:03.026
+hypothesis.
+
+00:01:03.242 --> 00:01:07.760
+The restore checks every table's rows and
+the extracted files. Then the
+
+00:01:07.760 --> 00:01:12.342
+replacement runtime serves PHP eight point
+three point thirty-six, while
+
+00:01:12.342 --> 00:01:16.605
+WordPress stays at seven point one point
+three. This lab uses PHP's
+
+00:01:16.605 --> 00:01:20.805
+development server; production hosts must
+restart their actual web
+
+00:01:20.805 --> 00:01:23.159
+workers and check every serving pool.
+
+00:01:23.414 --> 00:01:28.159
+Now check the website, not just the
+command line. I inspect Site Health,
+
+00:01:28.159 --> 00:01:32.905
+open a permalink, sign into admin, write
+and read a database record, and
+
+00:01:32.905 --> 00:01:37.651
+check media. The named theme and plugin
+are part of this test, not proof
+
+00:01:37.651 --> 00:01:39.957
+that every extension is compatible.
+
+00:01:40.155 --> 00:01:44.740
+There were harness corrections along the
+way; the source and logs record
+
+00:01:44.740 --> 00:01:49.324
+them. These checks show the patch and
+application behaviour. They cannot
+
+00:01:49.324 --> 00:01:53.845
+establish whether an earlier compromise
+occurred. Suspicious signs need
+
+00:01:53.845 --> 00:01:57.093
+investigation, and failed checks mean stay
+offline.
+
+00:01:57.284 --> 00:02:01.417
+The agent ran this rehearsal through an
+AgentHub session's tools. This
+
+00:02:01.417 --> 00:02:05.669
+is lab footage, not a recorded production
+maintenance session. A job can
+
+00:02:05.669 --> 00:02:09.684
+continue on a running server while I am
+away, provided it has scoped
+
+00:02:09.684 --> 00:02:13.758
+access to a reachable target. Human
+go-live review is still required.
+
+00:02:13.758 --> 00:02:17.891
+Subscribe for practical agent workflows:
+the brief, the build, and the
+
+00:02:17.891 --> 00:02:18.305
+checks.
