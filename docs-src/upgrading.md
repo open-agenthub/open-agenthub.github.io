@@ -43,6 +43,36 @@ helm upgrade agenthub agenthub/open-agenthub -n agenthub -f my-values.yaml
 That file holds secrets — database password, S3 keys, bot tokens — so keep it out of
 version control.
 
+## Installs without OIDC: the API key
+
+Releases up to 1.4.0 ran with no login at all when `oidc.authority` was empty, the chart
+default: every request was the admin user `dev`. Later releases require a login, and the backend
+**refuses to start** without one.
+
+A plain `helm upgrade` (with `-f`, `--reset-then-reuse-values` or `--reuse-values`) handles this
+for you. The chart generates an API key into the Secret `agenthub-api-key` and keeps it on every
+later upgrade. Because the release existed before the key, the key acts as `dev`, so your
+sessions, credentials and projects stay where they are. After the upgrade, read the key and
+enter it when the UI asks:
+
+```bash
+kubectl -n agenthub get secret agenthub-api-key -o jsonpath='{.data.api-key}' | base64 -d; echo
+```
+
+Scripts send it as `Authorization: Bearer <key>`. Personal API tokens and the remote MCP keep
+working; the MCP consent screen now asks for the key.
+
+- **GitOps (`helm template`)**: the chart cannot read the Secret back there, so a generated key
+  would change on every render. Create a Secret with a key of at least 32 characters, then set
+  `auth.apiKey.existingSecret=<name>` and, on an existing install, `auth.apiKey.owner=dev`.
+- **Rotating the key**: write a new value into the Secret's `api-key` and run
+  `kubectl -n agenthub rollout restart deployment/agenthub-backend`.
+- **Local development only**: `auth.insecureDevMode=true` restores the old open mode, with a
+  warning in the log and in the UI.
+
+Preview such an upgrade with `--dry-run=server`. With `--dry-run=client`, the chart cannot see
+the existing Secret and shows a key and owner it would not actually use.
+
 ## Checking what an upgrade will change
 
 A chart upgrade brings *every* change since the version you are on, not just the flag you
