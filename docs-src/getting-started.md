@@ -61,10 +61,20 @@ kubectl -n agenthub port-forward svc/agenthub-frontend 8080:80
 The quickstart prints this command with the right `--context`. The frontend proxies `/api`
 and `/ws` to the backend, so this one port-forward is all you need.
 
-### 2. Turn on authentication
+### 2. Sign in
 
-Authentication is **disabled by default**. That is fine for a first look on your laptop,
-and wrong for anything other people can reach.
+Without an OIDC provider, the chart generates a random API key into the Secret
+`agenthub-api-key`. The UI asks for it once per browser session, and it acts as the admin user
+`admin`. `helm status agenthub -n agenthub` prints the same command:
+
+```bash
+kubectl -n agenthub get secret agenthub-api-key -o jsonpath='{.data.api-key}' | base64 -d; echo
+```
+
+Scripts send it as `Authorization: Bearer <key>`. The backend refuses to start with no login
+configured at all; `auth.insecureDevMode=true` turns the login off, for local development only.
+
+For more than one person, use an OIDC provider; every user then signs in as themselves:
 
 ```bash
 helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-values \
