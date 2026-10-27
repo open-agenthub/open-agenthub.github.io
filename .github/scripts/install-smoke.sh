@@ -78,19 +78,38 @@ probe() {
 }
 
 # Since open-agenthub#324 an install without OIDC is guarded by an API key the chart generates
-# into this Secret: an anonymous read has to be refused, and the key has to get through. A 200
-# without the key would mean the install is open to anyone who can reach it. Charts from before
-# that change have no such Secret and no login at all; they still answer the anonymous read,
-# which keeps this script usable for them until the release that adds the key is the oldest one
-# tested here.
+# into the Secret agenthub-api-key: an anonymous read has to be refused, and the key has to get
+# through. A 200 without the key would mean the install is open to anyone who can reach it.
+#
+# Which rule applies is decided by the running backend (/api/config authMode), not by the chart.
+# A chart can generate the Secret while it still deploys a released backend from before the key,
+# which ignores it, and a chart-only check would then fail every chart PR until the new images
+# exist. A backend without authMode is such an older one, and there was no login then.
+config_url="http://$RELEASE-backend.$NS.svc.cluster.local/api/config"
+config=''
+for attempt in 1 2 3 4 5 6; do
+  config="$($KCTL run "smoke-config-$attempt-$$" --rm -i --restart=Never --quiet \
+    --image=curlimages/curl:8.11.1 --command -- curl -s --max-time 20 "$config_url" 2>/dev/null || true)"
+  case "$config" in *'"version"'*) break ;; esac
+  sleep 5
+done
+case "$config" in *'"version"'*) ;; *) fail "the backend never answered $config_url" ;; esac
 api="http://$RELEASE-backend.$NS.svc.cluster.local/api/sessions"
-if $KCTL get secret agenthub-api-key >/dev/null 2>&1; then
-  probe backend-anonymous "$api" 401
-  probe backend "$api" 200 agenthub-api-key
-else
-  say "no agenthub-api-key Secret: chart from before the API key, expecting an open API"
-  probe backend "$api" 200
-fi
+case "$config" in
+  *'"authMode":"apiKey"'*)
+    $KCTL get secret agenthub-api-key >/dev/null 2>&1 || fail "the backend wants an API key, but there is no agenthub-api-key Secret"
+    probe backend-anonymous "$api" 401
+    probe backend "$api" 200 agenthub-api-key
+    ;;
+  *'"authMode"'*)
+    # insecureDev or oidc: the quickstart sets neither, so either one means it is broken.
+    fail "the quickstart backend is not in API-key mode: $(printf '%s' "$config" | sed -n 's/.*"authMode":"\([a-zA-Z]*\)".*/\1/p')"
+    ;;
+  *)
+    say "backend from before the API key (no authMode): expecting the old open API"
+    probe backend "$api" 200
+    ;;
+esac
 probe frontend "http://$RELEASE-frontend.$NS.svc.cluster.local/" 200
 
 say "all checks passed"
