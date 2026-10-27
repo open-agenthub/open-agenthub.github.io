@@ -221,11 +221,8 @@ Say ''
 Say "done! Open AgentHub is running at $AppUrl"
 Say ''
 Say 'next steps:'
-# The command only, never the key: this output ends up in terminals, CI logs and screenshots.
-Say '  1. Sign in with the API key the chart generated (the UI asks once per browser session):'
-Say "       kubectl --context $Context -n $Namespace get secret agenthub-api-key -o jsonpath='{.data.api-key}' | ForEach-Object { [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(`$_)) }"
-Say '     For more than one person, use your OIDC provider instead:'
-Say "       helm --kube-context $Context upgrade agenthub $Chart -n $Namespace --reset-then-reuse-values --set oidc.authority=https://<provider>/realms/<realm>"
+Say '  1. Auth is DISABLED by default (dev mode). Enable your OIDC provider:'
+Say "       helm --kube-context $Context upgrade agenthub $Chart -n $Namespace --reuse-values --set oidc.authority=https://<provider>/realms/<realm>"
 Say '  2. In the UI: store your credentials, start your first session.'
 Say '  3. For a real deployment, put it behind your own host + TLS:'
 Say '       https://github.com/open-agenthub/open-agenthub'
