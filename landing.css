@@ -778,3 +778,8 @@ code {
 .workflow-link { margin: 8px 0 0; font-size: 13px; }
 .workflow-link a { display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
 .trust-strip p { text-align: center; }
+
+/* Real workflow examples: no third-party player loads on the homepage. */
+.proof-hero{transform:none;overflow:hidden}.proof-hero>a{display:block}.proof-hero img{display:block;width:100%;height:auto}.proof-play{display:block;padding:18px 20px;color:var(--accent);font-weight:600}.proof-hero figcaption{font-size:10px}
+.example-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.example-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);min-width:0}.example-image{display:block}.example-image img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:#0b1210}.example-copy{padding:28px}.example-copy .eyebrow{margin-bottom:14px}.example-copy h3{font-size:28px;margin-top:0}.example-copy p{font-size:14px;color:var(--muted)}.example-copy .example-result{color:var(--text)}.example-copy .example-limit{font-size:12px}.check-example{margin-top:24px;padding:28px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px}.check-example h3{margin-top:0}.check-example p:not(.eyebrow){max-width:800px;color:var(--muted);font-size:14px}.examples-section{border-bottom:1px solid var(--line)}
+@media(max-width:760px){.example-grid{grid-template-columns:1fr}.example-copy,.check-example{padding:22px}.example-copy h3{font-size:25px}.hero h1{font-size:clamp(38px,8vw,56px)}}
