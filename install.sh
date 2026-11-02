@@ -11,6 +11,7 @@
 # to ~6 users).
 #
 # Optional environment variables:
+#   AGENTHUB_K3S_VERSION=<ver>   override the tested Linux k3s version
 #   AGENTHUB_KUBE_CONTEXT=<ctx>  deploy into this existing kubectl context instead
 #   AGENTHUB_OBJECT_STORAGE=0    skip the bundled object storage (not recommended)
 #   AGENTHUB_CHART=<ref>         chart to install (default: agenthub/open-agenthub)
@@ -21,6 +22,7 @@ NAMESPACE="agenthub"
 CHART="${AGENTHUB_CHART:-agenthub/open-agenthub}"
 OBJECT_STORAGE="${AGENTHUB_OBJECT_STORAGE:-1}"
 CTX="${AGENTHUB_KUBE_CONTEXT:-}"
+K3S_VERSION="${AGENTHUB_K3S_VERSION:-v1.36.5+k3s1}"
 
 say()  { printf '\033[1;33m[open-agenthub]\033[0m %s\n' "$*"; }
 fail() { printf '\033[1;31m[open-agenthub] ERROR:\033[0m %s\n' "$*" >&2; exit 1; }
@@ -77,8 +79,8 @@ elif [ "$OS" = "Linux" ]; then
   if command -v kubectl >/dev/null 2>&1 && kubectl cluster-info >/dev/null 2>&1; then
     fail "kubectl already reaches a cluster (context \"$(kubectl config current-context)\"). Deploy into it explicitly with AGENTHUB_KUBE_CONTEXT=<context>, or use the Helm instructions in the README."
   fi
-  say "installing k3s (single node)"
-  curl -fsSL https://get.k3s.io | $SUDO sh -s - --write-kubeconfig-mode 644
+  say "installing k3s $K3S_VERSION (single node)"
+  curl -fsSL https://get.k3s.io | $SUDO env INSTALL_K3S_VERSION="$K3S_VERSION" sh -s - --write-kubeconfig-mode 644
   export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
   CTX=default
 else
