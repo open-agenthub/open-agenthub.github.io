@@ -139,3 +139,26 @@ session), `!sessions`, `!use <tag>`, `!status`.
 
 A browser notification when a session waits for input or finishes. Enable it per device
 under **Settings → Notifications** — no cluster configuration needed.
+
+## Values masked in session output
+
+Masking is automatic; session owners do not need to enable it. Before a session's hook message
+is sent to a chat integration, AgentHub replaces the session's file and environment secrets,
+its callback token, and credential values in its inline MCP configuration. This includes custom
+header and environment values, authorization tokens, complete URLs, and URL usernames,
+passwords and query values in their encoded and decoded forms. The replacement appears as
+`[secret:NAME]`, `[secret:AGENTHUB_CALLBACK_TOKEN]` or `[secret:MCP]`.
+
+The same values are masked in transcript and scrollback uploads, live conversation history and
+terminal reconnect replay. Commands and arguments remain readable. Owners and collaborators
+with terminal access still see the normal live terminal and their own input echo. Shared
+conversation history also masks these credentials, using `[redacted]`.
+
+Values shorter than eight characters are left unchanged to keep ordinary output readable.
+Masking matches literal values, their JSON-escaped form and long enough individual lines;
+it does not cover arbitrary transformations or other encodings. Existing stored transcripts
+are not rewritten. Keep credentials out of prompts and output where possible.
+
+This behavior is included in the free core for the session runtime, Telegram and Signal hooks.
+Slack hooks and shared session history require Enterprise. The same rules apply regardless of
+who reads the delivered history; terminal access still follows the session's role permissions.
