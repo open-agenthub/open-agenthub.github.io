@@ -69,7 +69,12 @@ sandbox" in the terminal. Answer tool permission requests in the Workspace with 
 **Deny**, or in a linked chat. The session's tool policy still applies, and changing
 [auto approve](/auto-approve) takes effect while Codex is running.
 
-AgentHub is the approval surface for Codex. An unanswered request or an unavailable approval
+AgentHub is the approval surface for Codex. Interactive Codex normally waits up to **30 minutes**
+for your answer; an administrator can shorten that runtime window. Unattended sessions retain
+a four-minute wait. If nobody answers in time, the tool result says so and you can ask the agent
+to try again.
+
+An unanswered request or an unavailable approval
 service blocks the tool instead of handing the decision to another terminal menu. Brief service
 interruptions are retried when checking policy or polling an existing request. If approval still
 cannot be reached, the tool result explains that it was denied and can be retried. Ask the agent
