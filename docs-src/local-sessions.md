@@ -53,7 +53,8 @@ Open the session and choose **⇩ Continue locally**.
 
 Each command contains a **single-use link that expires after 15 minutes**. It works once, for
 this session and this direction only; create a new command if it expired. Treat it like a
-password until it is used: anyone with the link can download the conversation.
+password until it is used: anyone with the command can download the conversation. The secret is
+sent in a request header, so it does not show up in proxy or ingress access logs.
 
 ### With the remote MCP endpoint
 
