@@ -44,7 +44,7 @@ Type in **Give your agent a task…** and press **Enter** to send (**Shift+Enter
 - **Suggestions:** when the CLI predicts your next message, it appears greyed out in the input.
   **→** or **Tab** accepts it into your draft; you still send it yourself. Typing dismisses it.
 - **Attachments:** paste an image, drop files onto the composer, or use **＋ Attach files**. The
-  files are uploaded to the session's files and the agent receives them with your
+  files are uploaded to the session's [files](/files) and the agent receives them with your
   message; images show as thumbnails in the conversation.
 - **◼ Stop** interrupts the agent's current turn.
 
@@ -75,11 +75,11 @@ Built-in tools inside a session.
 
 The session bar opens companion panes beside the conversation:
 
-- **Files**: the session's files, with previews. See Session files.
+- **Files**: the session's files, with previews. See [Session files](/files).
 - **Changes**, a view inside the Files pane: a per-file Git diff of the agent's work in the
   repositories under the workspace. It needs a running session.
 - **Browser**: the integrated browser, once the agent has started it. See
-  Integrated browser.
+  [Integrated browser](/browser).
 
 Drag the separator between the conversation and the pane to resize it between 25 % and 75 %; with
 the keyboard, focus the separator and use the arrow keys. On a phone the panes take turns with the

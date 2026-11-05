@@ -65,9 +65,9 @@ Where requests are raised depends on the agent:
 Two other kinds of request appear in the same place:
 
 - **Network ports:** *The agent asks to open network port …* when the agent wants to accept or make
-  a connection on a port that is closed by default. See Network ports.
+  a connection on a port that is closed by default. See [Network ports](/network-ports).
 - **Secrets:** a banner when the agent asks for a secret with `secret_request`, with a link to the
-  form where you enter the value. See Secrets.
+  form where you enter the value. See [Secrets](/secrets#when-an-agent-asks-for-a-secret).
 
 ### The account email check
 

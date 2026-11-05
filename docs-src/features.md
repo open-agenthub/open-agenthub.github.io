@@ -62,6 +62,23 @@ Roles used on these pages:
 | Session-wide MCP restrictions | Enterprise | Owner | [Sharing](/sharing#mcp-restrictions-for-the-whole-session) |
 | Manage shares over the API and MCP | Enterprise | Owner | [Sharing](/sharing#managing-shares-from-an-api-client) |
 
+## Files, browser, secrets and skills
+
+| Feature | Edition | Who | Page |
+| --- | --- | --- | --- |
+| Files pane: upload, previews, download | Community | Owner, Collaborator; Viewer reads | [Session files](/files) |
+| Delete session files | Community; Collaborators need Enterprise sharing | Owner, Collaborator | [Session files](/files#deleting-a-file) |
+| Files from the agent, presenting a file | Community | Agent | [Session files](/files#files-from-the-agent) |
+| Project files shared between sessions | Community | Agent | [Session files](/files#sharing-files-between-sessions-of-a-project) |
+| Integrated browser, clipboard | Community | Owner, Collaborator; Viewer watches | [Integrated browser](/browser) |
+| Preview a page served from the session | Community | Owner | [Previewing a page](/preview) |
+| Pop the browser out, drag tear-off | Community | Owner, Collaborator, Viewer | [Integrated browser](/browser#pop-out-into-its-own-window) |
+| Network port requests | Community | Agent asks, owner approves | [Network ports](/network-ports) |
+| Secret store, project selection, session grants | Community | Owner | [Secrets](/secrets) |
+| Secret requests from the agent | Community | Agent asks, owner answers | [Secrets](/secrets#when-an-agent-asks-for-a-secret) |
+| Skill library, versions, live sync | Community | Everyone | [Skill library](/skills) |
+| Share and publish skills | Enterprise | Admin; users if allowed | [Skill library](/skills#sharing-skills-enterprise) |
+
 ## Integrations and other topics
 
 | Feature | Edition | Who | Page |
@@ -72,4 +89,3 @@ Roles used on these pages:
 | GitHub and GitLab tokens and OAuth connections | Community | Owner, operator | [Git](/git) |
 | External MCP clients (remote HTTP, stdio) | Community | Everyone | [MCP clients](/mcp) |
 | Continue a session on your workstation | Community | Owner | [Continue locally](/local-sessions) |
-| Preview a page served from the session | Community | Owner | [Previewing a page](/preview) |
