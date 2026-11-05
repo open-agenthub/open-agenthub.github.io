@@ -49,7 +49,7 @@ repositories and prompts you trust while credentials are present.
 | **Task** | Required for Autonomous and Scheduled; an optional first message for an Interactive Workspace session. |
 | **System prompt** | Standing rules appended to the agent's own instructions. |
 | **Project** | Puts the session in a [project](/projects); **New project…** creates one on the spot. |
-| **Secrets** | Which stored secrets this session receives. |
+| **Secrets** | Which stored [secrets](/secrets) this session receives. |
 | **Repositories** | One or more repositories to clone into the workspace, and which [git tokens](/git) the session gets. |
 | **Auto-delete** | Delete the session on its own after a number of hours or days, counted from its start or from its last activity. |
 | **Advanced** | Tool policy, MCP servers, container image, resources, **Run as root**, **Auto approve**. |
@@ -102,7 +102,7 @@ Open **Edit session** from the session list or the session header.
 
 **Pause** stops the pod and keeps the conversation; **Resume** starts a new pod and continues it.
 The workspace directory itself is not kept across a pause: push your work with git or save files
-to the session's files.
+to the session's [files](/files).
 
 ## Duplicate a session
 

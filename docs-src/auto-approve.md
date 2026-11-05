@@ -34,7 +34,7 @@ unattended — combine the two only for a container you would have handed over a
 UI warns when both are on.
 
 What does not change: the session's own container is still the boundary. Network policies,
-the unprivileged pod spec, and the per-user secret mounts all still apply, so the blast
+the unprivileged pod spec, and the per-session secret copies all still apply, so the blast
 radius stays that one container. Auto approve grants nothing outside it.
 
 A reasonable rule of thumb:

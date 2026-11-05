@@ -37,8 +37,18 @@ export default defineConfig({
           { text: 'Questions and approvals', link: '/questions-approvals' },
           { text: 'Auto approve', link: '/auto-approve' },
           { text: 'Provider login', link: '/provider-login' },
-          { text: 'Continue locally', link: '/local-sessions' },
-          { text: 'Previewing a page', link: '/preview' }
+          { text: 'Continue locally', link: '/local-sessions' }
+        ]
+      },
+      {
+        text: 'Files and tools',
+        items: [
+          { text: 'Session files', link: '/files' },
+          { text: 'Integrated browser', link: '/browser' },
+          { text: 'Previewing a page', link: '/preview' },
+          { text: 'Network ports', link: '/network-ports' },
+          { text: 'Secrets', link: '/secrets' },
+          { text: 'Skill library', link: '/skills' }
         ]
       },
       {

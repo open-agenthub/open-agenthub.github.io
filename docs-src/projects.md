@@ -27,7 +27,7 @@ Each project header in the sidebar has these controls:
 | **↑ / ↓** (Move up, Move down) | Change the order of the projects |
 | **✎** (Rename) | Rename the project |
 | **●** (Color) | Pick a colour for the project marker |
-| **⚿** (Secrets) | Choose which stored secrets the project's sessions receive, see Secrets |
+| **⚿** (Secrets) | Choose which stored secrets the project's sessions receive, see [Secrets](/secrets) |
 | **⇪** (Share project) | Share the project with a user or group (Enterprise), see [Sharing](/sharing) |
 | **×** (Delete project) | Delete the project; its sessions stay, ungrouped |
 
@@ -37,9 +37,9 @@ Click the project name to collapse or expand it.
 
 - **Secrets:** the project's secret selection is the default for every session in it and for the
   child sessions they start in it. A session can narrow the selection or receive extra grants of
-  its own. See Secrets.
+  its own. See [Secrets](/secrets).
 - **Files:** sessions of one project can list and fetch each other's files. See
-  Session files.
+  [Session files](/files).
 - **A fleet:** sessions of one project can list each other and send each other messages with the
   built-in tools. The session **Description** tells the other agents what a session is for. See
   Built-in tools inside a session.
@@ -95,5 +95,5 @@ until the move is finished.
 ## Related pages
 
 - [Sessions](/sessions)
-- Secrets
+- [Secrets](/secrets)
 - [Sharing](/sharing) (Enterprise)
