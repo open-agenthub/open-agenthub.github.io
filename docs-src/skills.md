@@ -107,4 +107,4 @@ licence these controls show a licence notice instead.
 | `skillLibrary.embeddings.model` | `""` | The embedding model to request |
 | `skillLibrary.embeddings.apiKey` | `""` | Key for that endpoint |
 
-See Chart values.
+See [Chart values](/chart-values).

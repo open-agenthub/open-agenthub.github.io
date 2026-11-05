@@ -22,7 +22,7 @@ the session is paused, finishes or is deleted.
 
 Claude Code, Codex and OpenCode sessions get the built-in `agenthub_browser` MCP server; a user MCP
 configuration cannot replace it. The Cursor and OpenClaw runtime images do not ship it, so those
-sessions have no integrated browser.
+sessions have no integrated browser. The OpenClaw gap is tracked in [#439](https://github.com/open-agenthub/open-agenthub/issues/439).
 
 | Tool | What it does |
 | --- | --- |
@@ -123,4 +123,4 @@ The browser is on by default (`browser.enabled: true`) and costs nothing until u
 | `browser.extraEgressPorts` | `[]` | Destination ports beyond 80/443 |
 | `browser.previewPorts` | `[3000, 4173, 5173, 8000, 8080]` | Session ports the browser may open |
 
-More in Chart values.
+More in [Chart values](/chart-values).
