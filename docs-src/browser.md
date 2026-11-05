@@ -20,9 +20,11 @@ the session is paused, finishes or is deleted.
 
 ### The agent's browser tools
 
-Claude Code, Codex and OpenCode sessions get the built-in `agenthub_browser` MCP server; a user MCP
-configuration cannot replace it. The Cursor and OpenClaw runtime images do not ship it, so those
-sessions have no integrated browser. The OpenClaw gap is tracked in [#439](https://github.com/open-agenthub/open-agenthub/issues/439).
+Claude Code, Codex, OpenCode and OpenClaw sessions get the built-in `agenthub_browser` MCP server;
+a user MCP configuration cannot replace it. The Cursor runtime image does not ship it, so Cursor
+sessions have no integrated browser. OpenClaw has it since
+[#439](https://github.com/open-agenthub/open-agenthub/issues/439); an OpenClaw session on an older
+runtime image has no integrated browser.
 
 | Tool | What it does |
 | --- | --- |
