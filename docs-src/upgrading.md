@@ -223,3 +223,41 @@ covers and more. Run it even if you already ran the 1.3.0 one; a repeat run is s
 
 The cleanup does not reach values running processes already loaded, copies a CLI made itself,
 or your storage's object-version history and backups. Assess those separately.
+
+## Shared protection keys and secret recovery
+
+**Community and Enterprise · operator and affected secret owner.** For the release containing
+[issue #458](https://github.com/open-agenthub/open-agenthub/issues/458), the Helm chart supplies
+a stable wrapping Secret for a shared Postgres key ring. Use a values file so the new chart
+defaults arrive. For offline/declarative rendering, configure
+[`dataProtection.existingSecret`](/chart-values#shared-protection-keys) before upgrading.
+
+**Values encrypted before the update with keys that are already lost need to be entered
+again.** The update cannot recover a lost key. Unreadable values are retained, and list pages
+remain available:
+
+- In **Library → MCP servers**, a secret-unavailable hint tells the owner to edit the entry
+  and re-enter the secret. Administrators repair organisation catalog entries. A configured
+  secret remains marked as present until explicitly replaced or cleared.
+- In webhook settings, an affected trigger shows a recovery hint. Recreate it, then update
+  the delivery URL and secret in the repository's webhook settings. An administrator can
+  instead restore the original keys before you recreate anything.
+- Register affected session API sources again with their secrets. Restart sessions to get
+  new gateway tokens, and repeat any pending storage-cleanup dry run.
+
+The backend logs the number of unreadable stored secrets and recovery instructions. Operations
+that need an unreadable secret fail clearly until repaired. Editing an MCP server without
+supplying a new secret preserves the existing encrypted value.
+
+If old file keys are still available, retain/export them **before replacing the old pods**.
+The backend automatically attempts migration from the surviving default HOME key directory.
+For an exported ring, mount it read-only and configure `DataProtection__LegacyKeysDirectory`
+and `DataProtection__LegacyApplicationName` to the exact original application discriminator
+(the old content-root path, normally including its trailing directory separator). Successfully
+readable values are rewritten using the shared ring. Old transient tokens are reissued rather
+than migrated. When several old pods had separate rings, preserve each export and migrate
+with each original ring; a single export cannot recover another pod's lost keys.
+
+Afterward, include both the database and wrapping Secret in your backup/restore procedure.
+Do not delete or regenerate the Secret when retaining the database. A wrong/missing wrapping
+identity stops backend startup rather than replacing the ring.
