@@ -33,6 +33,7 @@ export default defineConfig({
           { text: 'Provider login', link: '/provider-login' },
           { text: 'Continue locally', link: '/local-sessions' },
           { text: 'Auto approve', link: '/auto-approve' },
+          { text: 'Sharing a session', link: '/sharing' },
           { text: 'Previewing a page', link: '/preview' }
         ]
       },
