@@ -6,7 +6,7 @@ can find and message each other. This page covers creating projects, ordering an
 sessions, and finding them again.
 
 **Edition:** Community · **Who:** the project owner. Sharing a whole project with other people is
-an Enterprise feature, see Sharing.
+an Enterprise feature, see [Sharing](/sharing#share-a-whole-project).
 
 ## Create a project
 
@@ -28,7 +28,7 @@ Each project header in the sidebar has these controls:
 | **✎** (Rename) | Rename the project |
 | **●** (Color) | Pick a colour for the project marker |
 | **⚿** (Secrets) | Choose which stored secrets the project's sessions receive, see Secrets |
-| **⇪** (Share project) | Share the project with a user or group (Enterprise), see Sharing |
+| **⇪** (Share project) | Share the project with a user or group (Enterprise), see [Sharing](/sharing) |
 | **×** (Delete project) | Delete the project; its sessions stay, ungrouped |
 
 Click the project name to collapse or expand it.
@@ -96,4 +96,4 @@ until the move is finished.
 
 - [Sessions](/sessions)
 - Secrets
-- Sharing (Enterprise)
+- [Sharing](/sharing) (Enterprise)

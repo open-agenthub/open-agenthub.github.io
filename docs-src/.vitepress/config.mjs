@@ -42,6 +42,12 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Collaboration',
+        items: [
+          { text: 'Sharing (Enterprise)', link: '/sharing' }
+        ]
+      },
+      {
         text: 'Integrations',
         items: [
           { text: 'Chat (Telegram & Signal)', link: '/chat' },

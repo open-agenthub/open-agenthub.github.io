@@ -5,7 +5,7 @@ network policy and credentials. This page covers creating a session, the choices
 **New session** dialog, and what you can change while it runs.
 
 **Edition:** Community · **Who:** the session owner. People a session is
-shared with (Enterprise) can watch or type, but cannot change its settings.
+[shared](/sharing) with (Enterprise) can watch or type, but cannot change its settings.
 
 ## Session modes
 
@@ -161,4 +161,4 @@ Built-in tools inside a session.
 - [Projects](/projects): grouping, ordering and moving sessions
 - [Workspace](/workspace): the conversation view
 - [Questions and approvals](/questions-approvals)
-- Sharing (Enterprise)
+- [Sharing](/sharing) (Enterprise)

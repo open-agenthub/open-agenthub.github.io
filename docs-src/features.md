@@ -50,6 +50,18 @@ Roles used on these pages:
 | Auto approve | Community | Owner | [Auto approve](/auto-approve) |
 | Sign in to an agent provider | Community | Owner | [Provider login](/provider-login) |
 
+## Sharing (Enterprise)
+
+| Feature | Edition | Who | Page |
+| --- | --- | --- | --- |
+| Share a session with a named user, as Viewer or Collaborator | Enterprise | Owner | [Sharing](/sharing#share-with-a-named-user) |
+| Share links with role and expiry | Enterprise | Owner | [Sharing](/sharing#share-links) |
+| Child sessions inherit the parent's share | Enterprise | Owner | [Sharing](/sharing#child-sessions-inherit-the-share) |
+| Share a whole project with a user or group | Enterprise | Project owner | [Sharing](/sharing#share-a-whole-project) |
+| “Shared with me” in the session list | Enterprise | Viewer, Collaborator | [Sharing](/sharing#shared-with-me) |
+| Session-wide MCP restrictions | Enterprise | Owner | [Sharing](/sharing#mcp-restrictions-for-the-whole-session) |
+| Manage shares over the API and MCP | Enterprise | Owner | [Sharing](/sharing#managing-shares-from-an-api-client) |
+
 ## Integrations and other topics
 
 | Feature | Edition | Who | Page |

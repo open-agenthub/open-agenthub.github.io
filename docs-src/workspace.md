@@ -6,7 +6,7 @@ files, the Changes view and the integrated browser, and a terminal drawer when y
 agent's own console.
 
 **Edition:** Community · **Who:** the session owner. A Collaborator on a
-shared session (Enterprise) can read and write messages too; a Viewer can only read.
+[shared session](/sharing) (Enterprise) can read and write messages too; a Viewer can only read.
 
 ## Workspace or Terminal
 

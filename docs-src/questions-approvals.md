@@ -5,7 +5,7 @@ some free text, such as which of two approaches to take. Or it **asks for permis
 tool. This page explains where both appear, who can answer, and how to reduce the interruptions.
 
 **Edition:** Community · **Who:** the session owner answers permission requests. A Collaborator
-on a shared session (Enterprise) can answer questions too, but not permission
+on a [shared session](/sharing) (Enterprise) can answer questions too, but not permission
 requests. Members of a linked Telegram group can answer from the chat (see [Chat](/chat)).
 
 ## Questions from the agent
