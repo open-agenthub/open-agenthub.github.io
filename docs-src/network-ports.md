@@ -121,4 +121,4 @@ works around it.
 so reaching an API server grants nothing without a kubeconfig the session was given deliberately.
 
 To open a port for **every** session without asking, use `agent.extraEgressPorts`; for the
-browser, `browser.extraEgressPorts` and `browser.previewPorts`. See Chart values.
+browser, `browser.extraEgressPorts` and `browser.previewPorts`. See [Chart values](/chart-values).
