@@ -23,18 +23,38 @@ export default defineConfig({
       {
         text: 'Getting started',
         items: [
+          { text: 'Feature overview', link: '/features' },
           { text: 'Install', link: '/getting-started' },
           { text: 'Upgrading', link: '/upgrading' }
         ]
       },
       {
-        text: 'Running sessions',
+        text: 'Working with sessions',
         items: [
-          { text: 'Provider login', link: '/provider-login' },
-          { text: 'Continue locally', link: '/local-sessions' },
+          { text: 'Sessions', link: '/sessions' },
+          { text: 'Projects', link: '/projects' },
+          { text: 'Workspace', link: '/workspace' },
+          { text: 'Questions and approvals', link: '/questions-approvals' },
           { text: 'Auto approve', link: '/auto-approve' },
-          { text: 'Sharing a session', link: '/sharing' },
-          { text: 'Previewing a page', link: '/preview' }
+          { text: 'Provider login', link: '/provider-login' },
+          { text: 'Continue locally', link: '/local-sessions' }
+        ]
+      },
+      {
+        text: 'Files and tools',
+        items: [
+          { text: 'Session files', link: '/files' },
+          { text: 'Integrated browser', link: '/browser' },
+          { text: 'Previewing a page', link: '/preview' },
+          { text: 'Network ports', link: '/network-ports' },
+          { text: 'Secrets', link: '/secrets' },
+          { text: 'Skill library', link: '/skills' }
+        ]
+      },
+      {
+        text: 'Collaboration',
+        items: [
+          { text: 'Sharing (Enterprise)', link: '/sharing' }
         ]
       },
       {
