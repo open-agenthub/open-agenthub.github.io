@@ -22,6 +22,7 @@ agent in a session, acting for the session owner
 Not every runtime image ships every server: `agenthub_files`, `agenthub_network` and
 `skill-library` are in all five; `agenthub_sessions` is in the Claude, Codex, Cursor and OpenCode
 images but not OpenClaw's; `agenthub_browser` only in Claude, Codex and OpenCode.
+The missing session and browser tools in OpenClaw are tracked in [#439](https://github.com/open-agenthub/open-agenthub/issues/439).
 
 **Scheduled sessions** get none of the `agenthub_sessions`, `agenthub_network` and
 `agenthub_browser` tools. `agenthub_sessions` is on by default. Operators can turn it off
