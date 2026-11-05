@@ -65,8 +65,13 @@ The two kinds of entry handle credentials very differently:
 
 ::: warning
 Treat a literal token in a raw config as handed to the agent. If you share a raw entry with
-other users, their sessions get the token too. Prefer **From API URL** for an API with a
-secret. Otherwise use a token with narrow permissions that you can revoke.
+other users, their sessions get the token too. Recipients cannot see the values in the UI,
+but their agents can read them from the session's MCP config. The raw-entry editor and
+**Sharing** control warn when header or environment values are literal; the warning does
+not block saving or sharing and does not change delivery. Prefer **From API URL** for an
+API with a secret, or a secret reference supported by the selected agent. The hub copies
+raw references unchanged; the agent must support resolving them. Otherwise use a token
+with narrow permissions that you can revoke.
 :::
 
 ## Org MCP catalog (admins)
