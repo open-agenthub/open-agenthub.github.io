@@ -110,9 +110,9 @@ already pending.
 
 ### `/login` is unavailable in the Workspace interface
 
-On 1.0.0-rc.1, select the **Terminal** interface preference, then create an Interactive
-session and complete the provider's own login there. An existing Workspace chat session
-may have no Terminal tab. See [Provider login](/provider-login) for the commands.
+This happened on 1.0.0-rc.1, where a Workspace session could lack a terminal. Since 1.1.0,
+Claude Code and Codex show a sign-in card in the Workspace, and every agent can sign in through
+**⌘ Agent terminal**. Update to a current release; see [Provider login](/provider-login).
 
 ## Local continuation and MCP
 
