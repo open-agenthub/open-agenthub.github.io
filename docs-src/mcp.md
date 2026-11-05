@@ -1,8 +1,8 @@
 # Connect an MCP client
 
 An external MCP client can create sessions, read their transcripts, and send messages to
-your agents. Choose remote HTTP with browser sign-in, or a local stdio process with a
-personal API token. Both expose the same tool names.
+your agents. Prefer remote HTTP with browser sign-in; use a local stdio process with a
+personal API token when your client needs a local process. Both expose the same tool names.
 
 ## Remote HTTP
 
@@ -28,6 +28,12 @@ audience. The client and browser must be able to reach it.
 Allow `https://hub.example.com/connect/oidc-callback` as a redirect URI for your
 instance's OIDC client. This is separate from the web UI's `/auth/callback` URI.
 
+### Copy setup from Settings
+
+When enabled, **Settings → Connect to AgentHub** provides the instance's exact endpoint,
+a Claude Code command, a Claude Desktop connector URL and Cursor JSON, each with a copy
+button. Disabled endpoints show an `mcp.enabled` hint only to administrators.
+
 ### Connect and authenticate
 
 In Claude Code:
@@ -41,8 +47,26 @@ access. Other clients need remote HTTP transport and OAuth support; enter the sa
 in their MCP settings. Client registration is automatic, and the authorization flow uses PKCE.
 Tools act as the user who approved the client and follow the hub's access checks.
 
-On an instance without OIDC authentication, consent issues a token for the shared `dev`
-user. Configure instance authentication before exposing it to other people.
+**Claude Desktop:** open Settings → Connectors → Add custom connector. Use the name
+AgentHub and paste the remote MCP URL from the hub's Settings page. Connect and sign in
+in the browser. The connector service must be able to reach your instance URL.
+
+**Cursor:** paste the configuration from the hub into `~/.cursor/mcp.json` or the project's
+`.cursor/mcp.json`, then connect in MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "agenthub": { "url": "https://hub.example.com/mcp" }
+  }
+}
+```
+
+Without OIDC, API-key mode asks for the instance key on the browser consent screen. Only
+explicit insecure development mode skips login and issues a token for the shared `dev`
+user. The endpoint stays off by default because enabling it exposes an authorization
+server and anonymous client registration, and missing OIDC alone does not disable it.
+Enable it deliberately after configuring HTTPS and the identity-provider callback.
 
 ## Local stdio
 
