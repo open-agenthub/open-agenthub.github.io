@@ -46,6 +46,13 @@ token. The tab only appears when the operator has configured a git provider. See
 Provider logins and API keys for the agents, git tokens and your SSH key. Values are write-only:
 the page only shows whether something is stored. See [Provider login](/provider-login) and [Git](/git).
 
+## Connect to AgentHub
+
+Ready-to-paste setup for connecting an external MCP client to this hub over HTTP: the exact
+endpoint, a Claude Code command, a Claude Desktop connector URL and Cursor configuration, each with
+a copy button. The tab appears when the operator has enabled the remote MCP endpoint; admins always
+see it, with a hint when the endpoint is off. See [MCP clients](/mcp).
+
 ## Secrets, MCP servers and Skills
 
 - **Secrets**: named values delivered into sessions as files or environment variables. See
