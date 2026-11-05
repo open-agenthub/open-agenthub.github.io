@@ -46,11 +46,18 @@ session started with `!new`. Its thread opens at once.
 A reply to a session that is not running gets "Session is not running — cannot deliver the
 reply."
 
-::: warning
-Anyone who can post in the thread can answer the session and click the permission buttons.
-In your direct messages with the bot that is only you. If notifications go to a shared
-channel, every member of that channel can do it.
-:::
+### Who can answer
+
+Only the session's owner can reply in its thread, send `!status` or press the permission
+buttons. If the session is [shared](/sharing), its Collaborators can too; Viewers cannot.
+This matters when the thread is in a channel (a channel override, the fallback channel, or
+`!new` sent in a channel): everyone in the channel can read the thread, but nobody else can
+drive the session from it.
+
+The bot recognises you by your Slack profile email, which must belong to exactly one
+AgentHub user. Anyone else who replies or clicks gets a short note that only they can see,
+once per session, and nothing they sent reaches the session. A Slack user whose email
+matches no AgentHub account is told once how the matching works.
 
 ## Starting a session from Slack
 
@@ -96,7 +103,7 @@ for up to 30 days. After that, replies in them are ignored.
 | App-level token (`xapp-…`) | The Socket Mode connection |
 
 The bot token needs the permissions for these Slack methods: `chat.postMessage`,
-`chat.update`, `chat.delete`, `users.lookupByEmail`, `users.info` (including the email) and
+`chat.postEphemeral`, `chat.update`, `chat.delete`, `users.lookupByEmail`, `users.info` (including the email) and
 `conversations.open`. To receive replies and commands, the app has to subscribe to message
 events in direct messages and in the channels it should listen in. Permission buttons
 need interactivity turned on. This list comes from the methods the backend calls. It was not
