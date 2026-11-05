@@ -23,16 +23,21 @@ export default defineConfig({
       {
         text: 'Getting started',
         items: [
+          { text: 'Feature overview', link: '/features' },
           { text: 'Install', link: '/getting-started' },
           { text: 'Upgrading', link: '/upgrading' }
         ]
       },
       {
-        text: 'Running sessions',
+        text: 'Working with sessions',
         items: [
+          { text: 'Sessions', link: '/sessions' },
+          { text: 'Projects', link: '/projects' },
+          { text: 'Workspace', link: '/workspace' },
+          { text: 'Questions and approvals', link: '/questions-approvals' },
+          { text: 'Auto approve', link: '/auto-approve' },
           { text: 'Provider login', link: '/provider-login' },
           { text: 'Continue locally', link: '/local-sessions' },
-          { text: 'Auto approve', link: '/auto-approve' },
           { text: 'Previewing a page', link: '/preview' }
         ]
       },
