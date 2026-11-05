@@ -6,68 +6,98 @@ or session attachments. Check out the project locally first and download attachm
 
 | Agent | Continue locally | Return the local conversation to AgentHub |
 | --- | --- | --- |
-| Claude Code | Plugin: `pull`, then `claude --resume` | Plugin: `push`, with the hub session paused |
+| Claude Code | **Continue locally** in the web app, or the `session_take_local` MCP tool | The same dialog, or the `session_hand_back` MCP tool |
 | Codex | Skill: `pull`, then `codex resume` | Not implemented |
-| Other agents | No helper described here | No helper described here |
+| Other agents | Not available | Not available |
 
-The helpers live in the [plugins repository](https://github.com/open-agenthub/plugins),
-separately from the AgentHub release. Both read `AGENTHUB_URL` and `AGENTHUB_TOKEN`, or
-`~/.agenthub/cli.json`. Create a personal token in **Settings → API tokens**; its value
-starts with `oah_`. Configure it locally and keep it out of chat messages and screenshots.
-An [MCP connection](/mcp) does not automatically configure these download helpers.
+## Claude Code
 
-## Claude Code: install the plugin
+From Open AgentHub 1.17, a Claude Code session moves to your computer and back without a
+personal API token or a plugin. Three ways lead to the same result; pick the one that fits:
 
-Requires Node on your workstation and a local Claude Code installation. Run:
+| Way | What you need | Who writes the files |
+| --- | --- | --- |
+| **Continue locally** button on the session page | `curl`, `tar` (built into Linux, macOS, Windows 10+) | A command you paste into a terminal |
+| Remote MCP connection (OAuth sign-in) in your local Claude Code | The [built-in MCP endpoint](/mcp) | A command your local Claude Code runs |
+| [Stdio MCP server](/mcp#local-stdio) with a personal API token | A checkout of AgentHub and Node | The MCP server itself |
 
-```bash
-claude plugin marketplace add open-agenthub/plugins
-claude plugin install agenthub-sessions@open-agenthub
-```
+Only the session owner can take a session local or hand it back. It works in every edition.
 
-The plugin provides the **session-transfer** skill. Ask Claude Code to continue an AgentHub
-session locally, giving the hub session ID and the matching local project directory.
-The plugin version verified for this guide is **0.1.1** (MIT).
+### What happens
 
-### Configure and choose a session
+1. **Take it local.** AgentHub pauses the session: its pod saves the conversation and stops, so the
+   conversation is never answered in two places at once. Then it prepares the conversation for the
+   local directory you named and writes it to `~/.claude/projects/`, where `claude --resume` finds it.
+2. **Continue** with `claude --resume <id>` in that directory. Claude Code tells the model that the
+   working directory changed; the conversation, including tool results, is the same.
+3. **Hand it back.** Quit the local Claude Code first so the conversation is complete. AgentHub
+   stores the local conversation as the session's own and resumes the session in the hub with
+   every turn you took locally. Stop using the local copy afterwards.
 
-The following commands run in the plugin context, where `CLAUDE_PLUGIN_ROOT` points to
-`plugins/agenthub-sessions`. For manual use, replace that variable with the installed
-plugin's absolute path.
+The local directory should be a checkout of the same repository. The conversation moves, the
+code does not: commit and push your local changes as usual.
 
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/scripts/agenthub-session.mjs" login --url https://hub.example.com --token <personal-api-token>
-node "${CLAUDE_PLUGIN_ROOT}/scripts/agenthub-session.mjs" list
-```
+### In the web app
 
-### Pull and continue
+Open the session and choose **⇩ Continue locally**.
 
-Pause the hub session before continuing locally so two agents do not work on the same
-conversation. From your matching local checkout, run:
+1. Enter the **absolute** path of your local project directory, for example
+   `/home/me/project` or `C:\Users\me\project`. The browser remembers it for this session.
+2. Choose **bash / zsh** or **PowerShell**.
+3. Under **Take it local**, choose **Pause and create command** (or **Create command** when the
+   session is already paused), copy the command and run it in a terminal. It creates the
+   directory if needed, downloads and unpacks the conversation, and starts `claude --resume`.
+4. When you are done, quit Claude Code and, under **Hand it back**, choose **Create hand-back
+   command**. Leave **Resume the session after the upload** ticked to continue in the hub right
+   away. Run the command; it answers with the session's new state.
 
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/scripts/agenthub-session.mjs" pull <hub-session-id>
-```
+Each command contains a **single-use link that expires after 15 minutes**. It works once, for
+this session and this direction only; create a new command if it expired. Treat it like a
+password until it is used: anyone with the link can download the conversation.
 
-The helper rewrites the transcript's working-directory metadata for this checkout and
-prints a `claude --resume <id>` command. Run that command in a new local Claude Code
-session from the same directory. Use `--dir <path>` to choose another checkout explicitly.
-Existing local transcripts with different content are protected from overwriting.
+### With the remote MCP endpoint
 
-### Return to AgentHub
+With AgentHub's [remote MCP endpoint](/mcp) connected to your local Claude Code, ask for example
+*"take AgentHub session `a1b2c3` local into /home/me/project"*.
 
-Keep the hub session paused, finish your local work, then run from the same checkout:
+- `session_take_local` (`sessionId`, `directory`, `confirm`): without `confirm` it changes
+  nothing and lists what it would do, so Claude Code can ask you first. With `confirm` it pauses
+  the session and returns the link and the bash and PowerShell commands. Claude Code can run the
+  command in its shell; start `claude --resume` in a new terminal yourself.
+- `session_hand_back` (`sessionId`, `directory`, `resume`): returns the upload command.
 
-```bash
-node "${CLAUDE_PLUGIN_ROOT}/scripts/agenthub-session.mjs" local
-node "${CLAUDE_PLUGIN_ROOT}/scripts/agenthub-session.mjs" push <hub-session-id>
-```
+The remote endpoint runs in the hub and cannot write to your disk, which is why it answers with a
+command rather than writing the files.
 
-Verify that the local transcript belongs to the hub session you intend to replace. Push
-replaces the stored conversation while retaining the rest of the archived agent home.
-Resume the session in AgentHub afterwards. Uploads to a Running or Pending session are
-rejected with HTTP 409: a live pod would overwrite the upload when it next persists state.
-Repository changes must be transferred separately, for example through your normal Git workflow.
+### With the stdio MCP server
+
+The [stdio MCP server](/mcp#local-stdio) runs on your computer with a personal API token and writes the files
+itself, so there is no command to paste:
+
+- `session_take_local` (`sessionId`, `directory`, `confirm`, `overwrite`) pauses the session
+  (with `confirm`), writes the conversation and answers with the `resumeCommand` to run in a new
+  terminal. It honours `CLAUDE_CONFIG_DIR` if you set one.
+- `session_hand_back` (`sessionId`, `directory`, `resume`, `localSessionId`) packs and uploads
+  the local conversation and resumes the session. `localSessionId` picks another local
+  conversation, for example after `claude --resume --fork-session`.
+
+### Limits
+
+- The session needs a stored conversation, which it has once it has run.
+- A session running in the hub cannot be handed back: pause it first. The hub refuses, because
+  the running pod would overwrite the upload when it stops.
+- A conversation already on your computer with other content is **not** overwritten: the pasted
+  command stops at `tar`, the stdio tool answers `local_transcript_differs`. Hand that one back
+  first, or pass `overwrite` to the stdio tool if you want to discard it.
+- The links need **FrontendOrigin** to be set on the instance (the chart sets it); otherwise only
+  the stdio server works.
+- Session files and attachments are not part of the transfer; download them separately.
+
+### The plugin (earlier releases)
+
+Before 1.17, the [plugins repository](https://github.com/open-agenthub/plugins) offered the
+**agenthub-sessions** plugin with `pull` and `push` commands and a personal API token. It still
+works, but the steps above need neither the plugin nor a token in your shell.
 
 ## Codex: install and use the skill
 
@@ -75,7 +105,9 @@ Copy `codex/skills/agenthub-session-transfer` from the
 [plugins repository](https://github.com/open-agenthub/plugins/tree/main/codex/skills/agenthub-session-transfer)
 into your local Codex skills directory. The helper requires **Node 20+** and local Codex.
 Ask Codex to use **agenthub-session-transfer**, providing the hub session ID or URL and
-local checkout. If using the helper manually, replace `<skill-dir>` below with the installed
+local checkout. It reads `AGENTHUB_URL` and `AGENTHUB_TOKEN`, or `~/.agenthub/cli.json`; create a
+personal token in **Settings → API tokens** (it starts with `oah_`) and keep it out of chat messages.
+If using the helper manually, replace `<skill-dir>` below with the installed
 skill's absolute path. Configure the hub URL and personal token locally first.
 
 ```bash
@@ -98,15 +130,19 @@ skills. Desktop sidebar discovery may require opening the imported thread throug
 
 | Message or symptom | Next step |
 | --- | --- |
-| Not configured | Set the hub URL and personal API token locally. |
-| HTTP 401 | Check whether the personal token is valid and has not been revoked. |
-| No stored state | The session needs an archived run; a never-started session has nothing to transfer. |
-| No compatible transcript | Use the helper matching the session's agent. |
-| Several transcripts | Inspect the choices and pass `--session <id>`. |
-| Claude cannot determine the remote directory | Pass `--remote-cwd <path>` with the pod's working directory. |
-| Push returns HTTP 409 | Pause the hub session and wait for it to stop before retrying. |
+| `confirmationRequired` | The session is running; call the tool again with `confirm` after deciding to pause it. |
+| `transcript_missing` / no stored state | The session needs an archived run; a never-started session has nothing to transfer. |
+| `agent_not_supported` | Only Claude Code sessions move this way; for Codex use the skill. |
+| `directory_invalid` | Give the absolute path of the local directory. |
+| `session_live` | Pause the session in AgentHub, wait until it shows Paused, and retry. |
+| `local_transcript_differs` / `tar` reports the file exists | A different local copy is there; hand it back first, or overwrite it on purpose. |
+| `transcript_unrelated` | The local conversation does not continue this session; check the session ID and directory. |
+| `link_invalid` (HTTP 404) | The link expired or was used; create a new command. |
+| `origin_not_configured` | Ask the administrator to set FrontendOrigin, or use the stdio server. |
+| `pod_still_stopping` | The session is paused but still saving; try again in a minute. |
+| Codex helper: Not configured / HTTP 401 | Set the hub URL and a valid personal API token locally. |
+| Codex helper: several transcripts | Inspect the choices and pass `--session <id>`. |
 
-See the [Claude skill](https://github.com/open-agenthub/plugins/blob/main/plugins/agenthub-sessions/skills/session-transfer/SKILL.md),
-[Codex skill](https://github.com/open-agenthub/plugins/blob/main/codex/skills/agenthub-session-transfer/SKILL.md),
-and [archive API design](https://github.com/open-agenthub/open-agenthub/blob/main/docs/session-transfer.md)
+See the [Codex skill](https://github.com/open-agenthub/plugins/blob/main/codex/skills/agenthub-session-transfer/SKILL.md)
+and the [design notes](https://github.com/open-agenthub/open-agenthub/blob/main/docs/session-transfer.md)
 for implementation details.
