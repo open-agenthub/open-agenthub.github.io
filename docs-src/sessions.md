@@ -23,7 +23,7 @@ change a scheduled session's agent, billing, policy or runtime settings, delete 
 
 Choose the agent per session: **Claude** (Claude Code), **Codex**, **Cursor**, **OpenClaw** or
 **OpenCode**. An administrator can restrict which agents are offered (Enterprise, see
-Administration).
+[Administration](/admin)).
 
 **Billing** is independent of the agent and of the mode:
 
@@ -84,7 +84,7 @@ to its workspace, `$HOME` and `/tmp`.
 **CPU request** and **Memory request** are reserved on the node. **CPU limit** and **Memory limit**
 cap the session: above the limit CPU is throttled and the agent is stopped for memory. Memory is
 given in `Mi` or `Gi`. An empty limit means the instance default; the operator sets the defaults
-and the highest limit a session may ask for (see Chart values). Values that make
+and the highest limit a session may ask for (see [Chart values](/chart-values)). Values that make
 no sense, such as `10m` of memory, are refused when you save.
 
 ## Changing a running session

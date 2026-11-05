@@ -123,4 +123,4 @@ The browser is on by default (`browser.enabled: true`) and costs nothing until u
 | `browser.extraEgressPorts` | `[]` | Destination ports beyond 80/443 |
 | `browser.previewPorts` | `[3000, 4173, 5173, 8000, 8080]` | Session ports the browser may open |
 
-More in Chart values.
+More in [Chart values](/chart-values).

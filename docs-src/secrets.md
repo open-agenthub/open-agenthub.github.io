@@ -134,4 +134,4 @@ uploaded — are not touched.
 ## Personal API tokens
 
 A restricted personal API token lists which secrets it may hand to the sessions it creates; a token
-that names none hands out none. See [External MCP clients](/mcp) and Settings.
+that names none hands out none. See [External MCP clients](/mcp) and [Settings](/settings).

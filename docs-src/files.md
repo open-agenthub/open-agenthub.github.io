@@ -68,7 +68,7 @@ Matroska file renamed to `.webm` is refused rather than shown as a broken player
 
 Office previews need a separate renderer. While it is off, the pane says *Preview for Office
 documents is switched off* and offers the download. Operators enable it with
-`files.officePreview.enabled: true` (see Chart values). The converted PDF belongs
+`files.officePreview.enabled: true` (see [Chart values](/chart-values)). The converted PDF belongs
 to its document: it is deleted with it and cannot be deleted on its own.
 
 ## Where files are stored

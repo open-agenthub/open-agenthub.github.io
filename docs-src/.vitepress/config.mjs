@@ -24,8 +24,7 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Feature overview', link: '/features' },
-          { text: 'Install', link: '/getting-started' },
-          { text: 'Upgrading', link: '/upgrading' }
+          { text: 'Install', link: '/getting-started' }
         ]
       },
       {
@@ -66,6 +65,21 @@ export default defineConfig({
           { text: 'Slack (Enterprise)', link: '/slack' },
           { text: 'Git (GitHub & GitLab)', link: '/git' },
           { text: 'MCP clients', link: '/mcp' }
+        ]
+      },
+      {
+        text: 'Account and administration',
+        items: [
+          { text: 'Settings', link: '/settings' },
+          { text: 'Usage and cost', link: '/usage' },
+          { text: 'Administration', link: '/admin' }
+        ]
+      },
+      {
+        text: 'Operators',
+        items: [
+          { text: 'Chart values', link: '/chart-values' },
+          { text: 'Upgrading', link: '/upgrading' }
         ]
       },
       {
