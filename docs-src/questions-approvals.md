@@ -48,8 +48,9 @@ the conversation with what the agent wants to do:
 
 The same request is sent to your linked [Telegram, Signal](/chat) or [Slack](/slack) chat, where
 you can answer it as well. Whichever answer arrives first counts. A request nobody answers expires
-after its waiting period. The agent CLI then falls back to its own permission prompt: in an
-Interactive session it asks in its terminal, in an unattended session the tool is not run.
+after its waiting period. Codex refuses an unanswered request and reports that the tool was
+blocked; it does not open a second terminal approval menu. Other agents may fall back to a
+terminal prompt in an Interactive session. In an unattended session the tool is not run.
 
 Where requests are raised depends on the agent:
 
@@ -59,6 +60,26 @@ Where requests are raised depends on the agent:
   restart.
 - **OpenClaw** has no per-call hook: an interactive OpenClaw session asks in its own terminal only,
   and its requests do not reach the web app's buttons or the chat.
+
+### Codex permissions
+
+Codex uses the session container as its execution boundary. Interactive sessions run commands
+without an additional CLI sandbox, so you do not need to approve running a command "outside the
+sandbox" in the terminal. Answer tool permission requests in the Workspace with **Allow** or
+**Deny**, or in a linked chat. The session's tool policy still applies, and changing
+[auto approve](/auto-approve) takes effect while Codex is running.
+
+AgentHub is the approval surface for Codex. An unanswered request or an unavailable approval
+service blocks the tool instead of handing the decision to another terminal menu. Brief service
+interruptions are retried when checking policy or polling an existing request. If approval still
+cannot be reached, the tool result explains that it was denied and can be retried. Ask the agent
+to try again once the service is available. Agent questions with choices still appear
+as questions; disabling native tool approvals does not answer those for you.
+
+This applies to Community and Enterprise sessions. Permission buttons are for the session owner;
+a shared-session Collaborator cannot approve tools. After upgrading to a runtime containing this
+change, restart an existing Codex session so it uses the new permissions settings. Do not switch
+Codex's native permissions mode to work around an AgentHub denial.
 
 ### Requests that come from AgentHub itself
 
