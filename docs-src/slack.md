@@ -126,7 +126,7 @@ helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-valu
 | `ee.slack.channel` | `""` | Optional fallback channel id |
 
 The tokens are stored in the chart's Secret. Slack also needs an active Enterprise licence,
-which an admin activates in the admin area. It is not a chart value. Without a
+which an admin activates in the [admin area](/admin). It is not a chart value. Without a
 valid licence the backend posts nothing and does not connect to Slack.
 
 Unlike Telegram and Signal, Slack does not require `backend.replicas=1`. The chart enforces
