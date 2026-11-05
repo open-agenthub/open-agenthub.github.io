@@ -118,6 +118,15 @@ See [Provider login](/provider-login) for agent-specific commands, stored accoun
 1.0.0-rc.1 Workspace workaround. To continue a conversation on your workstation, see
 [Continue locally](/local-sessions); to control sessions from an external client, see [MCP](/mcp).
 
+The home screen's **Shared with me** section lists direct, inherited and project-shared
+sessions with owner, role and status; Viewer questions do not increase “Needs you”.
+
+### 5. Connect an external MCP client (optional)
+
+Prefer the built-in [HTTP MCP endpoint](/mcp) with browser sign-in. Configure HTTPS and
+opt in with `mcp.enabled: true`, then open **Settings → Connect to AgentHub** for ready-to-paste
+client setup. A local stdio process with a personal API token is the alternative when needed.
+
 ## Where configuration lives
 
 Everything — host, TLS issuer, images, S3, OIDC, resource limits — is in
