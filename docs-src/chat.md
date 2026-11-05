@@ -1,8 +1,17 @@
 # Chat integrations
 
 Telegram and Signal notify you when a session waits for input or finishes, and let you
-reply and approve permission prompts from your phone. Both are part of the free core —
-Slack is an enterprise feature.
+reply, approve permission prompts and start new sessions from your phone. Both are part of
+the free core — [Slack](/slack) is an Enterprise feature.
+
+A session shows up in chat only after one of its hooks reports that it is waiting for input.
+That happens in **interactive** Claude, Codex, Cursor and OpenCode sessions. Autonomous and
+scheduled sessions do not wait for input, so they never open a conversation on their own.
+The exception is a session you started from the chat with `/new`. **OpenClaw sessions never
+show up in chat** because OpenClaw has no hook for it. Cursor sessions show up, but their
+permission prompts are not sent to chat: Cursor decides approvals from its own allowlist.
+
+**Edition:** Community · **Who:** the operator enables the bots; each user links their own chat.
 
 Long answers are split across several messages. Permission prompts expire after about
 30 minutes; after that, answer in the web terminal.
@@ -56,8 +65,11 @@ curl -s "https://api.telegram.org/bot<token>/getMyCommands"
 ```json
 {"ok":true,"result":[
   {"command":"link","description":"Link this chat to your AgentHub account"},
+  {"command":"new","description":"Start a new session: /new [+repo] <prompt>"},
+  {"command":"repos","description":"List your GitHub/GitLab projects"},
   {"command":"sessions","description":"List sessions in this chat"},
-  {"command":"use","description":"Choose the session for plain replies"},
+  {"command":"use","description":"Choose the session for plain replies; it stays chosen"},
+  {"command":"unpin","description":"Plain replies follow the newest session again"},
   {"command":"status","description":"Show session status"}]}
 ```
 
@@ -75,8 +87,9 @@ are running — expected for a few seconds during a rolling update, a problem if
 
 ### 4. Link your account
 
-Each user links themselves: **Settings → Notifications → Telegram → Generate link code**,
-then open the `t.me` deep link, or send `/link <code>` to the bot directly.
+Each user links themselves: **Settings → Notifications → Telegram notifications →
+Generate link code**, then click **Open in Telegram**, or send `/link <code>` to the bot
+directly. The code expires after 10 minutes.
 
 ### Per-session forum topics
 
@@ -85,19 +98,46 @@ on **Topics**, add the bot as an admin with the **Manage topics** permission, an
 `/link <code>` in the group. Every session then gets its own topic.
 
 ::: warning
-Everyone in a linked group can reply to sessions and approve permission prompts.
+Everyone in a linked group can reply to sessions and approve permission prompts. A `/use`
+choice applies to the whole group, not only to the person who sent it.
 :::
 
 ### Commands
 
+Each chat message names its session as `Name (#ab12)`. The `#ab12` part is the session's
+tag: the first characters of its id.
+
 | Command | Effect |
 | --- | --- |
-| `/new <prompt>` | Start a new autonomous session working on the prompt |
-| `/sessions` | List sessions in this chat |
-| `/use <tag>` | Route plain replies to that session |
-| `!status` | Show session status |
+| `/link <code>` | Link this chat to your account |
+| `/new [+repo …] <prompt>` | Start a new autonomous Claude session that works on the prompt. Leading `+name`, `+group/name`, `+name#branch` or `+https://…` tokens attach repositories. |
+| `/repos [query]` | List the projects of your connected GitHub/GitLab accounts |
+| `/sessions` | List this chat's sessions, most recent activity first, at most 15 |
+| `/use #ab12` | Send plain replies to that session until you choose another. Works with or without `#`, any letter case. |
+| `/unpin` or `/use auto` | Plain replies follow the newest session again |
+| `/status` | Show the session's status, pending permission and link |
 
-Plain messages are typed into the active session's terminal.
+Telegram accepts every command except `/link` with a `!` prefix as well, so `!status` and
+`/status` do the same thing.
+
+### Which session a message goes to
+
+Plain messages are typed into a session's terminal. The session is chosen in this order:
+
+1. In a forum group, the session whose topic the message is in.
+2. The session of the message you reply to.
+3. The session you chose with `/use`.
+4. Otherwise, the session that posted most recently.
+
+`/use` keeps its choice even when other sessions post. `/new` moves an existing `/use` choice
+to the session it just started.
+
+### Deleted sessions
+
+When a session is deleted, its chat links are removed. A message meant for it gets a reply
+saying it was deleted, with a pointer to `/sessions` and `/use`. In a forum group its topic
+stays as history. If the deleted session was the one you chose with `/use`, the message is
+not sent to another session: choose a new one, or `/unpin`.
 
 ## Signal
 
@@ -130,12 +170,51 @@ six-digit code sent via Signal.
 
 ### Reply routing
 
-**Quote** a session message to answer that session; plain replies go to the newest session,
-or the one picked with `!use`. React 👍/👎 on a permission prompt to allow or deny, and
-quote-reply `always` for allow-always. Commands: `!new <prompt>` (start an autonomous
-session), `!sessions`, `!use <tag>`, `!status`.
+**Quote** a session message to answer that session. Unquoted messages go to the session you
+chose with `!use`, or else to the session that posted most recently. React 👍/👎 on a
+permission prompt to allow or deny, and quote-reply `always` for allow-always.
+
+Signal accepts commands with the `!` prefix only:
+
+| Command | Effect |
+| --- | --- |
+| `!new [+repo …] <prompt>` | Start a new autonomous Claude session. Leading `+name` tokens attach repositories. |
+| `!repos [query]` | List your GitHub/GitLab projects |
+| `!sessions` | List your sessions, most recent activity first, at most 15 |
+| `!use #ab12` | Send unquoted messages to that session until you choose another |
+| `!unpin` or `!use auto` | Follow the newest session again |
+| `!status` | Show the session's status |
+
+Deleted sessions work as they do on Telegram.
+
+Not tested: delivery through a real Telegram or Signal account. These features were
+tested against a recorded stand-in of the Telegram Bot API, and Signal's `!use` only in
+unit tests.
 
 ## Desktop notifications
 
 A browser notification when a session waits for input or finishes. Enable it per device
 under **Settings → Notifications** — no cluster configuration needed.
+
+## Values masked in session output
+
+Masking is automatic; session owners do not need to enable it. Before a session's hook message
+is sent to a chat integration, AgentHub replaces the session's file and environment secrets,
+its callback token, and credential values in its inline MCP configuration. This includes custom
+header and environment values, authorization tokens, complete URLs, and URL usernames,
+passwords and query values in their encoded and decoded forms. The replacement appears as
+`[secret:NAME]`, `[secret:AGENTHUB_CALLBACK_TOKEN]` or `[secret:MCP]`.
+
+The same values are masked in transcript and scrollback uploads, live conversation history and
+terminal reconnect replay. Commands and arguments remain readable. Owners and collaborators
+with terminal access still see the normal live terminal and their own input echo. Shared
+conversation history also masks these credentials, using `[redacted]`.
+
+Values shorter than eight characters are left unchanged to keep ordinary output readable.
+Masking matches literal values, their JSON-escaped form and long enough individual lines;
+it does not cover arbitrary transformations or other encodings. Existing stored transcripts
+are not rewritten. Keep credentials out of prompts and output where possible.
+
+This behavior is included in the free core for the session runtime, Telegram and Signal hooks.
+Slack hooks and shared session history require Enterprise. The same rules apply regardless of
+who reads the delivered history; terminal access still follows the session's role permissions.

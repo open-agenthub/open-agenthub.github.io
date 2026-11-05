@@ -1,8 +1,8 @@
 # Connect an MCP client
 
 An external MCP client can create sessions, read their transcripts, and send messages to
-your agents. Choose remote HTTP with browser sign-in, or a local stdio process with a
-personal API token. Both expose the same tool names.
+your agents. Prefer remote HTTP with browser sign-in; use a local stdio process with a
+personal API token when your client needs a local process. Both expose the same tool names.
 
 ## Remote HTTP
 
@@ -28,6 +28,12 @@ audience. The client and browser must be able to reach it.
 Allow `https://hub.example.com/connect/oidc-callback` as a redirect URI for your
 instance's OIDC client. This is separate from the web UI's `/auth/callback` URI.
 
+### Copy setup from Settings
+
+When enabled, **Settings → Connect to AgentHub** provides the instance's exact endpoint,
+a Claude Code command, a Claude Desktop connector URL and Cursor JSON, each with a copy
+button. Disabled endpoints show an `mcp.enabled` hint only to administrators.
+
 ### Connect and authenticate
 
 In Claude Code:
@@ -41,8 +47,26 @@ access. Other clients need remote HTTP transport and OAuth support; enter the sa
 in their MCP settings. Client registration is automatic, and the authorization flow uses PKCE.
 Tools act as the user who approved the client and follow the hub's access checks.
 
-On an instance without OIDC authentication, consent issues a token for the shared `dev`
-user. Configure instance authentication before exposing it to other people.
+**Claude Desktop:** open Settings → Connectors → Add custom connector. Use the name
+AgentHub and paste the remote MCP URL from the hub's Settings page. Connect and sign in
+in the browser. The connector service must be able to reach your instance URL.
+
+**Cursor:** paste the configuration from the hub into `~/.cursor/mcp.json` or the project's
+`.cursor/mcp.json`, then connect in MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "agenthub": { "url": "https://hub.example.com/mcp" }
+  }
+}
+```
+
+Without OIDC, API-key mode asks for the instance key on the browser consent screen. Only
+explicit insecure development mode skips login and issues a token for the shared `dev`
+user. The endpoint stays off by default because enabling it exposes an authorization
+server and anonymous client registration, and missing OIDC alone does not disable it.
+Enable it deliberately after configuring HTTPS and the identity-provider callback.
 
 ## Local stdio
 
@@ -79,6 +103,53 @@ Configure your MCP client to launch Node with the absolute path to `server.mjs` 
 Adapt this example to your client's configuration format. The token starts with `oah_`;
 keep the real value local. The stdio server calls the token-authenticated API and does not
 require `mcp.enabled` or an OIDC browser login.
+
+## Sessions shared with you
+
+Available with the 1.15.0 release and an active sharing license. Both the remote server and
+the personal-token stdio server include named shares in `session_list` and `agents_list`.
+This includes shares inherited from a parent session and shares through a project. Entries
+show `owner`, `accessRole` and `canWrite`, so your client can identify which sessions it may
+message.
+
+Use `session_get` for sanitized status. A Viewer can read status; a Collaborator can also use
+`agent_send` with normal delivery. Shared sessions reject `priority` and `interrupt`. These
+messages are attributed to the sender's account and audited. A share gives no authority to
+delete or manage another owner's session, change its credentials, or clear its context.
+Removing a share takes effect on the next tool call.
+
+## Use a share link
+
+`share_link_read` accepts a share URL or its token in the `link` argument and returns
+`session` (sanitized status and the link's role) plus `history` (a page of conversation).
+For example, ask your client to call:
+
+```json
+{
+  "link": "https://hub.example.com/shared/<share-token>",
+  "offset": -1,
+  "max": 100
+}
+```
+
+Use `history.nextOffset` as the next `offset` to continue reading. `max` counts conversation
+entries for `history.source = "native"`, or characters for `"scrollback"`. Omit `offset` to
+start at the beginning; `-1` requests the latest window.
+
+A Collaborator link also permits `share_link_send` with `link` and `message`. This queues a
+normal message, attributed and audited as **via share link**. Viewer links are read only.
+Revoked or expired links answer not found. Link tools provide the same role authority as the
+browser share view; they do not add the session to your named shares or permit management.
+
+For a client without an account, connect its HTTP MCP transport to
+`https://hub.example.com/mcp/shared`. This endpoint exposes only `share_link_read` and
+`share_link_send`; the usual authenticated `/mcp` endpoint also has both tools. The server
+must have remote MCP enabled. A local stdio client can use these tools with `AGENTHUB_URL`
+and no `AGENTHUB_TOKEN`; other session tools still require a personal token.
+
+Treat the link as a bearer secret: anyone holding it has its role. Pass it only as a tool
+argument. The stdio bridge sends it in a POST body rather than an access-log URL. Keep client
+argument and HTTP body logging off for these calls, and revoke the link if it is disclosed.
 
 ## First checks
 

@@ -96,3 +96,130 @@ the old and new pod at the same time, so expect:
 - No failover while the single pod restarts.
 
 Neither loses data: Telegram buffers updates by offset for about 24 hours.
+
+## Version notes
+
+What each release asks of an operator when upgrading to it. Releases not listed here need nothing
+beyond a normal `helm upgrade`. When you skip versions, apply the notes of every release in between.
+
+Many releases ship new agent runtime images. A running session keeps its old image until it
+restarts: use **Update now** in the session header, or pause and resume the session. With
+`agent.autoUpdateRuntimeImages` on, idle interactive sessions are updated automatically.
+
+### 1.0.0
+
+- From 0.13.x, new chart values arrive: helper containers (`sessionContainers.*`), model
+  endpoints (`agent.modelEndpoints`), automatic runtime image updates, session resource limits
+  and floors, and video limits (`files.maxVideoBytes`). Review them in your values file.
+- Restart running sessions once so they start from the new runtime images.
+- Optional: remove what earlier session deletions left behind in object storage. As an admin,
+  call `POST /api/admin/session-storage-cleanup/dry-run`, review the listed prefixes, then send
+  the returned token to `POST /api/admin/session-storage-cleanup/apply` within 15 minutes.
+
+### 1.2.0
+
+- Restart running sessions to get the new runtime images and the `/tmp` setup with the sticky bit.
+- The integrated browser gets them the next time its pod is created (`browser_stop`, then
+  `browser_start`).
+
+### 1.3.0 and 1.4.0
+
+Both releases fix provider login data in stored session archives and add an admin cleanup. Run the
+1.4.0 cleanup; see [Archive cleanups after 1.3.0 and 1.4.0](#archive-cleanups-after-1-3-0-and-1-4-0).
+
+### 1.5.0
+
+**Breaking for installs without OIDC:** the backend requires an API key and refuses to start
+without one. See [Installs without OIDC: the API key](#installs-without-oidc-the-api-key).
+Installs with `oidc.authority` set are not affected.
+
+### 1.6.0
+
+- New values `backend.forwardedHeaders.knownProxies` and `knownNetworks`. They default to loopback
+  and the private ranges; narrow them to your ingress controller's source range.
+- New value `sharing.userSuggestionsEnabled` (Enterprise sharing), default `true`.
+
+### 1.7.0
+
+Restart running sessions to get the new runtime images and agent CLIs.
+
+### 1.8.0
+
+- The backend gets a startup probe that allows about 10.5 minutes, so one replica can wait for
+  another replica's schema migration.
+- Schema migrations run on the first start, one replica at a time. The first start also prunes
+  orphaned rows and holds write locks on the share, MCP policy and Slack thread tables until it
+  commits. Session and share writes can be delayed for that time, depending on table size.
+- Restart running sessions to get the new runtime images and CLIs.
+
+### 1.9.0
+
+- The backend shares one Postgres pool per replica. New values `backend.database.maxPoolSize`
+  (20) and `backend.database.lockPoolSize` (10).
+- Check the connection budget before upgrading or scaling: up to 32 connections per replica, 64
+  for two replicas, 96 during a rolling update. See [Chart values](/chart-values#the-connection-budget).
+- **If you set `Maximum Pool Size` in `externalDatabase.connectionString`, `maxPoolSize` now
+  overrides it.**
+
+### 1.10.0, 1.10.1 and 1.12.1
+
+Restart running sessions (for 1.10.1, Claude Code sessions) to get the updated runtime.
+
+### 1.12.0
+
+The chart narrows the egress rule that lets session pods reach object storage. If your external
+object storage is reached **by DNS name on a port other than 80 or 443**, set
+`agent.storageEgress.cidrs` to its networks, or add the port to `agent.extraEgressPorts`, **before
+upgrading**. This matters most if you had the bundled storage enabled and reached external storage
+on port 3900 through the old rule. Without it, affected sessions cannot save or restore their
+state; stored objects remain. Watch for the warning in the `helm upgrade` output.
+
+### 1.14.0
+
+- The bundled Postgres is initialised in an init container. Existing data directories (a non-empty
+  `PG_VERSION`) are left alone. Back up as usual before upgrading.
+- New value `postgres.appArmorUnconfined` (default `false`), a last resort for hosts whose AppArmor
+  profile denies Postgres its own signals. For production, use `externalDatabase.connectionString`.
+- Restart running sessions to get the updated runtime images.
+
+### 1.14.1
+
+Deploy the new backend and frontend. Running sessions need no runtime update.
+
+### Archive cleanups after 1.3.0 and 1.4.0
+
+Releases up to 1.3.0 could store provider login data in session state archives in object storage:
+Claude Code's configuration backups (up to 1.2.0), the Claude login file (0.1.0 to 0.4.0), and
+temporary login copies of all five agents (0.13.0 to 1.3.0). 1.3.0 and 1.4.0 stop new archives
+from containing them. Already stored archives need an admin cleanup.
+
+The 1.4.0 cleanup, `provider-logins`, covers everything the 1.3.0 `claude-backups` cleanup
+covers and more. Run it even if you already ran the 1.3.0 one; a repeat run is safe.
+
+1. Deploy 1.4.0 or later.
+2. Pause interactive sessions and wait until their pods are gone. Pausing returns before the pod
+   has exited.
+3. Run the cleanup per owner. `OWNER` is the session owner exactly as stored, normally the
+   username; **Settings → Users & seats** lists it under **Admins & roles**. Authenticate as an admin
+   with an OIDC access token, or with the API key on an install without OIDC. Preview first:
+
+   ```bash
+   curl -fsS -X POST https://hub.example.com/api/admin/session-storage-cleanup/provider-logins \
+     -H "Authorization: Bearer $ADMIN_TOKEN" -H 'Content-Type: application/json' \
+     --data '{"owner":"OWNER","apply":false}'
+   ```
+
+   Then send the same request with `"apply":true`. The result reports counts only: `scanned`,
+   `missing`, `clean`, `rewritten`, `skipped`, `failed`. `skipped: 0` and `failed: 0` mean every
+   archive was handled; otherwise repeat after the reported sessions have stopped.
+4. Resume the sessions.
+5. Scheduled sessions are skipped while their CronJob exists. Their archive is replaced only after
+   a run on the new runtime has written it successfully; check that such a run completed.
+6. Revoke provider logins at the provider if they may be affected: Claude logins used under 0.1.0
+   to 0.4.0, and logins installed, refreshed or replaced while sessions ran 0.13.0 to 1.3.0.
+   Cleaning an archive or deleting a session does not revoke a login.
+7. Rotate credentials you configured as literal MCP header or environment values for Claude
+   sessions.
+
+The cleanup does not reach values running processes already loaded, copies a CLI made itself,
+or your storage's object-version history and backups. Assess those separately.

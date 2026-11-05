@@ -79,13 +79,40 @@ Roles used on these pages:
 | Skill library, versions, live sync | Community | Everyone | [Skill library](/skills) |
 | Share and publish skills | Enterprise | Admin; users if allowed | [Skill library](/skills#sharing-skills-enterprise) |
 
+## Account, usage and administration
+
+| Feature | Edition | Who | Page |
+| --- | --- | --- | --- |
+| Settings: profile, interface, credentials, notifications | Community | Everyone | [Settings](/settings) |
+| Personal API tokens and token restrictions | Community | Everyone | [Settings](/settings#api-tokens) |
+| Webhook triggers for pull and merge requests | Community | Everyone | [Settings](/settings#webhooks) |
+| Account deletion | Community | Everyone | [Settings](/settings#deleting-your-account) |
+| Usage and cost page, personal monthly API budget | Community | Everyone | [Usage and cost](/usage) |
+| Organisation-wide usage limits | Enterprise | Admin | [Usage and cost](/usage#organisation-wide-limits) |
+| Admin roles, Org MCP catalog, licence entry | Community | Admin | [Administration](/admin) |
+| Seats, groups and roles from OIDC, allowed agents, skill publishing | Enterprise | Admin | [Administration](/admin) |
+
+## Operators
+
+| Feature | Edition | Who | Page |
+| --- | --- | --- | --- |
+| Chart values: images, database pools, bundled Postgres, storage egress, sign-in, sessions | Community | Operator | [Chart values](/chart-values) |
+| Version notes and archive cleanups | Community | Operator, admin | [Upgrading](/upgrading#version-notes) |
+
 ## Integrations and other topics
 
 | Feature | Edition | Who | Page |
 | --- | --- | --- | --- |
 | Install, first steps | Community | Operator | [Install](/getting-started) |
-| Upgrade notes, API key without OIDC | Community | Operator | [Upgrading](/upgrading) |
+| Helm upgrades, API key without OIDC | Community | Operator | [Upgrading](/upgrading) |
 | Telegram and Signal relays, desktop notifications | Community | Linked user | [Chat](/chat) |
+| `/use`, `/unpin`, session names, deleted-session notices | Community | Linked user | [Chat](/chat#which-session-a-message-goes-to) |
+| Slack relay, `!new`, `!repos` | Enterprise | Linked user, operator | [Slack](/slack) |
+| Built-in tools inside a session: child sessions, messaging, `context_clear`, accounts, helper containers | Community | Agent | [Built-in tools](/session-tools) |
+| Reach sessions shared with the owner through the sessions MCP | Enterprise | Agent | [Built-in tools](/session-tools#sessions-shared-by-other-users-enterprise) |
+| Saved MCP servers, API URL servers, inline MCP config | Community | Owner | [MCP servers for sessions](/mcp-servers) |
+| Org MCP catalog | Community; per-entry sharing Enterprise | Admin | [MCP servers for sessions](/mcp-servers#org-mcp-catalog-admins) |
+| Share MCP entries with users and groups | Enterprise | Owner | [MCP servers for sessions](/mcp-servers#sharing-your-entries-enterprise) |
 | GitHub and GitLab tokens and OAuth connections | Community | Owner, operator | [Git](/git) |
 | External MCP clients (remote HTTP, stdio) | Community | Everyone | [MCP clients](/mcp) |
 | Continue a session on your workstation | Community | Owner | [Continue locally](/local-sessions) |

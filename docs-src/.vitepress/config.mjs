@@ -24,8 +24,7 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Feature overview', link: '/features' },
-          { text: 'Install', link: '/getting-started' },
-          { text: 'Upgrading', link: '/upgrading' }
+          { text: 'Install', link: '/getting-started' }
         ]
       },
       {
@@ -48,7 +47,9 @@ export default defineConfig({
           { text: 'Previewing a page', link: '/preview' },
           { text: 'Network ports', link: '/network-ports' },
           { text: 'Secrets', link: '/secrets' },
-          { text: 'Skill library', link: '/skills' }
+          { text: 'Skill library', link: '/skills' },
+          { text: 'MCP servers for sessions', link: '/mcp-servers' },
+          { text: 'Built-in tools', link: '/session-tools' }
         ]
       },
       {
@@ -61,8 +62,24 @@ export default defineConfig({
         text: 'Integrations',
         items: [
           { text: 'Chat (Telegram & Signal)', link: '/chat' },
+          { text: 'Slack (Enterprise)', link: '/slack' },
           { text: 'Git (GitHub & GitLab)', link: '/git' },
           { text: 'MCP clients', link: '/mcp' }
+        ]
+      },
+      {
+        text: 'Account and administration',
+        items: [
+          { text: 'Settings', link: '/settings' },
+          { text: 'Usage and cost', link: '/usage' },
+          { text: 'Administration', link: '/admin' }
+        ]
+      },
+      {
+        text: 'Operators',
+        items: [
+          { text: 'Chart values', link: '/chart-values' },
+          { text: 'Upgrading', link: '/upgrading' }
         ]
       },
       {

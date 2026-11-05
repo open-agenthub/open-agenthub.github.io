@@ -23,7 +23,7 @@ change a scheduled session's agent, billing, policy or runtime settings, delete 
 
 Choose the agent per session: **Claude** (Claude Code), **Codex**, **Cursor**, **OpenClaw** or
 **OpenCode**. An administrator can restrict which agents are offered (Enterprise, see
-Administration).
+[Administration](/admin)).
 
 **Billing** is independent of the agent and of the mode:
 
@@ -52,7 +52,7 @@ repositories and prompts you trust while credentials are present.
 | **Secrets** | Which stored [secrets](/secrets) this session receives. |
 | **Repositories** | One or more repositories to clone into the workspace, and which [git tokens](/git) the session gets. |
 | **Auto-delete** | Delete the session on its own after a number of hours or days, counted from its start or from its last activity. |
-| **Advanced** | Tool policy, MCP servers, container image, resources, **Run as root**, **Auto approve**. |
+| **Advanced** | Tool policy, [MCP servers](/mcp-servers), container image, resources, **Run as root**, **Auto approve**. |
 
 ### Tool policy for unattended sessions
 
@@ -84,7 +84,7 @@ to its workspace, `$HOME` and `/tmp`.
 **CPU request** and **Memory request** are reserved on the node. **CPU limit** and **Memory limit**
 cap the session: above the limit CPU is throttled and the agent is stopped for memory. Memory is
 given in `Mi` or `Gi`. An empty limit means the instance default; the operator sets the defaults
-and the highest limit a session may ask for (see Chart values). Values that make
+and the highest limit a session may ask for (see [Chart values](/chart-values)). Values that make
 no sense, such as `10m` of memory, are refused when you save.
 
 ## Changing a running session
@@ -154,7 +154,7 @@ An agent can start helper containers next to its session, for example a database
 migration it is writing. They run in a namespace of their own for that session, are never more
 privileged than the session, are subject to its network policy, and are removed when the session
 is paused or deleted. The agent manages them with built-in tools; see
-Built-in tools inside a session.
+[Built-in tools inside a session](/session-tools).
 
 ## Related pages
 
