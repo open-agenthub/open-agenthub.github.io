@@ -104,6 +104,53 @@ Adapt this example to your client's configuration format. The token starts with 
 keep the real value local. The stdio server calls the token-authenticated API and does not
 require `mcp.enabled` or an OIDC browser login.
 
+## Sessions shared with you
+
+Available with the 1.15.0 release and an active sharing license. Both the remote server and
+the personal-token stdio server include named shares in `session_list` and `agents_list`.
+This includes shares inherited from a parent session and shares through a project. Entries
+show `owner`, `accessRole` and `canWrite`, so your client can identify which sessions it may
+message.
+
+Use `session_get` for sanitized status. A Viewer can read status; a Collaborator can also use
+`agent_send` with normal delivery. Shared sessions reject `priority` and `interrupt`. These
+messages are attributed to the sender's account and audited. A share gives no authority to
+delete or manage another owner's session, change its credentials, or clear its context.
+Removing a share takes effect on the next tool call.
+
+## Use a share link
+
+`share_link_read` accepts a share URL or its token in the `link` argument and returns
+`session` (sanitized status and the link's role) plus `history` (a page of conversation).
+For example, ask your client to call:
+
+```json
+{
+  "link": "https://hub.example.com/shared/<share-token>",
+  "offset": -1,
+  "max": 100
+}
+```
+
+Use `history.nextOffset` as the next `offset` to continue reading. `max` counts conversation
+entries for `history.source = "native"`, or characters for `"scrollback"`. Omit `offset` to
+start at the beginning; `-1` requests the latest window.
+
+A Collaborator link also permits `share_link_send` with `link` and `message`. This queues a
+normal message, attributed and audited as **via share link**. Viewer links are read only.
+Revoked or expired links answer not found. Link tools provide the same role authority as the
+browser share view; they do not add the session to your named shares or permit management.
+
+For a client without an account, connect its HTTP MCP transport to
+`https://hub.example.com/mcp/shared`. This endpoint exposes only `share_link_read` and
+`share_link_send`; the usual authenticated `/mcp` endpoint also has both tools. The server
+must have remote MCP enabled. A local stdio client can use these tools with `AGENTHUB_URL`
+and no `AGENTHUB_TOKEN`; other session tools still require a personal token.
+
+Treat the link as a bearer secret: anyone holding it has its role. Pass it only as a tool
+argument. The stdio bridge sends it in a POST body rather than an access-log URL. Keep client
+argument and HTTP body logging off for these calls, and revoke the link if it is disclosed.
+
 ## First checks
 
 Ask the connected client to list your sessions with `session_list`. Use `session_logs`
