@@ -52,7 +52,7 @@ repositories and prompts you trust while credentials are present.
 | **Secrets** | Which stored [secrets](/secrets) this session receives. |
 | **Repositories** | One or more repositories to clone into the workspace, and which [git tokens](/git) the session gets. |
 | **Auto-delete** | Delete the session on its own after a number of hours or days, counted from its start or from its last activity. |
-| **Advanced** | Tool policy, MCP servers, container image, resources, **Run as root**, **Auto approve**. |
+| **Advanced** | Tool policy, [MCP servers](/mcp-servers), container image, resources, **Run as root**, **Auto approve**. |
 
 ### Tool policy for unattended sessions
 
@@ -154,7 +154,7 @@ An agent can start helper containers next to its session, for example a database
 migration it is writing. They run in a namespace of their own for that session, are never more
 privileged than the session, are subject to its network policy, and are removed when the session
 is paused or deleted. The agent manages them with built-in tools; see
-Built-in tools inside a session.
+[Built-in tools inside a session](/session-tools).
 
 ## Related pages
 

@@ -48,7 +48,9 @@ export default defineConfig({
           { text: 'Previewing a page', link: '/preview' },
           { text: 'Network ports', link: '/network-ports' },
           { text: 'Secrets', link: '/secrets' },
-          { text: 'Skill library', link: '/skills' }
+          { text: 'Skill library', link: '/skills' },
+          { text: 'MCP servers for sessions', link: '/mcp-servers' },
+          { text: 'Built-in tools', link: '/session-tools' }
         ]
       },
       {
@@ -61,6 +63,7 @@ export default defineConfig({
         text: 'Integrations',
         items: [
           { text: 'Chat (Telegram & Signal)', link: '/chat' },
+          { text: 'Slack (Enterprise)', link: '/slack' },
           { text: 'Git (GitHub & GitLab)', link: '/git' },
           { text: 'MCP clients', link: '/mcp' }
         ]

@@ -46,7 +46,7 @@ the conversation with what the agent wants to do:
 | **Allow everything** | Turns on [auto approve](/auto-approve) for the session and answers this request |
 | **Deny** | Refuses the tool; the agent is told and continues |
 
-The same request is sent to your linked [Telegram, Signal](/chat) or Slack chat, where
+The same request is sent to your linked [Telegram, Signal](/chat) or [Slack](/slack) chat, where
 you can answer it as well. Whichever answer arrives first counts. A request nobody answers expires
 after its waiting period. The agent CLI then falls back to its own permission prompt: in an
 Interactive session it asks in its terminal, in an unattended session the tool is not run.

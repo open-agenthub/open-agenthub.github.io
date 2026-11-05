@@ -69,7 +69,7 @@ it by hand.
   automatically at usage limit**; the account is then still marked, so new sessions avoid it.
 - New sessions avoid an account at its limit, unless you picked that account yourself.
 - Agents can check and switch accounts themselves with the `account_status` and `account_switch`
-  tools (see Built-in tools inside a session).
+  tools (see [Built-in tools inside a session](/session-tools)).
 
 How AgentHub notices the limit differs per agent: Claude Code reports its rate-limit windows; for
 Codex, OpenClaw and OpenCode the CLI's own usage-limit notice is recognised. For Cursor, detection
