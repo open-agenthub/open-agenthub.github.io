@@ -55,7 +55,7 @@ with the agent's reason below it. Your choices:
 | **Allow everything** | Opens it and turns on [auto approve](/auto-approve) for the session |
 | **Deny** | Keeps it closed; the agent is told you denied it |
 
-Only the session owner can answer. If you connected Slack or [Telegram and Signal](/chat),
+Only the session owner can answer. If you connected [Slack](/slack) or [Telegram and Signal](/chat),
 the request reaches you there as well, with the same buttons.
 
 The agent waits up to five minutes by default. If nobody answers, the request expires and the

@@ -69,7 +69,7 @@ The **✉ Messages** button in the session header (owner only) opens a panel wit
 other sessions sent to this one, with a badge for how many are open. **Message this agent** sends
 your own message; tick **priority** to deliver it into the running prompt now, and **interrupt**
 to stop the current work first. How sessions message each other is described in
-Built-in tools inside a session.
+[Built-in tools inside a session](/session-tools).
 
 ## Files, Changes and the browser
 

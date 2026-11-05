@@ -167,7 +167,7 @@ The AgentHub MCP server (stdio and remote, see [MCP clients](/mcp)) offers the s
 `Viewer` (the default) or `Collaborator`. A misspelt role fails with `invalid_role` instead of
 being guessed. To revoke a link, use the DELETE route above or the dialog. An agent cannot share
 its own session: the MCP server inside a session pod has no sharing tools. For how a session's
-agent can reach sessions shared with its owner, see Session tools.
+agent can reach sessions shared with its owner, see [Session tools](/session-tools).
 
 ## When a session is deleted
 

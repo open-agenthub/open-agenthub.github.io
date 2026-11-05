@@ -86,6 +86,13 @@ Roles used on these pages:
 | Install, first steps | Community | Operator | [Install](/getting-started) |
 | Upgrade notes, API key without OIDC | Community | Operator | [Upgrading](/upgrading) |
 | Telegram and Signal relays, desktop notifications | Community | Linked user | [Chat](/chat) |
+| `/use`, `/unpin`, session names, deleted-session notices | Community | Linked user | [Chat](/chat#which-session-a-message-goes-to) |
+| Slack relay, `!new`, `!repos` | Enterprise | Linked user, operator | [Slack](/slack) |
+| Built-in tools inside a session: child sessions, messaging, `context_clear`, accounts, helper containers | Community | Agent | [Built-in tools](/session-tools) |
+| Reach sessions shared with the owner through the sessions MCP | Enterprise | Agent | [Built-in tools](/session-tools#sessions-shared-by-other-users-enterprise) |
+| Saved MCP servers, API URL servers, inline MCP config | Community | Owner | [MCP servers for sessions](/mcp-servers) |
+| Org MCP catalog | Community; per-entry sharing Enterprise | Admin | [MCP servers for sessions](/mcp-servers#org-mcp-catalog-admins) |
+| Share MCP entries with users and groups | Enterprise | Owner | [MCP servers for sessions](/mcp-servers#sharing-your-entries-enterprise) |
 | GitHub and GitLab tokens and OAuth connections | Community | Owner, operator | [Git](/git) |
 | External MCP clients (remote HTTP, stdio) | Community | Everyone | [MCP clients](/mcp) |
 | Continue a session on your workstation | Community | Owner | [Continue locally](/local-sessions) |

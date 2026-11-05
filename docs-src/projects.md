@@ -42,7 +42,7 @@ Click the project name to collapse or expand it.
   [Session files](/files).
 - **A fleet:** sessions of one project can list each other and send each other messages with the
   built-in tools. The session **Description** tells the other agents what a session is for. See
-  Built-in tools inside a session.
+  [Built-in tools inside a session](/session-tools).
 
 ## Reorder sessions
 

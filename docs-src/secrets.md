@@ -90,7 +90,7 @@ and what it is for, instead of asking in the chat. You are notified like for a q
 
 - In the session: *The agent asks for a secret: `NAME`* with **Add it…** and **Refuse**.
 - In Settings → Secrets, under *Asked for by your sessions*.
-- In Slack, [Telegram or Signal](/chat), as a message with a link to the pre-filled form.
+- In [Slack](/slack), [Telegram or Signal](/chat), as a message with a link to the pre-filled form.
   The value never goes through a chat.
 
 **Add it…** opens the form with the name, delivery and purpose filled in — or the stored secret of
