@@ -54,8 +54,13 @@ sidebar. In the **Share session** dialog:
    suggests up to 8 users who have signed in to this hub before. You are never suggested
    yourself, and email addresses are never displayed: an email only finds someone when typed
    in full.
-2. Click a suggestion. The share always goes to the sign-in username.
-3. Choose **Viewer** or **Collaborator** and click **Add**.
+2. Select a suggestion: click it, or use the arrow keys and press Enter. The field then shows
+   the person with a ✓, a line below names their sign-in username, and the list closes. The
+   share always goes to that username. Selecting does not share yet. To pick someone else,
+   type again; Escape closes the list without selecting.
+3. Choose **Viewer** or **Collaborator** and click **Add** (or press Enter again).
+
+Without a selection, **Add** uses the text as typed, so an exact username or email still works.
 
 The person must have signed in at least once. Otherwise the dialog shows "No matching user…" and
 the API answers `unknown_recipient`.
@@ -108,7 +113,9 @@ parent. To take access away, remove the grant that gives it.
 ## Share a whole project
 
 In the sidebar, hover over a project's header and click **⇪** (*Share project*). Share with a
-**User** or a **Group**, as Viewer or Collaborator:
+**User** or a **Group**, as Viewer or Collaborator. Users and groups are picked from the
+suggestions the same way as in the session dialog (click or arrow keys, then **Add**); the groups
+you belong to are listed as soon as you click into the field:
 
 - The share opens every session of yours in the project, including sessions created later and
   their child sessions, even children outside the project.
