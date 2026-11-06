@@ -34,6 +34,47 @@ arrive with each upgrade. See [Upgrading](/upgrading).
 | `postgres.persistence` / `postgres.storage` | `true` / `5Gi` | PVC for the bundled database. `persistence: false` uses an emptyDir and loses data on restart: testing only. |
 | `postgres.appArmorUnconfined` | `false` | Last resort, see below. |
 
+### Shared protection keys
+
+**Community and Enterprise · operator.** The release containing
+[issue #458](https://github.com/open-agenthub/open-agenthub/issues/458) stores the backend's
+Data Protection key ring in Postgres. Replicas and replacement pods use the same keys for
+stored MCP secrets, webhook secrets, gateway tokens and cleanup previews.
+
+| Value | Default | What it does |
+| --- | --- | --- |
+| `dataProtection.existingSecret` | empty | Empty: Helm generates and retains `agenthub-data-protection`. Set a Secret name to supply your own RSA PEM certificate (`tls.crt`) and matching private key (`tls.key`), at least 2048 bits. The Secret must be in the backend namespace. |
+
+Normal `helm install` / `helm upgrade` reuses the generated Secret. It is deliberately
+retained on uninstall: keep it if you intend to restore or reconnect the same database.
+**Back up Postgres and this Secret together.** Losing or replacing the wrapping identity
+prevents the backend from reading the existing ring; startup stops with an error.
+
+For a declarative deployment or offline `helm template`, create and manage a stable Secret
+first, because an offline render cannot look up an existing generated Secret:
+
+```yaml
+dataProtection:
+  existingSecret: my-data-protection
+```
+
+Create the Secret from your certificate and private-key files:
+
+```sh
+kubectl -n agenthub create secret tls my-data-protection --cert=certificate.pem --key=private-key.pem
+```
+
+This certificate wraps stored keys; it does not need to be your ingress TLS certificate.
+Restrict access to the private key. Restart backend pods after changing Secret input. Do not
+replace the certificate as a routine rotation: historical ring entries and database backups
+still need the old private key. Overlapping decryption certificates require operator-provided
+backend configuration; see the
+[rotation decision](https://github.com/open-agenthub/open-agenthub/blob/main/docs/data-protection.md).
+
+Outside the chart, every backend requires the same `DataProtection__CertificatePem` and
+`DataProtection__PrivateKeyPem` environment values. No key directory in HOME is needed.
+See [upgrade recovery](/upgrading#shared-protection-keys-and-secret-recovery).
+
 ### The connection budget
 
 Each replica uses at most `maxPoolSize + lockPoolSize + 2` connections: one for change
