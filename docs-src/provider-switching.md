@@ -1,12 +1,13 @@
 # Switch agent provider
 
-::: warning Experimental (1.21.1)
-Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery after a crash or a lost pod in the middle of a switch is still being hardened: an interrupted switch is held and the owner can retry or cancel it, and native state is required to resume a completed switch. Keep the option off in production until a later release completes this.
+::: warning Experimental (1.22.0)
+Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery is limited to the tested failure cases, an available workspace volume and a valid saved native checkpoint; it does not cover node or volume loss. An interrupted switch stays held when its runtime identity, shutdown or handover cannot be confirmed; an ambiguous lost target is not recreated automatically. Keep the option off in production while evaluating these recovery limits and your workspace backup procedure.
 :::
 
 The session owner can replace a Claude agent with Codex, or Codex with Claude, while keeping
 the same session and visible Workspace conversation. The new agent starts a fresh native
 conversation on the same workspace volume, including dirty and untracked repository files.
+Only data saved on that volume is preserved; in-memory writes and process state are not transferred.
 Switching back starts another fresh native conversation; it does not resume an earlier agent.
 
 This is a **Community** feature. Only the **owner** can review, start, cancel or retry a switch.
@@ -26,6 +27,9 @@ Configure the target provider's usable subscription account or API key first in
 context window. A missing optional context-window value does not block the pinned native
 default or discovered built-in models: admission uses a conservative 100,000-token minimum.
 A reported window takes precedence, including a smaller one. Unknown custom capacity is refused.
+An **unknown model** means the selected model ID is not in AgentHub's catalogue for the target
+agent/account or endpoint. Catalogue membership does not check provider entitlement or prove
+that the account can use the model.
 
 Finish the current turn, resolve approvals and questions, clear draft input and CLI menus,
 and close shell terminals and helper containers. Busy or uncertain runtime state is refused.
@@ -34,7 +38,9 @@ exhausted account must be fixed before retrying.
 
 ## Review and start
 
-1. Open **Switch provider** in the session's Workspace controls.
+1. Open **Switch provider** in the session's Workspace controls. If the panel says
+   **The session is still starting. Try again in a moment.**, wait and reopen it. A visible
+   answer can arrive before startup checks finish; review becomes available once the session is ready.
 2. Select the other provider, its authentication mode and account, and the model settings.
 3. Enter the instructions, current task, decisions, pending work and references the next agent
    needs. Review the exact framed handover, including its omission note.
@@ -69,8 +75,26 @@ Cancel is available only before native source shutdown begins. Afterwards, use *
 when the reported problem is fixed. A retry checks the same durable operation and target;
 it does not retype an uncertain handover or automatically create a second target. If native
 shutdown, storage, pod identity or delivery cannot be confirmed, the switch stays held with
-an explanation. There is no automatic rollback to the source agent. Deleting the session
-also deletes its owned workspace claim, so preserve needed files before choosing deletion.
+an explanation. There is no automatic rollback to the source agent.
+
+When the hold means agent state is uncertain, diagnose it with your administrator and make an
+operator decision before taking further action. **Deleting is destructive**: it removes the session and its workspace claim, and depending on the storage policy
+can delete the underlying volume and lose data. Deletion provides no restore path. Preserve
+and verify needed data independently before an operator chooses deletion.
+
+Before retrying a held switch:
+
+1. Read the reported reason and fix the selected provider account, storage or runtime problem.
+2. Keep the same target selection and reviewed handover. Retry continues the existing operation.
+3. If the target pod disappeared after startup might have begun, leave the operation held and
+   ask your administrator to inspect it. A missing pod does not prove the handover never ran.
+4. If the operator decides the session cannot be recovered, preserve and verify workspace
+   files before deletion. Native state archives do not contain dirty repositories, and
+   deleting the session does not restore or recover them.
+
+A retry cannot recover an unavailable native archive, missing workspace claim or expired
+credential by using another execution's state. Do not edit native resume files or replace
+an uncertain target manually to make a retry proceed.
 
 The session keeps one visible conversation with provider boundaries. Combined history has
 retention limits and explicit omission notes; see [Handover preview](/handover-preview#conversation-history).
@@ -83,10 +107,33 @@ its current provider and execution. If that archive is missing or cannot be rest
 resume refuses to start. The persistent workspace is retained, and the original task is
 not submitted again. Runtime maintenance uses the current execution's archive too.
 
+After an explicit context clear, resume follows the saved current native conversation.
+Clearing context does not erase earlier visible Workspace history or make that history part
+of the new model context.
+
+Recovery was tested for backend restarts, container/pod crashes after an acknowledged
+checkpoint, temporary state-storage or scheduling failures, and source/target pod-loss holds.
+These results require the workspace volume to remain available and the current checkpoint
+to be valid. They do not cover node or volume loss. **Resume** after a completed switch uses
+the latest successfully saved native checkpoint. Only data saved on the workspace volume
+survives; application-buffered or in-memory writes are not preserved. Recent turns that had not been saved
+may be absent from model context even when their saved repository edits remain on the volume.
+The visible conversation does not reconstruct missing native context. A native agent process failure is reported
+separately from a container or pod crash.
+
 Restore the current archive and retry **Resume**. A previous provider's archive, an earlier
 execution of the same provider, or the visible conversation cannot replace the missing
 native state. If it cannot be recovered, ask your administrator to preserve the workspace
-before deleting the session: deletion also removes its owned workspace claim.
+before an operator decides whether to delete the session. Deletion removes its workspace
+claim, may delete the volume, and supplies no restore path.
+
+## Known limits
+
+A broken checkpoint file stops resume of a completed switch. The session reports that its
+saved native checkpoint metadata is invalid or does not match the committed conversation.
+Ask your administrator to recover a valid current archive; do not replace it with another
+execution's native state. Ordinary sessions can still save their native archive and pause
+when optional checkpoint metadata is damaged.
 
 ## Operator storage settings
 
