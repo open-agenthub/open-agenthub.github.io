@@ -227,8 +227,8 @@ Say "       kubectl --context $Context -n $Namespace get secret agenthub-api-key
 Say '     For more than one person, use your OIDC provider instead:'
 Say "       helm --kube-context $Context upgrade agenthub $Chart -n $Namespace --reset-then-reuse-values --set oidc.authority=https://<provider>/realms/<realm>"
 Say '  2. In the UI: store your credentials, start your first session.'
-Say '  3. For a real deployment, put it behind your own host + TLS:'
-Say '       https://github.com/open-agenthub/open-agenthub'
+Say '  3. Move the quickstart to team login:'
+Say '       https://open-agenthub.github.io/docs/getting-started.html#move-the-quickstart-to-team-login'
 Say ''
 Say 'the cluster comes back with Docker Desktop. After a "k3d cluster stop" start it'
 Say "with: k3d cluster start $Cluster"
