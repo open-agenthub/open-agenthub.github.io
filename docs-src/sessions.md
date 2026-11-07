@@ -35,6 +35,9 @@ Choose the agent per session: **Claude** (Claude Code), **Codex**, **Cursor**, *
   endpoint URL and the model name. The dialog names the protocol the agent expects. Cursor and
   OpenClaw cannot use an own endpoint.
 
+Below billing, **Model** sets the model the session starts on and lists the models the chosen
+account offers. See [Choosing a model](/models).
+
 ::: warning Credentials are visible to the agent
 Whatever credential a session gets is readable by the agent and the tools it runs. Run only
 repositories and prompts you trust while credentials are present.
