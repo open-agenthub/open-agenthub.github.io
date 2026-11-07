@@ -112,7 +112,9 @@ Before sharing the instance with your team:
 
 1. Give the instance a stable hostname, for example `hub.example.com`, with DNS pointing at
    your ingress and a trusted TLS certificate. Set `ingress.enabled=true`, `ingress.host`,
-   `ingress.tlsSecretName` to your certificate Secret. Update
+   `ingress.tlsSecretName` to your certificate Secret. On the quickstart cluster, also set
+   `ingress.className=traefik`; on another cluster, select its installed ingress class
+   (`kubectl get ingressclass`). The chart default does not select the quickstart controller. Update
    `frontendOrigin` to `https://hub.example.com`. Keep the existing release name and namespace.
 2. Register the HTTPS redirects and origin above at the issuer. Both the browser and backend
    must reach the issuer hostname and trust its TLS certificate; cluster-only DNS is insufficient.
