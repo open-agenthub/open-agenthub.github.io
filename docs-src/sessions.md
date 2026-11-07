@@ -71,6 +71,16 @@ answers before the wait ends, it is denied. Nobody watches an unattended session
 an MCP client without an explicit choice get auto approve on for Autonomous and Scheduled mode.
 See [Auto approve](/auto-approve).
 
+The hub's own tools that only read the session's state or clean up after it do not need to be on
+the allow list: `agent_inbox`, `agents_list`, `session_list`, `session_get`, `session_wait`,
+`container_list`, `container_logs`, `container_stop`, `secrets_list`, `account_status` and
+`port_list`. A session that may start a helper container can therefore always stop it again and
+read its own messages. Tools that let a session do more (`session_create`, `container_run`,
+`secret_request`, `port_request`, `agent_send` and the others) still need an entry. A block under
+**MCP security** in the [Share dialog](/sharing) applies to all of them.
+
+An `mcp__…` name in the general tool list counts for every agent, as it does in the MCP tool list.
+
 ### Container image and root mode
 
 **Container image** runs the agent inside your own toolchain image; the agent runtime and terminal
