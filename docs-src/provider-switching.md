@@ -64,8 +64,9 @@ carried over as permission for new calls.
 ## During replacement and on failure
 
 Workspace input and competing maintenance actions are held while the switch is pending.
-Fleet messages remain queued and can be consumed only after the target handover is committed.
-The target's initial input cannot be replaced by a queued message.
+Fleet messages remain queued until the target handover is committed. Cancelling before
+source shutdown releases queued messages back to the original agent. The target's initial
+input cannot be replaced by a queued message.
 
 Cancel is available only before native source shutdown begins. Afterwards, use **Retry**
 when the reported problem is fixed. A retry checks the same durable operation and target;
