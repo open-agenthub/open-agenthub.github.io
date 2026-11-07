@@ -185,3 +185,11 @@ chosen collector destination.
 
 After updating the server and runtime images, restart existing Claude sessions so they receive
 the telemetry environment needed to keep recording usage. New sessions receive it at startup.
+
+## Persistent session workspaces
+
+`agent.workspaceVolume.persistent` defaults to `false`. Enabling it gives new supported
+Claude/Codex interactive terminal sessions a claim of `agent.workspaceVolume.size` (default
+`10Gi`). `agent.workspaceVolume.storageClass` defaults to an empty string, using the cluster
+default. Read [Switch provider](/provider-switching#operator-storage-settings) for lifecycle,
+backup requirements, existing-session limits and reclaim-policy costs.
