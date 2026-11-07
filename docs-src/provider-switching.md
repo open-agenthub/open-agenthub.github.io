@@ -96,9 +96,9 @@ its current provider and execution. If that archive is missing or cannot be rest
 resume refuses to start. The persistent workspace is retained, and the original task is
 not submitted again. Runtime maintenance uses the current execution's archive too.
 
-An explicit context clear starts a new native conversation. The saved current conversation
-is the one resumed afterwards; clearing context does not erase the earlier visible Workspace
-history or make it part of the new model context.
+After an explicit context clear, resume follows the saved current native conversation.
+Clearing context does not erase earlier visible Workspace history or make that history part
+of the new model context.
 
 Restore the current archive and retry **Resume**. A previous provider's archive, an earlier
 execution of the same provider, or the visible conversation cannot replace the missing
