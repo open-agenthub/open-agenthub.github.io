@@ -1,7 +1,7 @@
 # Feature overview
 
 Every user-facing feature of Open AgentHub, the edition it belongs to, who can use it, and the
-page that explains it. It describes release 1.14.1.
+page that explains it. The Enterprise entries below include features released through 1.18.0.
 
 **Community** features are free and open source (AGPL-3.0) and need no licence. **Enterprise**
 features live under `ee/` in the repository and need a valid licence; without one they are
@@ -59,6 +59,9 @@ Roles used on these pages:
 | Child sessions inherit the parent's share | Enterprise | Owner | [Sharing](/sharing#child-sessions-inherit-the-share) |
 | Share a whole project with a user or group | Enterprise | Project owner | [Sharing](/sharing#share-a-whole-project) |
 | “Shared with me” in the session list | Enterprise | Viewer, Collaborator | [Sharing](/sharing#shared-with-me) |
+| Available live or stored conversation history, paged, for named and link recipients | Enterprise | Viewer, Collaborator | [Sharing](/sharing#history-of-a-shared-session) |
+| List and read status of shared sessions through external MCP; send audited normal messages as Collaborator | Enterprise | Viewer, Collaborator | [MCP clients](/mcp#sessions-shared-with-you) |
+| Share-link MCP tools: read status and history; send normal messages through a Collaborator link | Enterprise | Link holder, within the link's role | [MCP clients](/mcp#use-a-share-link) |
 | Session-wide MCP restrictions | Enterprise | Owner | [Sharing](/sharing#mcp-restrictions-for-the-whole-session) |
 | Manage shares over the API and MCP | Enterprise | Owner | [Sharing](/sharing#managing-shares-from-an-api-client) |
 
@@ -108,6 +111,7 @@ Roles used on these pages:
 | Telegram and Signal relays, desktop notifications | Community | Linked user | [Chat](/chat) |
 | `/use`, `/unpin`, session names, deleted-session notices | Community | Linked user | [Chat](/chat#which-session-a-message-goes-to) |
 | Slack relay, `!new`, `!repos` | Enterprise | Linked user, operator | [Slack](/slack) |
+| Slack thread replies, `!status` and permission buttons restricted to the owner or a Collaborator, matched by unique email | Enterprise | Owner, Collaborator | [Slack](/slack#who-can-answer) |
 | Built-in tools inside a session: child sessions, messaging, `context_clear`, accounts, helper containers | Community | Agent | [Built-in tools](/session-tools) |
 | Reach sessions shared with the owner through the sessions MCP | Enterprise | Agent | [Built-in tools](/session-tools#sessions-shared-by-other-users-enterprise) |
 | Saved MCP servers, API URL servers, inline MCP config | Community | Owner | [MCP servers for sessions](/mcp-servers) |
