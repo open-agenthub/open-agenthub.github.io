@@ -71,7 +71,9 @@ runtime switching is enabled, a provider boundary will distinguish the segments;
 will stay history rather than automatically becoming the next provider's model context.
 Existing sessions keep their native history and context-clear boundaries.
 
-The combined history view is bounded to 5,000 entries and approximately one million characters;
+Existing single-execution sessions retain their current native full-history paging without
+a new total limit. Only a combined view containing several executions is bounded to
+5,000 entries and approximately one million characters;
 an explicit omission boundary appears when earlier retained entries fall outside that view.
 Individual provider projections have their own retention and field limits. A missing or
 previously truncated native record cannot be reconstructed. History does not translate native
