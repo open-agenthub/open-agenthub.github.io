@@ -34,6 +34,23 @@ only offered to the session owner.
   `/clear` and `/new`.
 - Long links and inline code wrap; code blocks and tables scroll on their own.
 
+## OpenCode conversations
+
+Choose **OpenCode** and **Workspace** when creating a session, or switch an existing OpenCode
+session to Workspace from its header. The conversation shows your messages, completed answers,
+tool calls and tool results from OpenCode's own history. Open **Agent terminal** for the CLI's
+menus, login and an answer while it is still streaming.
+
+Earlier messages remain available after reconnecting; use **Load earlier messages** in a long
+conversation. History catches up in bounded pages. A message appears after OpenCode has saved it;
+answers appear when complete. Long text and tool output may be shortened, with an omission
+notice. Native subagent conversations and reasoning are not shown as separate conversations.
+
+This is included in **Community Edition** for session owners. With **Enterprise** sharing,
+Viewers can read the conversation and Collaborators can also send messages, subject to their
+existing session permissions. Shared reads use the same masking as other session history.
+OpenCode's managed tool policy and approval prompts still apply to tools started from the CLI.
+
 ## The composer
 
 Type in **Give your agent a task…** and press **Enter** to send (**Shift+Enter** for a new line).
