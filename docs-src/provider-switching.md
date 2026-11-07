@@ -1,6 +1,6 @@
 # Switch agent provider
 
-::: warning Experimental (1.21.1)
+::: warning Experimental (1.22.0)
 Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery uses the latest saved native checkpoint. An interrupted switch stays held when its runtime identity, shutdown or handover cannot be confirmed; an ambiguous lost target is not recreated automatically. Keep the option off in production while evaluating these recovery limits and your workspace backup procedure.
 :::
 
