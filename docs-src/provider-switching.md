@@ -1,10 +1,7 @@
 # Switch agent provider
 
-::: info Release coordination
-This page accompanies product [PR #490](https://github.com/open-agenthub/open-agenthub/pull/490)
-and [issue #345](https://github.com/open-agenthub/open-agenthub/issues/345).
-Publish it with the release containing that change. The operator must also enable persistent
-session workspaces; the option is off by default.
+::: warning Experimental (1.21.0)
+Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery after a crash or a lost pod in the middle of a switch is still being hardened: an interrupted switch is held and the owner can retry or cancel it, and a resumed agent whose saved native state is missing can start a new conversation instead of continuing. Keep the option off in production until a later release completes this.
 :::
 
 The session owner can replace a Claude agent with Codex, or Codex with Claude, while keeping

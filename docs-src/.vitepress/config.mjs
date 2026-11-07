@@ -24,7 +24,8 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Feature overview', link: '/features' },
-          { text: 'Install', link: '/getting-started' }
+          { text: 'Install', link: '/getting-started' },
+          { text: 'Evaluation checklist', link: '/evaluate' }
         ]
       },
       {
