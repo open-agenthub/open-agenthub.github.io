@@ -124,6 +124,23 @@ Before sharing the instance with your team:
    (`ee.admins`) before sharing the URL with your team. Existing API-key-owned sessions keep
    their original owner; changing login does not migrate ownership.
 
+If the issuer uses a private CA, create a ConfigMap in the **release namespace** with a
+PEM CA bundle under `ca.crt`, then include it in the same Helm upgrade:
+
+```bash
+kubectl create configmap backend-trusted-ca -n agenthub --from-file=ca.crt=./internal-ca-bundle.pem
+# Add this value to the team-login helm upgrade above:
+# --set backend.trustedCaConfigMap=backend-trusted-ca
+```
+
+The bundle is mounted read-only and adds trust for the backend's outbound TLS, including
+issuer discovery and signing keys. It does not disable certificate checks or make the
+browser trust the issuer: install the CA in team members' browsers separately. The
+ConfigMap must exist before the upgrade. After updating the bundle, restart the backend
+with `kubectl rollout restart deployment/agenthub-backend -n agenthub`. This setting is
+available in both editions and is managed by the cluster operator. Session pods use the
+separate `agent.trustedCaConfigMap` value in the sessions namespace.
+
 `oidc.requireHttpsMetadata` defaults to `true`. Keep it enabled for team deployments.
 For an isolated HTTP issuer in a local test only, set it to `false`; this changes backend
 metadata retrieval, not browser mixed-content restrictions or TLS trust. The backend validates
