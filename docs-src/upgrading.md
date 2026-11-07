@@ -43,6 +43,25 @@ helm upgrade agenthub agenthub/open-agenthub -n agenthub -f my-values.yaml
 That file holds secrets — database password, S3 keys, bot tokens — so keep it out of
 version control.
 
+## Image versions follow the chart
+
+Since chart 1.19.0, `image.tag` is empty by default and means the chart's `appVersion`: chart
+X.Y.Z runs the images of release X.Y.Z, and upgrading the chart moves every component — backend,
+frontend, browser, renderer and all agent runtimes — to the new release. Check what a release
+runs with:
+
+```bash
+kubectl -n agenthub get deployment agenthub-backend -o jsonpath='{.spec.template.spec.containers[0].image}'; echo
+```
+
+Earlier charts defaulted to `latest` with `pullPolicy: IfNotPresent`. Such an install ran
+whatever image its nodes had pulled first, which could be newer than the chart, and an upgrade did
+not move it. After upgrading to 1.19.0 or later it runs the matching release images instead.
+
+If you set `image.tag` yourself, nothing changes: an explicit value always wins. To keep following
+the newest build on purpose, set `image.tag: latest` together with `image.pullPolicy: Always` and
+`agent.pullPolicy: Always`.
+
 ## Installs without OIDC: the API key
 
 Releases up to 1.4.0 ran with no login at all when `oidc.authority` was empty, the chart

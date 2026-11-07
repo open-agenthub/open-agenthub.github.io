@@ -18,8 +18,8 @@ arrive with each upgrade. See [Upgrading](/upgrading).
 | Value | Default | What it does, when to change it |
 | --- | --- | --- |
 | `image.registry` | `ghcr.io/open-agenthub/open-agenthub` | Base path of every component image. Change it for a mirror or your own build. |
-| `image.tag` | `latest` | Selects the backend, frontend and all five agent runtimes at once, so they always move together. Pin a release tag in production. Quote a commit-SHA tag, or YAML may read it as a number. |
-| `agent.pullPolicy` | `IfNotPresent` | Use `Always` if you deploy a moving tag such as `latest`, so nodes do not keep a stale image. |
+| `image.tag` | empty (= the chart's `appVersion`) | Selects the backend, frontend, browser, renderer and all five agent runtimes at once, so they always move together. Empty installs exactly the release the chart belongs to, and a chart upgrade moves every image. Set it only to deviate on purpose; quote a commit-SHA tag, or YAML may read it as a number. |
+| `agent.pullPolicy` | `IfNotPresent` | Use `Always` (with `image.pullPolicy: Always`) only if you set a moving tag such as `latest`, so nodes do not keep a stale image. |
 | `agent.autoUpdateRuntimeImages` | `false` | Replaces an outdated runtime image in a running session automatically, but only when the session confirms it is idle. Interactive sessions only; autonomous runs are never restarted, and object storage is required. Sessions can override it under **Edit session → Automatic runtime image updates**. Otherwise the owner uses **Update now**. |
 
 ## Backend and database
