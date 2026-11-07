@@ -145,15 +145,44 @@ Collaborator, because a Viewer cannot answer.
 
 ## MCP restrictions for the whole session
 
-Under **MCP security** in the **Share** dialog, you can block MCP servers (one name per line) or
-exact tool names such as `mcp__server__tool`, then click **Save MCP policy**. The block applies to
-everyone who works in the session, including you, from the next MCP call on. It also covers
-child sessions, and it is a hard deny even with auto approve on. Tool results already in the
-transcript stay there.
+The owner sets these Enterprise restrictions under **MCP security** in the **Share** dialog.
+They apply to everyone using the session, including its owner and inherited child sessions.
+Auto approve does not override them.
 
-The block is enforced for Claude, Codex and OpenCode sessions, which check every tool call with
-the hub. Cursor and OpenClaw sessions have no such check, so the block does not reach them. (Read from the
-code; not tested in a running Cursor or OpenClaw session.)
+1. Enter **Blocked servers**, one configured server name per line, to omit those servers from
+   the session's MCP configuration.
+2. For a supported agent, enter **Blocked exact tool names**, one per line, in the form
+   `mcp__server__tool`.
+3. Click **Save MCP policy**. After changing blocked servers, restart the session (pause and
+   resume) so the runtime loads the new configuration. Restart affected running child sessions
+   too. Tool-level changes apply on the next tool call for supported agents.
+
+| Agent | Server restrictions after restart | Tool restrictions on the next call |
+| --- | --- | --- |
+| Claude | Yes | Yes |
+| Codex | Yes | Yes |
+| OpenCode | Yes | Yes |
+| Cursor | Yes | Not available |
+| OpenClaw | Yes | Not available |
+
+Cursor and OpenClaw show the tool restriction field as unavailable. Existing saved tool rules
+are preserved for use if the session later switches to an agent that supports them. Use server
+restrictions for these two agents.
+
+Built-in servers can be blocked too, when available for the chosen agent:
+
+| Server name | Tools removed from the agent |
+| --- | --- |
+| `agenthub_files` | File upload, download and presentation |
+| `agenthub_browser` | Integrated browser control |
+| `agenthub_network` | Network access requests |
+| `agenthub_sessions` | Session coordination and helper container tools |
+| `skill-library` | Skill search, upload and download |
+
+Blocking a built-in removes that agent's MCP tools; the session can continue with its other
+tools. It does not change participants' web-app roles or remove existing transcript results.
+For resource operations, agents with tool restrictions must name an allowed server when server
+restrictions are set; discovery across all servers is then unavailable.
 
 ## Managing shares from an API client
 
