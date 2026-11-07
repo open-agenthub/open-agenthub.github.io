@@ -72,6 +72,19 @@ shutdown, storage, pod identity or delivery cannot be confirmed, the switch stay
 an explanation. There is no automatic rollback to the source agent. Deleting the session
 also deletes its owned workspace claim, so preserve needed files before choosing deletion.
 
+Before retrying a held switch:
+
+1. Read the reported reason and fix the selected provider account, storage or runtime problem.
+2. Keep the same target selection and reviewed handover. Retry continues the existing operation.
+3. If the target pod disappeared after startup might have begun, leave the operation held and
+   ask your administrator to inspect it. A missing pod does not prove the handover never ran.
+4. Preserve workspace files before deleting an unrecoverable session. Native state archives
+   do not contain dirty repositories.
+
+A retry cannot recover an unavailable native archive, missing workspace claim or expired
+credential by using another execution's state. Do not edit native resume files or replace
+an uncertain target manually to make a retry proceed.
+
 The session keeps one visible conversation with provider boundaries. Combined history has
 retention limits and explicit omission notes; see [Handover preview](/handover-preview#conversation-history).
 Completed execution usage is shown separately by provider/account where available.
@@ -82,6 +95,10 @@ From **1.21.1**, resuming a completed switch requires the saved native conversat
 its current provider and execution. If that archive is missing or cannot be restored,
 resume refuses to start. The persistent workspace is retained, and the original task is
 not submitted again. Runtime maintenance uses the current execution's archive too.
+
+An explicit context clear starts a new native conversation. The saved current conversation
+is the one resumed afterwards; clearing context does not erase the earlier visible Workspace
+history or make it part of the new model context.
 
 Restore the current archive and retry **Resume**. A previous provider's archive, an earlier
 execution of the same provider, or the visible conversation cannot replace the missing
