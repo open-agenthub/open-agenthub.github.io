@@ -1,7 +1,7 @@
 # Switch agent provider
 
-::: warning Experimental (1.21.0)
-Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery after a crash or a lost pod in the middle of a switch is still being hardened: an interrupted switch is held and the owner can retry or cancel it, and a resumed agent whose saved native state is missing can start a new conversation instead of continuing. Keep the option off in production until a later release completes this.
+::: warning Experimental (1.21.1)
+Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery after a crash or a lost pod in the middle of a switch is still being hardened: an interrupted switch is held and the owner can retry or cancel it, and native state is required to resume a completed switch. Keep the option off in production until a later release completes this.
 :::
 
 The session owner can replace a Claude agent with Codex, or Codex with Claude, while keeping
@@ -75,6 +75,18 @@ also deletes its owned workspace claim, so preserve needed files before choosing
 The session keeps one visible conversation with provider boundaries. Combined history has
 retention limits and explicit omission notes; see [Handover preview](/handover-preview#conversation-history).
 Completed execution usage is shown separately by provider/account where available.
+
+## Resume after a completed switch
+
+From **1.21.1**, resuming a completed switch requires the saved native conversation for
+its current provider and execution. If that archive is missing or cannot be restored,
+resume refuses to start. The persistent workspace is retained, and the original task is
+not submitted again. Runtime maintenance uses the current execution's archive too.
+
+Restore the current archive and retry **Resume**. A previous provider's archive, an earlier
+execution of the same provider, or the visible conversation cannot replace the missing
+native state. If it cannot be recovered, ask your administrator to preserve the workspace
+before deleting the session: deletion also removes its owned workspace claim.
 
 ## Operator storage settings
 
