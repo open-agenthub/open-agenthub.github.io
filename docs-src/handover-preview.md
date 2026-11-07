@@ -10,7 +10,8 @@ It is not available in 1.18.0. Publish this guide with the release containing th
 A handover preview lets a session owner prepare the exact text they would give another
 provider: instructions, current task, decisions, pending work and source references.
 The preview sends no conversation to a provider, starts no agent and changes no credentials.
-This step provides an API preview; there is no provider-switch button in Workspace yet.
+This page covers the standalone API preview. For reviewed runtime replacement on an
+opt-in persistent workspace, see [Switch provider](/provider-switching).
 
 The preview is a **Community** feature for the **owner** of an interactive session using the
 Terminal interface. Shared Collaborators, Viewers, peer agents and parent sessions cannot
