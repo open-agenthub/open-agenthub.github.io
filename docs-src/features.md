@@ -120,3 +120,9 @@ Roles used on these pages:
 | GitHub and GitLab tokens and OAuth connections | Community | Owner, operator | [Git](/git) |
 | External MCP clients (remote HTTP, stdio) | Community | Everyone | [MCP clients](/mcp) |
 | Continue a session on your workstation | Community | Owner | [Continue locally](/local-sessions) |
+
+## Upcoming: handover preview
+
+The [owner-only handover preview API](/handover-preview) is a Community feature in
+[product PR #487](https://github.com/open-agenthub/open-agenthub/pull/487), after 1.18.0.
+It prepares selected text and explicit omissions; runtime provider switching is not enabled.
