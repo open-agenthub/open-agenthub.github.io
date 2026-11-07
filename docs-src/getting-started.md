@@ -112,7 +112,9 @@ Before sharing the instance with your team:
 
 1. Give the instance a stable hostname, for example `hub.example.com`, with DNS pointing at
    your ingress and a trusted TLS certificate. Set `ingress.enabled=true`, `ingress.host`,
-   `ingress.tlsSecretName` to your certificate Secret. Update
+   `ingress.tlsSecretName` to your certificate Secret. On the quickstart cluster, also set
+   `ingress.className=traefik`; on another cluster, select its installed ingress class
+   (`kubectl get ingressclass`). The chart default does not select the quickstart controller. Update
    `frontendOrigin` to `https://hub.example.com`. Keep the existing release name and namespace.
 2. Register the HTTPS redirects and origin above at the issuer. Both the browser and backend
    must reach the issuer hostname and trust its TLS certificate; cluster-only DNS is insufficient.
@@ -174,7 +176,7 @@ OAuth instead; see [Git integrations](/git).
 
 ### 4. Start a session
 
-Pick an agent (Claude, Codex, Cursor, or OpenClaw), the billing mode (subscription or API
+Pick an agent (Claude Code, Codex, Cursor, OpenClaw, or OpenCode), the billing mode (subscription or API
 key), and a session mode:
 
 | Mode | What it does |
@@ -183,9 +185,8 @@ key), and a session mode:
 | Autonomous | Runs a prompt to completion under a policy allowlist. |
 | Scheduled | Creates a CronJob that starts the task on a schedule. |
 
-Complete the first provider login in an Interactive session using the **Terminal** interface.
-See [Provider login](/provider-login) for agent-specific commands, stored accounts, and the
-1.0.0-rc.1 Workspace workaround. To continue a conversation on your workstation, see
+Complete the first provider login in an Interactive session.
+See [Provider login](/provider-login) for sign-in cards, terminal commands and stored accounts. To continue a conversation on your workstation, see
 [Continue locally](/local-sessions); to control sessions from an external client, see [MCP](/mcp).
 
 The home screen's **Shared with me** section lists direct, inherited and project-shared
