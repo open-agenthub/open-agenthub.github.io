@@ -1,5 +1,15 @@
 # Upgrading
 
+## Session telemetry
+
+After installing the server and runtime update for session telemetry authentication, restart
+existing Claude sessions so their usage continues to be recorded. New Claude sessions receive
+the telemetry environment automatically. This applies in both editions.
+
+If you use a custom `telemetry.otlpEndpoint`, metrics go to that collector without a session
+callback credential and do not count in AgentHub. Leave the setting empty for AgentHub usage.
+See [telemetry collectors](/chart-values#telemetry-collectors).
+
 ## The `--reuse-values` trap
 
 `helm upgrade --reuse-values` reuses the values from the last release and merges your new
