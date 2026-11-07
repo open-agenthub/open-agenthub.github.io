@@ -24,7 +24,8 @@ export default defineConfig({
         text: 'Getting started',
         items: [
           { text: 'Feature overview', link: '/features' },
-          { text: 'Install', link: '/getting-started' }
+          { text: 'Install', link: '/getting-started' },
+          { text: 'Evaluation checklist', link: '/evaluate' }
         ]
       },
       {
@@ -36,6 +37,7 @@ export default defineConfig({
           { text: 'Questions and approvals', link: '/questions-approvals' },
           { text: 'Auto approve', link: '/auto-approve' },
           { text: 'Provider login', link: '/provider-login' },
+          { text: 'Switch provider', link: '/provider-switching' },
           { text: 'Choosing a model', link: '/models' },
           { text: 'Handover preview', link: '/handover-preview' },
           { text: 'Continue locally', link: '/local-sessions' }
