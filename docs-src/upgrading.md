@@ -146,7 +146,8 @@ schema changes it has already applied, in a table called `schema_scripts`:
   retrying in 500 ms. Open transactions: pid 4711 (open-agenthub, idle in transaction, 42 s)
   ```
 
-- **After 3 minutes** of such waits for one store, the replica stops with
+- **After 3 minutes** of such waits for one store, or once the replica's 10-minute startup budget
+  is used up (before the chart's startup probe would restart it), the replica stops with
   `Schema script … could not lock its tables` and the same list of transactions. See
   [Troubleshooting](/troubleshooting#schema-script-could-not-lock-its-tables).
 
