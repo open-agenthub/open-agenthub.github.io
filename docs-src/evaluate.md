@@ -20,7 +20,7 @@ ordinary hardware with a fast network the quickstart itself takes about a minute
 | The username of your first administrator | `ee.admins`; nobody is an admin until one is named | Use the identity provider's `preferred_username` |
 | Access to your Git host | Agents clone and push with your credentials | A personal access token in Settings → Credentials, or a GitHub/GitLab OAuth app — see [Git](/git) |
 | A model account or your own endpoint | Agents need a model | Subscription login, an API key, or your own Messages-API-compatible endpoint — see [Provider login](/provider-login) and [Choosing a model](/models) |
-| For Enterprise features: a licence | Sharing, group roles, usage limits, the agent allowlist | The trial starts from **Settings → License → Get enterprise license**, see below |
+| For Enterprise features: a licence | Sharing, group roles, usage limits, the agent allowlist | Obtained from **Settings → License → Get enterprise license**; see [Admin](/admin) |
 
 ## Steps and measured times
 
@@ -66,9 +66,8 @@ A good first evaluation, with two or three colleagues:
 
 ## Known limits
 
-- **Enterprise trial needs a payment method.** The 3-month trial is a subscription checkout
-  started from inside your instance; there is no hosted trial and no sign-up without payment
-  details yet.
+- **Enterprise licence.** The checkout under **Settings → License** asks for payment details. There
+  is no hosted instance to try.
 - **Private certificate authorities:** see the table above ([#508](https://github.com/open-agenthub/open-agenthub/issues/508)).
 - **Tool approvals belong to the session owner.** A collaborator can type into a shared session
   but cannot answer its approval prompts; the owner answers them, or allows a tool for the whole
