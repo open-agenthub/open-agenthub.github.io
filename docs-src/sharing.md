@@ -58,7 +58,9 @@ sidebar. In the **Share session** dialog:
    the person with a ✓, a line below names their sign-in username, and the list closes. The
    share always goes to that username. Selecting does not share yet. To pick someone else,
    type again; Escape closes the list without selecting.
-3. Choose **Viewer** or **Collaborator** and click **Add** (or press Enter again).
+3. Choose **Viewer** or **Collaborator** in the role selector next to the field and click
+   **Add** (or press Enter again). This role is for the person only; it does not change the
+   role of the next share link.
 
 Without a selection, **Add** uses the text as typed, so an exact username or email still works.
 
@@ -76,13 +78,21 @@ Owners then have to enter the exact username or email.
 
 ## Share links
 
-Under **Share by link**, choose a role and, optionally, an expiry date, then click
-**Create link**. The dialog shows the full link once ("Copy this one-time link now; it cannot
+Under **Share by link**, pick the link's role in **Link role** and, optionally, an expiry date,
+then click the button, which names the role: **Create Viewer link** or **Create Collaborator
+link**. The dialog shows the full link once ("Copy this one-time Viewer link now; it cannot
 be shown again"). Anyone holding it opens the session at `/shared/<token>` with that role,
 without signing in. Treat it like a password.
 
-- Each link is listed by its id, where you can change its role or expiry (**Save**) or
-  **Revoke** it. An expiry must be in the future.
+- **Link role** starts at **Viewer** every time you open the dialog, and goes back to Viewer
+  after each link you create. It has its own selector: adding a person as Collaborator does not
+  make the next link a Collaborator link. The line under the selector says whether link holders
+  can type.
+- Choose **Collaborator** for a link only on purpose. Everyone who gets hold of it can type into
+  the session, and so read what it holds.
+- Each link is listed by its id with its role (*Viewer · read only* or *Collaborator · can
+  type*). There you can change its role or expiry (**Save**) or **Revoke** it. An expiry must
+  be in the future.
 - A link opens exactly that session, never its child sessions, and it never appears in anyone's
   session list.
 - A link's files are read-only, even with the Collaborator role: no uploads, no deleting.
@@ -145,15 +155,44 @@ Collaborator, because a Viewer cannot answer.
 
 ## MCP restrictions for the whole session
 
-Under **MCP security** in the **Share** dialog, you can block MCP servers (one name per line) or
-exact tool names such as `mcp__server__tool`, then click **Save MCP policy**. The block applies to
-everyone who works in the session, including you, from the next MCP call on. It also covers
-child sessions, and it is a hard deny even with auto approve on. Tool results already in the
-transcript stay there.
+The owner sets these Enterprise restrictions under **MCP security** in the **Share** dialog.
+They apply to everyone using the session, including its owner and inherited child sessions.
+Auto approve does not override them.
 
-The block is enforced for Claude, Codex and OpenCode sessions, which check every tool call with
-the hub. Cursor and OpenClaw sessions have no such check, so the block does not reach them. (Read from the
-code; not tested in a running Cursor or OpenClaw session.)
+1. Enter **Blocked servers**, one configured server name per line, to omit those servers from
+   the session's MCP configuration.
+2. For a supported agent, enter **Blocked exact tool names**, one per line, in the form
+   `mcp__server__tool`.
+3. Click **Save MCP policy**. After changing blocked servers, restart the session (pause and
+   resume) so the runtime loads the new configuration. Restart affected running child sessions
+   too. Tool-level changes apply on the next tool call for supported agents.
+
+| Agent | Server restrictions after restart | Tool restrictions on the next call |
+| --- | --- | --- |
+| Claude | Yes | Yes |
+| Codex | Yes | Yes |
+| OpenCode | Yes | Yes |
+| Cursor | Yes | Not available |
+| OpenClaw | Yes | Not available |
+
+Cursor and OpenClaw show the tool restriction field as unavailable. Existing saved tool rules
+are preserved for use if the session later switches to an agent that supports them. Use server
+restrictions for these two agents.
+
+Built-in servers can be blocked too, when available for the chosen agent:
+
+| Server name | Tools removed from the agent |
+| --- | --- |
+| `agenthub_files` | File upload, download and presentation |
+| `agenthub_browser` | Integrated browser control |
+| `agenthub_network` | Network access requests |
+| `agenthub_sessions` | Session coordination and helper container tools |
+| `skill-library` | Skill search, upload and download |
+
+Blocking a built-in removes that agent's MCP tools; the session can continue with its other
+tools. It does not change participants' web-app roles or remove existing transcript results.
+For resource operations, agents with tool restrictions must name an allowed server when server
+restrictions are set; discovery across all servers is then unavailable.
 
 ## Managing shares from an API client
 
