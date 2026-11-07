@@ -126,6 +126,34 @@ the old and new pod at the same time, so expect:
 
 Neither loses data: Telegram buffers updates by offset for about 24 hours.
 
+## Schema changes at startup
+
+**Community and Enterprise · operator.** The backend creates and migrates its database schema
+itself, one replica at a time, before it answers `/healthz`. Since the release that contains
+[issue #538](https://github.com/open-agenthub/open-agenthub/issues/538), it remembers which
+schema changes it has already applied, in a table called `schema_scripts`:
+
+- **A restart with an unchanged schema runs no schema changes.** A replica no longer waits for
+  long-running database transactions, and does not hold up the other replicas' requests while
+  it starts.
+- **The first start after an upgrade** applies what changed. If another transaction holds a
+  table it needs, the replica waits at most 2 seconds at a time, backs off so that live requests
+  get through, and tries again. Requests to the running replicas are delayed by at most those
+  2 seconds. Each wait is logged with the transactions that were open:
+
+  ```
+  Schema script PostgresSessionStore waited 2000 ms for a table lock and backed off (attempt 1);
+  retrying in 500 ms. Open transactions: pid 4711 (open-agenthub, idle in transaction, 42 s)
+  ```
+
+- **After 3 minutes** of such waits for one store, the replica stops with
+  `Schema script … could not lock its tables` and the same list of transactions. See
+  [Troubleshooting](/troubleshooting#schema-script-could-not-lock-its-tables).
+
+The first start of this release on an existing database applies every store's schema once,
+because nothing has been recorded yet. Do not delete `schema_scripts`: without it, the next
+start applies everything again.
+
 ## Version notes
 
 What each release asks of an operator when upgrading to it. Releases not listed here need nothing

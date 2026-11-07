@@ -13,6 +13,18 @@ with `-f`. Full explanation in [Upgrading](/upgrading).
 Working as intended — see [one replica only](/chat#one-replica-only). Add
 `--set backend.replicas=1`.
 
+## Backend startup
+
+### `Schema script … could not lock its tables`
+
+A replica tried to apply a schema change for 3 minutes, but another database transaction kept
+a lock on the table. The message lists the open transactions with their process id
+(`pid`), application name, state and age. Usually one of them is `idle in transaction` and
+several minutes old. A client left it open, or a stuck process holds it. End that transaction
+in Postgres, for example with `SELECT pg_terminate_backend(<pid>)` on the reported pid, or stop
+the client that opened it. Then let Kubernetes restart the replica. The running replicas keep
+serving while the new one waits. See [Schema changes at startup](/upgrading#schema-changes-at-startup).
+
 ## Telegram
 
 ### Nothing arrives, and the log looks fine
