@@ -54,6 +54,12 @@ seconds and when the agent exits. Only the numbers leave the pod, never conversa
 OpenCode does not count its own title-generation request, so its figures can be slightly below
 what the provider bills.
 
+For Claude Code, leave `telemetry.otlpEndpoint` empty to send metrics to AgentHub. If an
+administrator selects an external collector, those exports do not count in AgentHub. See
+[telemetry collectors](/chart-values#telemetry-collectors) for the deployment setting and limits.
+After updating the server and runtime images, restart existing Claude sessions to receive the
+telemetry environment needed to keep recording usage.
+
 If the table says **No usage recorded yet**, check that `telemetry.enabled` is set on the server
 for Claude sessions.
 
