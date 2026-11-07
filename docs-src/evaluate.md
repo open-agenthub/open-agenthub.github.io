@@ -74,7 +74,8 @@ A good first evaluation, with two or three colleagues:
   but cannot answer its approval prompts; the owner answers them, or allows a tool for the whole
   session.
 - **Link role.** In the Share dialog, the role chosen for a person is also preselected for the next
-  link. Check the link's role before you create it.
+  link, so after adding a Collaborator the next link would let its holder type into the session.
+  Set the link's role to **Viewer** before you create it ([#519](https://github.com/open-agenthub/open-agenthub/issues/519)).
 - **Sessions created with the quickstart API key** stay with the user `admin` after you switch to
   single sign-on.
 - **OpenClaw sessions** do not appear in Slack, Telegram or Signal.
