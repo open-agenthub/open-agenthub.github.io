@@ -122,3 +122,8 @@ Questions and permission requests from the agent appear in the Workspace as well
   native conversation record. For Cursor and OpenClaw the Workspace shows the cleaned terminal
   history instead, without per-message times; use the Terminal for those agents when you need the
   full console.
+
+## Preparing a provider handover
+
+The upcoming [handover preview API](/handover-preview) lets an owner review a bounded text
+selection. It does not yet switch the running provider or send the text to another agent.

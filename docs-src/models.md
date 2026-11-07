@@ -16,8 +16,57 @@ session's list; viewers of a [shared](/sharing) session (Enterprise) only read i
 3. **Refresh** asks the agent's CLI again, through one of your running sessions on the same
    account.
 
-Changing the model in **Edit session** takes effect at the session's next start. Inside a running
-session the CLI's own `/model` command still switches models, as before.
+Changing the model in **Edit session** takes effect at the session's next start. To change it in
+the middle of a conversation, use the **Model** button of the running session (below).
+
+## Switching the model of a running session
+
+The session bar in the Workspace shows the model the session runs on (**CLI default** until one was
+chosen). Click it to pick another model from the account's list, or type an id, then press
+**Switch** or **Save for restart**. The picker says which of the two happens before you press it.
+
+**Edition:** Community · **Who:** the session owner and, in a [shared](/sharing) session
+(Enterprise), collaborators. Viewers see the current model but cannot change it.
+
+| Agent | What happens | The conversation |
+| --- | --- | --- |
+| Claude (terminal) | Switches right away | Continues on the new model with its context |
+| Codex | Switches right away | Continues with its context |
+| Codex on an own endpoint | Saved, used from the next restart | Resumed on the new model |
+| OpenCode | Switches right away | Continues with its context |
+| OpenClaw | Switches right away | Continues with its context |
+| Cursor | Saved, used from the next restart | Resumed on the new model |
+| Claude (chat view) | Saved, used from the next restart | Resumed on the new model |
+
+A switch that happens right away is done by the agent's own CLI, and the picker shows the CLI's
+confirmation, for example *Now on gpt-6-luna. The agent said: "Model changed to gpt-6-luna"*. The
+model is also stored with the session, so a later restart stays on it.
+
+### When a switch is refused
+
+A model is only switched between turns. The picker refuses, and says why, while:
+
+- the agent is working on a turn — wait until it has finished;
+- a question or an approval is open — answer or decide it first;
+- a menu is open in the agent terminal — close it first;
+- text was typed into the agent terminal and not sent — send it or clear it (Ctrl+U).
+
+Nothing is queued: press **Switch** again once the agent is ready.
+
+Other messages you may see: *The agent refused this model* (Codex accepts only ids from its own
+list while it runs), *The agent did not confirm the switch* (look at the agent terminal), and *The
+session is not running* (OpenCode and OpenClaw switch only in a running session; Claude and Codex
+save the model for the next start instead).
+
+### Limits
+
+- Claude and OpenClaw take any id without checking it; a model the account cannot use fails at the
+  next turn.
+- OpenCode's picker finds models by name. If two models in the list share a name, switch in the
+  agent terminal instead.
+- Cursor's switch has not been tested with a real Cursor account yet.
+- A session started on an older runtime image has no live switch; update its runtime image, or
+  change the model in **Edit session** for the next start.
 
 ## Where the list comes from
 
