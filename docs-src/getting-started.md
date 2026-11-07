@@ -157,7 +157,7 @@ OAuth instead; see [Git integrations](/git).
 
 ### 4. Start a session
 
-Pick an agent (Claude, Codex, Cursor, or OpenClaw), the billing mode (subscription or API
+Pick an agent (Claude Code, Codex, Cursor, OpenClaw, or OpenCode), the billing mode (subscription or API
 key), and a session mode:
 
 | Mode | What it does |
@@ -166,9 +166,8 @@ key), and a session mode:
 | Autonomous | Runs a prompt to completion under a policy allowlist. |
 | Scheduled | Creates a CronJob that starts the task on a schedule. |
 
-Complete the first provider login in an Interactive session using the **Terminal** interface.
-See [Provider login](/provider-login) for agent-specific commands, stored accounts, and the
-1.0.0-rc.1 Workspace workaround. To continue a conversation on your workstation, see
+Complete the first provider login in an Interactive session.
+See [Provider login](/provider-login) for sign-in cards, terminal commands and stored accounts. To continue a conversation on your workstation, see
 [Continue locally](/local-sessions); to control sessions from an external client, see [MCP](/mcp).
 
 The home screen's **Shared with me** section lists direct, inherited and project-shared

@@ -184,7 +184,7 @@ say "next steps:"
 say "  1. Reach the UI (no ingress configured):"
 say "       $KC_HINT -n $NAMESPACE port-forward svc/agenthub-frontend 8080:80"
 say "     then open http://localhost:8080"
-say "     For production, set ingress.host + TLS: https://github.com/open-agenthub/open-agenthub"
+say "     Move the quickstart to team login: https://open-agenthub.github.io/docs/getting-started.html#move-the-quickstart-to-team-login"
 # The command only, never the key: this output ends up in terminals, CI logs and screenshots.
 say "  2. Sign in with the API key the chart generated (the UI asks once per browser session):"
 say "       $KC_HINT -n $NAMESPACE get secret agenthub-api-key -o jsonpath='{.data.api-key}' | base64 -d; echo"
