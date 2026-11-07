@@ -126,6 +126,43 @@ the old and new pod at the same time, so expect:
 
 Neither loses data: Telegram buffers updates by offset for about 24 hours.
 
+## Schema changes at startup
+
+**Community and Enterprise · operator.** The backend creates and migrates its database schema
+itself, one replica at a time, before it answers `/healthz`. Since 1.21.3
+([issue #538](https://github.com/open-agenthub/open-agenthub/issues/538)), it remembers which
+schema changes it has already applied, in a table called `schema_scripts`:
+
+- **A restart with an unchanged schema runs no schema changes.** A replica no longer waits for
+  long-running database transactions, and does not hold up the other replicas' requests while
+  it starts.
+- **The first start after an upgrade** applies what changed. If another transaction holds a
+  table it needs, the replica waits at most 2 seconds at a time, backs off so that live requests
+  get through, and tries again. In our tests, requests to the running replicas waited at most
+  about 2 seconds per attempt; this is not a total limit, since several attempts or other locks
+  can hold requests up for longer. Each wait is logged with the transactions that were open:
+
+  ```
+  Schema script PostgresSessionStore waited 2000 ms for a table lock and backed off (attempt 1);
+  retrying in 500 ms. Open transactions: pid 4711 (open-agenthub, idle in transaction, 42 s)
+  ```
+
+- **After 3 minutes** of such waits for one store, or once the replica's 10-minute startup budget
+  is used up (before the chart's startup probe would restart it), the replica stops with
+  `Schema script … could not lock its tables` and the same list of transactions. See
+  [Troubleshooting](/troubleshooting#schema-script-could-not-lock-its-tables).
+
+The first start of this release on an existing database applies every store's schema once,
+because nothing has been recorded yet. Do not delete `schema_scripts`: without it, the next
+start applies everything again.
+
+Releases before 1.21.3 ignore `schema_scripts`: if you go back to one, it runs its schema
+statements on every start as before, with its earlier waits. When you then return to 1.21.3, it
+finds its recorded changes unchanged and runs none. If you go back to a release
+that is itself 1.21.3 or newer and has different schema scripts, it applies its schema once on its
+first start, and the next upgrade once again, both with the bounded waits. This is
+not a general guarantee that older versions work with a newer schema.
+
 ## Version notes
 
 What each release asks of an operator when upgrading to it. Releases not listed here need nothing
