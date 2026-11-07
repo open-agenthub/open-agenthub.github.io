@@ -21,8 +21,9 @@ A replica tried to apply a schema change for 3 minutes, but another database tra
 a lock on the table. The message lists the open transactions with their process id
 (`pid`), application name, state and age. Usually one of them is `idle in transaction` and
 several minutes old. A client left it open, or a stuck process holds it. End that transaction
-in Postgres, for example with `SELECT pg_terminate_backend(<pid>)` on the reported pid, or stop
-the client that opened it. Then let Kubernetes restart the replica. The running replicas keep
+in Postgres after checking that the transaction can be ended, for example with
+`SELECT pg_terminate_backend(PID)`, replacing PID with the reported pid. Or stop the client that
+opened it. Then let Kubernetes restart the replica. The running replicas keep
 serving while the new one waits. See [Schema changes at startup](/upgrading#schema-changes-at-startup).
 
 ## Telegram
