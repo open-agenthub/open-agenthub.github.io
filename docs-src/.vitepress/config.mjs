@@ -37,6 +37,7 @@ export default defineConfig({
           { text: 'Auto approve', link: '/auto-approve' },
           { text: 'Provider login', link: '/provider-login' },
           { text: 'Choosing a model', link: '/models' },
+          { text: 'Handover preview', link: '/handover-preview' },
           { text: 'Continue locally', link: '/local-sessions' }
         ]
       },
