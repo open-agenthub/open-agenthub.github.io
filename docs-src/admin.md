@@ -63,7 +63,35 @@ can switch Enterprise features on. Without a licence, every admin tab offers
 
 With a licence, every user who signs in gets a seat automatically; untick it to free the seat.
 The instance reports its seat count to the licence service, which also renews the licence token.
-Only an aggregate user count is sent. **Last check-in** shows the most recent report.
+Only an aggregate user count is sent. **Last check-in** shows the most recent successful report.
+
+### Check renewal health
+
+Open **Settings → License** as an admin. For an activated licence the card shows:
+
+- **Last successful report**, or **never** before the first successful renewal.
+- **Enterprise features stop without renewal**, the expiry of the currently verified token.
+- **Last report error**, with its timestamp, or **none**. Errors remain visible across backend
+  restarts and are cleared when a renewal succeeds.
+
+A warning appears seven days before the token expires and remains after expiry. Operators can
+change the lead time with `ee.license.reportWarningDays` (0–365, default 7). Zero warns only at
+expiry. This setting affects the warning, not licence validity or the reporting schedule.
+Reporting normally runs every 24 hours (`ee.license.reportIntervalHours`), starting about 30
+seconds after the backend starts. Opening the page or **Refresh license status** reloads the
+status; the page does not send a report or continuously poll. No external notification is sent.
+
+If reporting fails, restore backend connectivity to the licence service and check your
+subscription under **Billing & invoices**. A rejected report shows its HTTP status; a request
+failure means connectivity or service availability needs checking. Invalid or missing renewal
+tokens leave the previous token in place. A successful renewal clears the error and moves the
+stop date according to the new signed token. Restart the backend to retry before its next
+scheduled report if needed.
+
+The stop date is distinct from a scheduled cancellation or a plan end date: it is when
+Enterprise features stop if no further renewal succeeds. It is read from the signed token,
+not calculated as 45 days after the last report. Community features remain available after
+expiry, and admins can still inspect and activate a licence without an Enterprise entitlement.
 
 ## Usage limits
 
