@@ -1,5 +1,19 @@
 # Troubleshooting
 
+## Sessions
+
+### Agent stopped unexpectedly
+
+A native agent terminated by a signal is shown as **Failed**, even when its terminal reports
+an exit code of zero. Check the session's failure details and container status to identify
+why it stopped. The signal is retained in the failure reason when available. A normal
+successful agent exit remains **Succeeded**.
+
+This status behavior applies to Community and Enterprise sessions; it does not change
+sharing roles or grant access to failure details beyond the session's existing permissions.
+A failure status does not reconstruct missing native state or workspace files. Preserve
+needed files before deleting the session.
+
 ## Helm
 
 ### `nil pointer evaluating interface {}.enabled`
@@ -12,6 +26,19 @@ with `-f`. Full explanation in [Upgrading](/upgrading).
 
 Working as intended — see [one replica only](/chat#one-replica-only). Add
 `--set backend.replicas=1`.
+
+## Backend startup
+
+### `Schema script … could not lock its tables`
+
+A replica tried to apply a schema change for 3 minutes, but another database transaction kept
+a lock on the table. The message lists the open transactions with their process id
+(`pid`), application name, state and age. Usually one of them is `idle in transaction` and
+several minutes old. A client left it open, or a stuck process holds it. End that transaction
+in Postgres after checking that the transaction can be ended, for example with
+`SELECT pg_terminate_backend(PID)`, replacing PID with the reported pid. Or stop the client that
+opened it. Then let Kubernetes restart the replica. The running replicas keep
+serving while the new one waits. See [Schema changes at startup](/upgrading#schema-changes-at-startup).
 
 ## Telegram
 

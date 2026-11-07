@@ -34,7 +34,9 @@ exhausted account must be fixed before retrying.
 
 ## Review and start
 
-1. Open **Switch provider** in the session's Workspace controls.
+1. Open **Switch provider** in the session's Workspace controls. If the panel says
+   **The session is still starting. Try again in a moment.**, wait and reopen it. A visible
+   answer can arrive before startup checks finish; review becomes available once the session is ready.
 2. Select the other provider, its authentication mode and account, and the model settings.
 3. Enter the instructions, current task, decisions, pending work and references the next agent
    needs. Review the exact framed handover, including its omission note.
@@ -99,6 +101,12 @@ not submitted again. Runtime maintenance uses the current execution's archive to
 After an explicit context clear, resume follows the saved current native conversation.
 Clearing context does not erase earlier visible Workspace history or make that history part
 of the new model context.
+
+After a container or pod crash, **Resume** restores the latest successfully saved native
+checkpoint. Recent turns that had not been saved may be absent from the model context, even
+when their repository edits remain on the persistent workspace. The visible conversation
+does not reconstruct missing native context. A native agent process failure is reported
+separately from a container or pod crash.
 
 Restore the current archive and retry **Resume**. A previous provider's archive, an earlier
 execution of the same provider, or the visible conversation cannot replace the missing
