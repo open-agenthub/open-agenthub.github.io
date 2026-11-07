@@ -190,5 +190,6 @@ say "  2. Sign in with the API key the chart generated (the UI asks once per bro
 say "       $KC_HINT -n $NAMESPACE get secret agenthub-api-key -o jsonpath='{.data.api-key}' | base64 -d; echo"
 say "     For more than one person, use your OIDC provider instead:"
 say "       helm --kube-context $CTX upgrade agenthub $CHART -n $NAMESPACE --reset-then-reuse-values \\"
-say "         --set oidc.authority=https://<provider>/realms/<realm>"
+say "         --set oidc.authority=https://<provider>/realms/<realm> \\"
+say "         --set-string ee.admins=<your-username>   # nobody is an admin until named"
 say "  3. In the UI: store your credentials, start your first session."

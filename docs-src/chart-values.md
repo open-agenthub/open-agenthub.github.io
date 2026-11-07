@@ -162,7 +162,7 @@ The API key, rotation and GitOps setup are described in [Upgrading](/upgrading#i
 | `mcp.enabled` | `false` | Remote MCP endpoint at `/mcp` for external clients. See [MCP](/mcp). |
 | `mcp.publicUrl` | empty | External HTTPS origin of that endpoint. Empty means it is derived from `ingress.host`. |
 | `sharing.userSuggestionsEnabled` | `true` | Enterprise. The share dialog suggests users after two typed characters. `false` allows only an exact username or email. |
-| `ee.admins` | empty | Comma-separated usernames that are always admins. See [Administration](/admin). |
+| `ee.admins` | empty | Comma-separated usernames that are always admins. With OIDC, set at least one: nobody is an admin by default. See [Administration](/admin#designating-the-first-admin). |
 
 ## Licence report warning
 

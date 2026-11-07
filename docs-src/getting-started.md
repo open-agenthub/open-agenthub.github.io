@@ -96,8 +96,14 @@ providers that return opaque access tokens need a compatible identity broker.
 helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-values \
   --set oidc.authority=https://identity.example.com \
   --set oidc.clientId=agenthub \
-  --set oidc.audience=agenthub
+  --set oidc.audience=agenthub \
+  --set-string ee.admins=<your-username>
 ```
+
+`ee.admins` names the first administrator by their OIDC username (`preferred_username`); nobody
+is an admin until one is named. Later admins can be promoted in the app. Data created with the API
+key stays with its user and becomes visible to the OIDC user with the same username — read
+[Switching from the API key to OIDC](/admin#switching-from-the-api-key-to-oidc) before you switch.
 
 ### Move the quickstart to team login
 

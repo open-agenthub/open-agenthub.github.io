@@ -16,12 +16,14 @@ The first matching rule decides:
 | 1 | The username is listed in the chart value `ee.admins` | admin | No: a break-glass admin |
 | 2 | A role set for the user under **Users & seats → Admins & roles** | admin or user | Yes |
 | 3 | Membership in an OIDC group mapped to **admin** (Enterprise) | admin | Yes, under **Usage limits & groups** |
-| 4 | Nobody is designated as admin by any rule above | admin (bootstrap) | Ends as soon as one admin is designated |
-| 5 | Membership in a group mapped to **user** (Enterprise) | user | Label only |
-| 6 | Otherwise | user | — |
+| 4 | Membership in a group mapped to **user** (Enterprise) | user | Label only |
+| 5 | Otherwise | user | — |
 
-- **Bootstrap:** on a fresh install with no admin designated, every signed-in user is an admin.
-  The roles card says so. Making someone an admin ends bootstrap for everyone else.
+- **Nobody is an admin by default.** With OIDC, name the first admin in the chart value
+  `ee.admins` (see below); after that, admins can promote others in the UI. Until then nobody can
+  open the admin area, and every signed-in user sees a notice: *No administrator is designated*,
+  with the value to set for their own username. `helm install` and `helm upgrade` print the same
+  hint, and the backend logs it at startup.
 - **API key:** on an install without OIDC, the user the API key acts as is always an admin.
 - **`ee.admins`** takes comma-separated usernames (the `preferred_username` claim). These accounts
   cannot be demoted in the UI, so they still work if the role settings are edited into a corner.
@@ -30,12 +32,51 @@ The first matching rule decides:
   one person without creating a group for them.
 - **Admin wins over user within groups.** Someone in both an admin group and a user group is an
   admin. A **user** mapping only labels; it never restricts who can sign in.
-- **The last admin cannot be removed**, yourself included. Falling back into bootstrap counts as
-  removing the last admin.
+- **The last admin cannot be removed**, yourself included.
 
 Role changes apply at the user's next request on every backend replica, without a redeploy. Roles
 can be set only for users who have signed in at least once. **Recent role changes** shows who changed
 what, and when.
+
+### Designating the first admin
+
+Set your OIDC username (the `preferred_username` claim) and upgrade the release:
+
+```bash
+helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-values \
+  --set-string ee.admins=alice
+```
+
+Several names are comma-separated. Accounts listed there stay admins whatever is set in the UI.
+
+**Upgrading from 1.18 or earlier:** older releases made every signed-in user an admin while no
+admin was designated. That no longer happens. Admins you designated in `ee.admins`, under
+**Admins & roles**, or through an admin group keep their rights. If you never designated one,
+nobody is an admin after the upgrade until you set `ee.admins`.
+
+### Switching from the API key to OIDC
+
+Data belongs to a username. Everything created with the API key — sessions, credentials,
+projects — belongs to the key's user (`admin` unless you set `auth.apiKey.owner`; `dev` on
+installs from before the API key). After a switch to OIDC, that data is visible to the
+identity-provider user with the same username.
+
+**Before you switch**, do one of these:
+
+- Choose a key user name that nobody can register at your identity provider
+  (`auth.apiKey.owner`) — ideally when you install, before any data exists.
+- Or move or delete the data that should not carry over.
+
+After the switch:
+
+- Set `ee.admins` to your OIDC username. The key's user name does not make anyone an admin under
+  OIDC: it can only be made one through `ee.admins`, not under **Admins & roles** or through a
+  group.
+- While data is still stored under that name, admins see a notice — *Data from API-key mode is
+  under the name …* — with the number of sessions and projects, and the backend logs it at
+  startup.
+- With a licence, the key's user keeps a seat under **Users & seats**. Revoke it there once you no
+  longer need its data.
 
 ## Admin tabs in Settings
 
