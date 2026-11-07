@@ -113,6 +113,14 @@ execution of the same provider, or the visible conversation cannot replace the m
 native state. If it cannot be recovered, ask your administrator to preserve the workspace
 before deleting the session: deletion also removes its owned workspace claim.
 
+## Known limits
+
+A broken checkpoint file stops resume of a completed switch. The session reports that its
+saved native checkpoint metadata is invalid or does not match the committed conversation.
+Ask your administrator to recover a valid current archive; do not replace it with another
+execution's native state. Ordinary sessions can still save their native archive and pause
+when optional checkpoint metadata is damaged.
+
 ## Operator storage settings
 
 Enable persistent workspaces for newly created supported sessions in Helm values:
