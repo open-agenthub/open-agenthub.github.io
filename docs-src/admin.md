@@ -57,15 +57,26 @@ nobody is an admin after the upgrade until you set `ee.admins`.
 ### Switching from the API key to OIDC
 
 Data belongs to a username. Everything created with the API key — sessions, credentials,
-projects — belongs to the key's user (`admin` unless you set `auth.apiKey.owner`). After the
-switch:
+projects — belongs to the key's user (`admin` unless you set `auth.apiKey.owner`; `dev` on
+installs from before the API key). After a switch to OIDC, that data is visible to the
+identity-provider user with the same username.
 
-- Set `ee.admins` to your OIDC username; the key's user is no longer an admin by itself.
-- If your OIDC username is the same as the key's user, you keep everything. Otherwise those
-  sessions stay with the old name and are not shown to OIDC users, so finish or export what you
-  need before switching.
-- With a licence, the key's user keeps a seat under **Users & seats**. Revoke it there once you
-  no longer need its data.
+**Before you switch**, do one of these:
+
+- Choose a key user name that nobody can register at your identity provider
+  (`auth.apiKey.owner`) — ideally when you install, before any data exists.
+- Or move or delete the data that should not carry over.
+
+After the switch:
+
+- Set `ee.admins` to your OIDC username. The key's user name does not make anyone an admin under
+  OIDC: it can only be made one through `ee.admins`, not under **Admins & roles** or through a
+  group.
+- While data is still stored under that name, admins see a notice — *Data from API-key mode is
+  under the name …* — with the number of sessions and projects, and the backend logs it at
+  startup.
+- With a licence, the key's user keeps a seat under **Users & seats**. Revoke it there once you no
+  longer need its data.
 
 ## Admin tabs in Settings
 

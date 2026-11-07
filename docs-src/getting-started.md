@@ -86,8 +86,8 @@ helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-valu
 
 `ee.admins` names the first administrator by their OIDC username (`preferred_username`); nobody
 is an admin until one is named. Later admins can be promoted in the app. Data created with the API
-key stays with its user — read [Switching from the API key to OIDC](/admin#switching-from-the-api-key-to-oidc)
-before you switch.
+key stays with its user and becomes visible to the OIDC user with the same username — read
+[Switching from the API key to OIDC](/admin#switching-from-the-api-key-to-oidc) before you switch.
 
 The redirect URI to register with your identity provider is `https://<your-host>/auth/callback`.
 Any standard OIDC provider works — Keycloak, Entra ID, Google.
