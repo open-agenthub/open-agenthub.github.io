@@ -1,5 +1,19 @@
 # Troubleshooting
 
+## Sessions
+
+### Agent stopped unexpectedly
+
+A native agent terminated by a signal is shown as **Failed**, even when its terminal reports
+an exit code of zero. Check the session's failure details and container status to identify
+why it stopped. The signal is retained in the failure reason when available. A normal
+successful agent exit remains **Succeeded**.
+
+This status behavior applies to Community and Enterprise sessions; it does not change
+sharing roles or grant access to failure details beyond the session's existing permissions.
+A failure status does not reconstruct missing native state or workspace files. Preserve
+needed files before deleting the session.
+
 ## Helm
 
 ### `nil pointer evaluating interface {}.enabled`
