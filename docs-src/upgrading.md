@@ -158,8 +158,9 @@ start applies everything again.
 
 Releases before 1.21.3 ignore `schema_scripts`: if you go back to one, it runs its schema
 statements on every start as before, with its earlier waits. When you then return to 1.21.3, it
-finds its recorded changes unchanged and runs none. A later release that goes back to another
-release from 1.21.3 onwards applies that release's schema once, with the bounded waits. This is
+finds its recorded changes unchanged and runs none. If you go back to a release
+that is itself 1.21.3 or newer and has different schema scripts, it applies its schema once on its
+first start, and the next upgrade once again, both with the bounded waits. This is
 not a general guarantee that older versions work with a newer schema.
 
 ## Version notes
