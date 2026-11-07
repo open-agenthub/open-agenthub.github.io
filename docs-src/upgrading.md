@@ -139,7 +139,8 @@ schema changes it has already applied, in a table called `schema_scripts`:
 - **The first start after an upgrade** applies what changed. If another transaction holds a
   table it needs, the replica waits at most 2 seconds at a time, backs off so that live requests
   get through, and tries again. In our tests, requests to the running replicas waited at most
-  about 2 seconds per attempt. Each wait is logged with the transactions that were open:
+  about 2 seconds per attempt; this is not a total limit, since several attempts or other locks
+  can hold requests up for longer. Each wait is logged with the transactions that were open:
 
   ```
   Schema script PostgresSessionStore waited 2000 ms for a table lock and backed off (attempt 1);
@@ -155,10 +156,11 @@ The first start of this release on an existing database applies every store's sc
 because nothing has been recorded yet. Do not delete `schema_scripts`: without it, the next
 start applies everything again.
 
-After a downgrade to an older version, that version applies its own schema once on its first
-start, and the next upgrade applies the current one once again. Both use the same bounded waits.
-Releases before 1.21.3 do not use `schema_scripts` and apply their schema at every start, as
-they always did.
+Releases before 1.21.3 ignore `schema_scripts`: if you go back to one, it runs its schema
+statements on every start as before, with its earlier waits. When you then return to 1.21.3, it
+finds its recorded changes unchanged and runs none. A later release that goes back to another
+release from 1.21.3 onwards applies that release's schema once, with the bounded waits. This is
+not a general guarantee that older versions work with a newer schema.
 
 ## Version notes
 
