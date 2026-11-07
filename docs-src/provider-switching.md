@@ -51,6 +51,8 @@ not fetch files or attach their contents. Do not include credentials in the hand
 Earlier native messages, raw tool output, attachments, hidden reasoning and native resume
 files are omitted from the handover. Visible history is not the target model's context.
 The new agent can inspect the preserved workspace through its normal permitted tools.
+Only workspace files persist: processes and memory from the old pod are not transferred.
+Stop background services before switching and restart needed services in the new runtime.
 
 The source agent checkpoints and exits before its pod is removed. AgentHub waits for all
 pods using the workspace to disappear, then starts the other provider in a replacement pod.
