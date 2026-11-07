@@ -1,7 +1,7 @@
 # Switch agent provider
 
 ::: warning Experimental (1.21.1)
-Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery after a crash or a lost pod in the middle of a switch is still being hardened: an interrupted switch is held and the owner can retry or cancel it, and native state is required to resume a completed switch. Keep the option off in production until a later release completes this.
+Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery uses the latest saved native checkpoint. An interrupted switch stays held when its runtime identity, shutdown or handover cannot be confirmed; an ambiguous lost target is not recreated automatically. Keep the option off in production while evaluating these recovery limits and your workspace backup procedure.
 :::
 
 The session owner can replace a Claude agent with Codex, or Codex with Claude, while keeping
