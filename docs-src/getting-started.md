@@ -74,13 +74,29 @@ kubectl -n agenthub get secret agenthub-api-key -o jsonpath='{.data.api-key}' | 
 Scripts send it as `Authorization: Bearer <key>`. The backend refuses to start with no login
 configured at all; `auth.insecureDevMode=true` turns the login off, for local development only.
 
-For more than one person, use an OIDC provider; every user then signs in as themselves:
+Open AgentHub speaks standard OIDC: the frontend runs the Authorization Code Flow with
+PKCE (public client, no secret), the backend validates the JWT access token against
+`oidc.authority` / `oidc.audience`. The user's `preferred_username` claim is the tenant
+key. Register the following in your provider:
+
+- **Redirect URI:** `https://<host>/auth/callback`
+- **Post-logout redirect URI:** `https://<host>`
+- **Allowed web origins / CORS:** `https://<host>`
+
+Register a public OIDC client with Authorization Code Flow and PKCE method `S256`.
+Configure the provider to issue JWT access tokens for this application's audience and to
+include a stable `preferred_username` claim. If it requires a dedicated API scope, add
+that scope to `oidc.scope` alongside `openid profile email`. The browser also always requests
+`offline_access` to renew sessions after idle periods; allow it and issue refresh tokens for
+this public client. Providers must return JWT access tokens, publish discovery and signing keys,
+and allow browser requests to their token endpoint. Support depends on these capabilities;
+providers that return opaque access tokens need a compatible identity broker.
 
 ```bash
 helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-values \
-  --set oidc.authority=<issuer-url> \
-  --set oidc.clientId=<client-id> \
-  --set oidc.audience=<expected-audience> \
+  --set oidc.authority=https://identity.example.com \
+  --set oidc.clientId=agenthub \
+  --set oidc.audience=agenthub \
   --set-string ee.admins=<your-username>
 ```
 
@@ -89,8 +105,39 @@ is an admin until one is named. Later admins can be promoted in the app. Data cr
 key stays with its user and becomes visible to the OIDC user with the same username — read
 [Switching from the API key to OIDC](/admin#switching-from-the-api-key-to-oidc) before you switch.
 
-The redirect URI to register with your identity provider is `https://<your-host>/auth/callback`.
-Any standard OIDC provider works — Keycloak, Entra ID, Google.
+### Move the quickstart to team login
+
+Team login is available in both editions. Each signed-in user owns their sessions.
+Before sharing the instance with your team:
+
+1. Give the instance a stable hostname, for example `hub.example.com`, with DNS pointing at
+   your ingress and a trusted TLS certificate. Set `ingress.enabled=true`, `ingress.host`,
+   `ingress.tlsSecretName` to your certificate Secret. Update
+   `frontendOrigin` to `https://hub.example.com`. Keep the existing release name and namespace.
+2. Register the HTTPS redirects and origin above at the issuer. Both the browser and backend
+   must reach the issuer hostname and trust its TLS certificate; cluster-only DNS is insufficient.
+3. Save these settings with the OIDC values in your values file, then run `helm upgrade agenthub
+   agenthub/open-agenthub -n agenthub --reset-then-reuse-values -f team-values.yaml --wait --timeout 5m`.
+   OIDC takes precedence over the quickstart API key. Sign in as a configured administrator
+   (`ee.admins`) before sharing the URL with your team. Existing API-key-owned sessions keep
+   their original owner; changing login does not migrate ownership.
+
+`oidc.requireHttpsMetadata` defaults to `true`. Keep it enabled for team deployments.
+For an isolated HTTP issuer in a local test only, set it to `false`; this changes backend
+metadata retrieval, not browser mixed-content restrictions or TLS trust. The backend validates
+issuer metadata and signing keys before serving traffic. If it cannot fetch them within 20
+seconds, it exits with one startup error. Check `kubectl logs -n agenthub deployment/agenthub-backend`
+for DNS, TLS and issuer configuration; correct the values and retry the upgrade.
+
+If an interrupted upgrade leaves the release in `pending-upgrade`, stop the original upgrade
+process first. Run `helm history agenthub -n agenthub`, identify the previous successful
+revision, then `helm rollback agenthub <revision> -n agenthub --wait --timeout 5m`. Correct the
+OIDC values before upgrading again. Do not delete release Secrets to bypass the lock.
+
+Opaque access tokens are not supported. An identity broker can supply compatible JWT
+access tokens when an upstream provider cannot. An ID token alone does not satisfy the
+backend's access-token validation.
+
 
 ::: warning Upgrading an existing release
 Note the `--reset-then-reuse-values` above rather than the more familiar `--reuse-values`.

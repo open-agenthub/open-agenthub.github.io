@@ -163,3 +163,9 @@ The API key, rotation and GitOps setup are described in [Upgrading](/upgrading#i
 | `mcp.publicUrl` | empty | External HTTPS origin of that endpoint. Empty means it is derived from `ingress.host`. |
 | `sharing.userSuggestionsEnabled` | `true` | Enterprise. The share dialog suggests users after two typed characters. `false` allows only an exact username or email. |
 | `ee.admins` | empty | Comma-separated usernames that are always admins. With OIDC, set at least one: nobody is an admin by default. See [Administration](/admin#designating-the-first-admin). |
+
+## Licence report warning
+
+`ee.license.reportWarningDays` controls how many days before the current signed licence token
+expires the Admin license page warns (default `7`, range `0`–`365`). Zero warns at expiry.
+It does not change entitlement validity or report frequency. See [renewal health](/admin#check-renewal-health).
