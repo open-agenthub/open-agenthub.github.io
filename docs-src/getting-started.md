@@ -80,8 +80,14 @@ For more than one person, use an OIDC provider; every user then signs in as them
 helm upgrade agenthub agenthub/open-agenthub -n agenthub --reset-then-reuse-values \
   --set oidc.authority=<issuer-url> \
   --set oidc.clientId=<client-id> \
-  --set oidc.audience=<expected-audience>
+  --set oidc.audience=<expected-audience> \
+  --set-string ee.admins=<your-username>
 ```
+
+`ee.admins` names the first administrator by their OIDC username (`preferred_username`); nobody
+is an admin until one is named. Later admins can be promoted in the app. Data created with the API
+key stays with its user — read [Switching from the API key to OIDC](/admin#switching-from-the-api-key-to-oidc)
+before you switch.
 
 The redirect URI to register with your identity provider is `https://<your-host>/auth/callback`.
 Any standard OIDC provider works — Keycloak, Entra ID, Google.
