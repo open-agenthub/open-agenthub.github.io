@@ -152,6 +152,7 @@ The API key, rotation and GitOps setup are described in [Upgrading](/upgrading#i
 | `agent.allowCustomImage` | `true` | Lets users pick their own container image per session. |
 | `spawnMcpEnabled` | `true` | The in-session sessions MCP: child sessions, messages between sessions. [Session tools](/session-tools) depend on it, and so do helper containers. |
 | `telemetry.enabled` | `true` | Claude Code usage export for the [Usage page](/usage). |
+| `telemetry.otlpEndpoint` | `""` | Empty sends metrics to the internal backend. A custom collector receives no session callback credential and does not feed AgentHub usage. |
 
 ## Features
 
@@ -178,3 +179,18 @@ private issuer or another outbound TLS service. The chart mounts the bundle read
 and sets `SSL_CERT_FILE` for the backend process. Restart the backend after replacing
 the bundle. This cluster-operator setting is available in both editions; it does not
 configure browser or session-pod trust. See [team login](/getting-started#move-the-quickstart-to-team-login).
+
+## Telemetry collectors
+
+Telemetry configuration is deployment-wide and available in both editions. Leave
+`telemetry.otlpEndpoint` empty to record Claude Code usage in AgentHub. Session telemetry uses
+the session callback credential when exporting to the internal backend.
+
+Administrators can set `telemetry.otlpEndpoint` to an external OTLP/HTTP collector base URL;
+the exporter appends `/v1/metrics`. That collector receives no session callback credential,
+and those exports do not count toward AgentHub's Usage page or recorded budgets. Forwarding
+from a custom collector to AgentHub is not supported. Network policy must also permit the
+chosen collector destination.
+
+After updating the server and runtime images, restart existing Claude sessions so they receive
+the telemetry environment needed to keep recording usage. New sessions receive it at startup.
