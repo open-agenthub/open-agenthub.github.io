@@ -169,3 +169,12 @@ The API key, rotation and GitOps setup are described in [Upgrading](/upgrading#i
 `ee.license.reportWarningDays` controls how many days before the current signed licence token
 expires the Admin license page warns (default `7`, range `0`–`365`). Zero warns at expiry.
 It does not change entitlement validity or report frequency. See [renewal health](/admin#check-renewal-health).
+
+## Backend private CA trust
+
+`backend.trustedCaConfigMap` defaults to empty (runtime trust unchanged). Set it to an
+existing ConfigMap in the release namespace with a PEM bundle at `ca.crt` to trust a
+private issuer or another outbound TLS service. The chart mounts the bundle read-only
+and sets `SSL_CERT_FILE` for the backend process. Restart the backend after replacing
+the bundle. This cluster-operator setting is available in both editions; it does not
+configure browser or session-pod trust. See [team login](/getting-started#move-the-quickstart-to-team-login).
