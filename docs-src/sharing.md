@@ -58,7 +58,9 @@ sidebar. In the **Share session** dialog:
    the person with a ✓, a line below names their sign-in username, and the list closes. The
    share always goes to that username. Selecting does not share yet. To pick someone else,
    type again; Escape closes the list without selecting.
-3. Choose **Viewer** or **Collaborator** and click **Add** (or press Enter again).
+3. Choose **Viewer** or **Collaborator** in the role selector next to the field and click
+   **Add** (or press Enter again). This role is for the person only; it does not change the
+   role of the next share link.
 
 Without a selection, **Add** uses the text as typed, so an exact username or email still works.
 
@@ -76,13 +78,21 @@ Owners then have to enter the exact username or email.
 
 ## Share links
 
-Under **Share by link**, choose a role and, optionally, an expiry date, then click
-**Create link**. The dialog shows the full link once ("Copy this one-time link now; it cannot
+Under **Share by link**, pick the link's role in **Link role** and, optionally, an expiry date,
+then click the button, which names the role: **Create Viewer link** or **Create Collaborator
+link**. The dialog shows the full link once ("Copy this one-time Viewer link now; it cannot
 be shown again"). Anyone holding it opens the session at `/shared/<token>` with that role,
 without signing in. Treat it like a password.
 
-- Each link is listed by its id, where you can change its role or expiry (**Save**) or
-  **Revoke** it. An expiry must be in the future.
+- **Link role** starts at **Viewer** every time you open the dialog, and goes back to Viewer
+  after each link you create. It has its own selector: adding a person as Collaborator does not
+  make the next link a Collaborator link. The line under the selector says whether link holders
+  can type.
+- Choose **Collaborator** for a link only on purpose. Everyone who gets hold of it can type into
+  the session, and so read what it holds.
+- Each link is listed by its id with its role (*Viewer · read only* or *Collaborator · can
+  type*). There you can change its role or expiry (**Save**) or **Revoke** it. An expiry must
+  be in the future.
 - A link opens exactly that session, never its child sessions, and it never appears in anyone's
   session list.
 - A link's files are read-only, even with the Collaborator role: no uploads, no deleting.
