@@ -12,8 +12,9 @@ Placeholders in capitals, such as `YOUR_HOST` or `YOUR_USERNAME`, stand for your
 ## Who operates what
 
 Open AgentHub is self-hosted: you run it on your own infrastructure, and we operate nothing for
-you. We have no access to your systems, accounts, credentials, logs, prompts or files, and we
-record nothing.
+you. We have no remote access to your systems by default, and the software transfers no prompts
+or files to us automatically. The licence report and your contact with support (email, screen
+share) carry only metadata or the content you choose to share.
 
 | You run and are responsible for | Notes |
 |---|---|
@@ -51,8 +52,8 @@ identity provider, Git access, a model account) and how long each step took when
 
 ## 2. Team login (OIDC)
 
-Without an identity provider the instance runs with one generated API key that acts as an
-administrator. For a team, switch to OIDC. Do it in this order:
+With the chart's default configuration and no identity provider, the chart generates one API
+key, and that key acts as an administrator. For a team, switch to OIDC. Do it in this order:
 
 1. **Choose the first administrator.** Under OIDC nobody is an administrator until one is
    named. Use that person's sign-in name as your identity provider issues it in the
@@ -81,8 +82,13 @@ administrator. For a team, switch to OIDC. Do it in this order:
    ```
 
    ```bash
-   helm upgrade agenthub agenthub/open-agenthub -n agenthub -f my-values.yaml --wait --timeout 5m
+   helm upgrade agenthub agenthub/open-agenthub -n agenthub -f my-values.yaml \
+     --version TARGET_VERSION --wait --timeout 15m
    ```
+
+   `TARGET_VERSION` is the release you run, such as `1.22.0`; naming it keeps the upgrade from
+   moving to a newer release. The timeout leaves room for the backend's startup, which may take
+   up to about 10.5 minutes; see [Upgrading](/upgrading#_4-upgrade).
 
 4. **Sign in as that administrator first**, before you share the URL. Then promote further
    administrators under **Settings → Users & seats → Admins & roles**.
@@ -144,11 +150,14 @@ After activation the **Enterprise license** card shows:
 About 30 seconds after the backend starts, and then once every 24 hours, the instance reports to
 the licence service. The report contains the licence token, the number of seats in use and a
 random key that identifies the instance; no user names, prompts or content. The answer is a
-renewed token, currently valid for 45 days. The card shows the exact date as **Enterprise features
-stop without renewal**.
+renewed token. The licence service's source currently issues tokens valid for 45 days; this was
+not verified against the deployed service. What counts is the expiry of the token your instance
+has stored, shown on the card as **Enterprise features stop without renewal**.
 
-- **Without a successful report**, the Enterprise features stop at that date. The Community
-  edition keeps running, with all its features and your data.
+- **Without a successful report**, the Enterprise features turn off when the stored token
+  expires. Licence expiry turns off Enterprise features, not the Community edition. It does not
+  delete existing data, but access that depends on Enterprise features, such as sharing, can go
+  away. If a licence is revoked, the features can stop before that date.
 - **The backend needs outbound HTTPS** to the licence service (chart value
   `ee.license.serviceUrl`). The chart sets no egress policy for the backend namespace; your own
   firewall, proxy or network policy must allow it. An empty value disables reporting, and the
@@ -163,9 +172,9 @@ By default the card warns seven days before the stop date (`ee.license.reportWar
 | Last report error | What it means | What to do |
 |---|---|---|
 | `License service request failed. Check connectivity and service availability.` | The backend could not reach the licence service | Check DNS, firewall, proxy and egress from the backend pods to the host in `ee.license.serviceUrl` |
-| `License service rejected the report (HTTP 403).` | The subscription is no longer active | Check your contract or subscription; contact support |
+| `License service rejected the report (HTTP 403).` | Can mean, among other things, that the licence is no longer active; the instance does not keep the service's reason | Contact support with the error and the stop date; support checks the cause |
 | `License service rejected the report (HTTP 409).` | The licence service refused the report for this instance | Contact support with the error and the stop date |
-| `License service rejected the report (HTTP 401).` | The token expired too long ago | Contact support for a new token |
+| `License service rejected the report (HTTP 401).` | Can mean, among other things, that the token has expired; the instance does not keep the service's reason | Contact support with the error and the stop date; support checks the cause |
 | `License token has no license id. Re-activate it to enable reporting.` | An old token without metering | Activate the token again, or ask support for a current one |
 
 Then:
@@ -202,9 +211,10 @@ the way your order form says.
 
 ## 4. Before the team starts
 
-- **Back up** the database and the Secret `agenthub-data-protection` from the first day; the
-  stored secrets cannot be decrypted without that Secret. See
-  [Before every upgrade](/upgrading#before-every-upgrade) for the commands.
+- **Back up** the database, the Secret `agenthub-data-protection`, your values and the object
+  storage bucket from the first day; the stored secrets cannot be decrypted without that Secret.
+  Rehearse a restore in a separate environment. See
+  [Before every upgrade](/upgrading#before-every-upgrade).
 - **Leave experimental features off.** `agent.workspaceVolume.persistent` (the provider switch)
   stays `false`, the chart default.
 - **Agree how you will upgrade.** Read [Upgrading](/upgrading) and plan the first upgrade before

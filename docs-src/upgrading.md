@@ -35,7 +35,7 @@ items must be in place **before** you run the upgrade:
 
 | Coming from | Before you upgrade |
 |---|---|
-| Below 1.19.0, with OIDC | Set `ee.admins` to your own sign-in name (`preferred_username`). From 1.19.0 nobody is an administrator unless named; without it, nobody can open the admin area after the upgrade. See [Administration](/admin#designating-the-first-admin). |
+| Below 1.19.0, with OIDC | From 1.19.0 only designated users are administrators. Administrators designated earlier keep their rights: through `ee.admins`, a role under **Admins & roles**, or an admin group with a valid Enterprise licence. Only if there is no valid designation at all can nobody open the admin area after the upgrade. To be safe, set `ee.admins` to your own sign-in name (`preferred_username`). See [Administration](/admin#designating-the-first-admin). |
 | Below 1.17.0, rendering with `helm template` or a GitOps tool | Set `dataProtection.existingSecret` to a Secret you manage. See [Shared protection keys](#shared-protection-keys-and-secret-recovery). |
 | Below 1.12.0, external object storage by DNS name on a port other than 80 or 443 | Set `agent.storageEgress.cidrs` or `agent.extraEgressPorts`. See [1.12.0](#_1-12-0). |
 | Below 1.9.0 | Check the database connection budget. See [1.9.0](#_1-9-0). |
@@ -96,15 +96,18 @@ automatically. The [version notes](#version-notes) say which releases need this.
 `helm rollback agenthub REVISION -n agenthub` (find `REVISION` with `helm history agenthub -n
 agenthub`) returns the deployments to the previous release. An older release is not guaranteed
 to work with database changes a newer one has already made, so the backup from step 3 is the
-dependable way back. Save the backend log for your own analysis
+basis for a restore; see [Before every upgrade](#before-every-upgrade) for what a restore needs. Save the backend log for your own analysis
 (`kubectl -n agenthub logs deployment/agenthub-backend --tail=200`) before you roll back, and see
 [Support](/support).
 
 ## Before every upgrade
 
-**Back up three things together.** The database holds sessions, settings and the encrypted
-secrets; the Secret `agenthub-data-protection` holds the key that decrypts them. One without the
-other cannot restore the stored secrets.
+**Back up these together.** The database holds sessions, settings and the encrypted secrets; the
+Secret `agenthub-data-protection` holds the key that decrypts them; object storage holds session
+state, files and history. One without the others cannot restore the instance.
+
+The exported files contain secrets. Create them with private file permissions, for example after
+`umask 077` in the same shell, and never put them in Git.
 
 1. **The database.** With the bundled Postgres:
 
@@ -133,8 +136,14 @@ other cannot restore the stored secrets.
    helm -n agenthub get values agenthub -o yaml > my-values.yaml
    ```
 
-Session state, files and history live in object storage. Include its bucket in your backup if
-you need to restore those too.
+4. **The object storage bucket.** Session state, files and history live there. Without it,
+   restored sessions lose their state, files and history. Back it up with your storage's own means,
+   at the same time as the database, so that both match.
+
+Database, Secret and values alone are not a complete restore of an instance. The experimental
+per-session workspace volumes (`agent.workspaceVolume.persistent`) are separate from all of this
+and are not a backup. A backup is only proven by a restore: rehearse it in a separate environment,
+with the same release you backed up and a database and bucket taken at the same time.
 
 To restore the key pair into a new installation, create a Secret from it and point the chart at
 it before the backend first starts against the restored database:
@@ -154,12 +163,13 @@ schedule or to response times. What applies to you as a customer is set by your 
   [GitHub releases](https://github.com/open-agenthub/open-agenthub/releases) as `vX.Y.Z`, with
   release notes. Images are published to `ghcr.io/open-agenthub/open-agenthub/*` with the tags
   `X.Y.Z` and `X.Y`, the chart as `open-agenthub` version `X.Y.Z` in the Helm repository
-  `https://open-agenthub.github.io/open-agenthub`. Chart `X.Y.Z` runs the images of release `X.Y.Z`.
+  `https://open-agenthub.github.io/open-agenthub`. From chart 1.19.0, with `image.tag` left at its default, chart
+  `X.Y.Z` runs the images of release `X.Y.Z`.
 - **When:** there is no fixed schedule. Releases are published when changes are ready, sometimes
   several on one day. Patch versions (`1.21.1`) have so far carried fixes, minor versions
   (`1.22.0`) new features as well.
-- **Who upgrades:** you do. Your instance runs on your infrastructure and we have no access to
-  it; you choose when to run `helm upgrade --version`.
+- **Who upgrades:** you do. Your instance runs on your infrastructure and we have no remote
+  access to it by default; you choose when to run `helm upgrade --version`.
 - **What to do:** each release's notes end with an **Upgrading** section, and some start with
   **Before you upgrade**. The [version notes](#version-notes) on this page collect them.
 - **Fixes, including security fixes,** are published as regular or patch releases. So far, fixes
@@ -228,7 +238,8 @@ kubectl -n agenthub get deployment agenthub-backend -o jsonpath='{.spec.template
 
 Earlier charts defaulted to `latest` with `pullPolicy: IfNotPresent`. Such an install ran
 whatever image its nodes had pulled first, which could be newer than the chart, and an upgrade did
-not move it. After upgrading to 1.19.0 or later it runs the matching release images instead.
+not move it. After upgrading to 1.19.0 or later, with `image.tag` left at its default, it runs
+the matching release images instead.
 
 If you set `image.tag` yourself, nothing changes: an explicit value always wins. To keep following
 the newest build on purpose, set `image.tag: latest` together with `image.pullPolicy: Always` and
@@ -286,7 +297,8 @@ the old and new pod at the same time, so expect:
   the old pod terminates.
 - No failover while the single pod restarts.
 
-Neither loses data: Telegram buffers updates by offset for about 24 hours.
+Telegram keeps undelivered updates for about 24 hours. This is not a guarantee that no
+message is lost.
 
 ## Schema changes at startup
 
@@ -295,9 +307,8 @@ itself, one replica at a time, before it answers `/healthz`. Since 1.21.3
 ([issue #538](https://github.com/open-agenthub/open-agenthub/issues/538)), it remembers which
 schema changes it has already applied, in a table called `schema_scripts`:
 
-- **A restart with an unchanged schema runs no schema changes.** A replica no longer waits for
-  long-running database transactions, and does not hold up the other replicas' requests while
-  it starts.
+- **A restart with an unchanged schema runs no schema changes.** This avoids repeating unchanged
+  schema scripts at startup, and with them their waits for table locks.
 - **The first start after an upgrade** applies what changed. If another transaction holds a
   table it needs, the replica waits at most 2 seconds at a time, backs off so that live requests
   get through, and tries again. In our tests, requests to the running replicas waited at most

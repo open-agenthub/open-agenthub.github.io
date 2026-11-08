@@ -30,7 +30,8 @@ form applies.
 ### How to reach support
 
 - **By email** to `SUPPORT_EMAIL`, on business days.
-- **Acknowledgement:** you get a reply confirming receipt within one business day.
+- **Acknowledgement of receipt:** planned in the contract within one business day. It confirms
+  that your email arrived; it is not a deadline for an answer or a fix.
 - **No service level:** there is no guaranteed availability, response time or resolution time,
   and no 24/7 support.
 
@@ -59,7 +60,7 @@ not take control.
   release notes ask for.
 - **Documented features of your edition**, as described on these pages and marked Community or
   Enterprise. Features marked experimental, such as the [provider switch](/provider-switching),
-  are covered as documented, including their known limits.
+  come without production recovery or support guarantees; keep them off in production.
 - **Licence questions**: activation, renewal health and seat counts under
   **Settings → License** and **Settings → Users & seats**.
 
@@ -69,8 +70,9 @@ Unless your order form says otherwise:
 
 - Your Kubernetes cluster, ingress, DNS, certificates, identity provider, Git host, database
   or object storage themselves, beyond the settings Open AgentHub needs from them.
-- The agent CLIs' own behaviour and your accounts with model providers; Open AgentHub runs the
-  CLI versions its release ships, and the provider's terms apply to your account.
+- Errors in the agent CLIs themselves or at the model providers, and your accounts with them; the
+  provider's terms apply to your account. In scope, however, is how Open AgentHub integrates the
+  CLIs, including regressions with the CLI versions a release pins.
 - Modified source code, custom runtime images, and releases older than the current one, where
   the problem is already fixed in a newer release.
 - The work agents do in your repositories.
