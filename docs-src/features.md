@@ -1,7 +1,7 @@
 # Feature overview
 
 Every user-facing feature of Open AgentHub, the edition it belongs to, who can use it, and the
-page that explains it. The Enterprise entries below include features released through 1.19.1. Provider replacement below describes **1.22.0**: it remains experimental, off by default,
+page that explains it. The Enterprise entries below include features released through 1.19.1. Provider replacement below includes repository-backed temporary workspaces: it remains experimental, off by default,
 and requires operator opt-in.
 
 **Community** features are free and open source (AGPL-3.0) and need no licence. **Enterprise**
@@ -27,7 +27,7 @@ Roles used on these pages:
 | Tool policy for unattended sessions | Community | Owner | [Sessions](/sessions#tool-policy-for-unattended-sessions) |
 | Own container image, run as root, CPU and memory limits | Community | Owner; root can be disabled by the operator | [Sessions](/sessions#container-image-and-root-mode) |
 | Edit, pause, resume, restart a running session | Community | Owner | [Sessions](/sessions#changing-a-running-session) |
-| Experimental Claude ↔ Codex replacement with checkpoint recovery on an opt-in persistent workspace | Community | Owner; operator enables storage | [Switch provider](/provider-switching) |
+| Experimental Claude ↔ Codex replacement with repository-backed temporary or optional persistent workspaces | Community | Owner; operator enables admission | [Switch provider](/provider-switching) |
 | Duplicate a session | Community | Owner | [Sessions](/sessions#duplicate-a-session) |
 | Continue an autonomous run interactively | Community | Owner | [Sessions](/sessions#continue-an-autonomous-run-interactively) |
 | Runtime image updates | Community | Owner, operator | [Sessions](/sessions#runtime-updates) |
@@ -127,5 +127,5 @@ Roles used on these pages:
 
 The [owner-only handover preview API](/handover-preview) is a Community feature. It prepares
 selected text and explicit omissions. [Runtime provider replacement](/provider-switching)
-is available for supported owner Claude/Codex sessions on an opt-in persistent workspace;
+is available for supported owner Claude/Codex sessions using repository-backed temporary workspaces or an opt-in persistent workspace;
 visible history is not the new agent's native context.
