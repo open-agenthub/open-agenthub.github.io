@@ -62,7 +62,9 @@ not a secret boundary.
 The target clones the selected remote branch and checks out the **recorded commit on the
 recorded local branch**, with its upstream set. It does not use detached HEAD or silently
 choose a newer remote tip. Changed repository or omitted-file checks require another check
-and review. Initially, the repository path supports 1–32 configured repositories with bounded
+and review. The repository-backed path supports HTTP(S) remotes with the selected session Git credentials.
+**SSH remotes are not supported yet**; follow [SSH support (#556)](https://github.com/open-agenthub/open-agenthub/issues/556).
+Initially, the repository path supports 1–32 configured repositories with bounded
 metadata. Submodules, large-file filters, detached HEAD, unsupported checkout layouts and
 index flags that hide tracked changes are refused. Local Git configuration, unpublished
 branches, patches, bundles and workspace files are not added to native state archives.
