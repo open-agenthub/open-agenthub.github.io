@@ -6,8 +6,8 @@ emails, session titles or session content.
 
 **Edition:** Community and Enterprise · **Who:** cluster operator with an AgentHub administrator credential
 
-This requires the AgentHub version that includes `GET /api/admin/diagnostics`. Use the collector
-from the same release as your installation: [scripts/support-bundle.py](https://github.com/open-agenthub/open-agenthub/blob/main/scripts/support-bundle.py).
+This requires Open AgentHub 1.23.0 or later. Use the collector from the release you run
+(replace `v1.23.0` with your version): [scripts/support-bundle.py](https://github.com/open-agenthub/open-agenthub/blob/v1.23.0/scripts/support-bundle.py).
 Save it locally. Requirements: Python **3.9+**, kubectl **1.34+** (within one minor version of
 your cluster), and Helm **3.12+** or **4.x**. No pip packages are needed.
 
