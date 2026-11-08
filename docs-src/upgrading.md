@@ -1,14 +1,173 @@
 # Upgrading
 
-## Session telemetry
+This page is for the operator who keeps an instance current: the path from an older release to
+the current one, what to back up first, what to do for running sessions, and how releases are
+published. The sections after that explain the individual pitfalls, and the
+[version notes](#version-notes) list what each release asks of you.
 
-After installing the server and runtime update for session telemetry authentication, restart
-existing Claude sessions so their usage continues to be recorded. New Claude sessions receive
-the telemetry environment automatically. This applies in both editions.
+**Edition:** Community and Enterprise · **Who:** operator (cluster and Helm access), and
+session owners for **Update now**
 
-If you use a custom `telemetry.otlpEndpoint`, metrics go to that collector without a session
-callback credential and do not count in AgentHub. Leave the setting empty for AgentHub usage.
-See [telemetry collectors](/chart-values#telemetry-collectors).
+Placeholders in capitals, such as `YOUR_USERNAME`, stand for your own values. The examples use
+the release name `agenthub` in the namespace `agenthub`, as the install pages do.
+
+## Upgrade path to the current release
+
+A single `helm upgrade` to the current release is the documented path, also from older
+releases: each backend applies the database changes it needs when it first starts. That path was
+not tested from every older release, so when you skip many releases, try it first on a restored
+copy of your backup in a separate namespace or cluster.
+
+### 1. Find your version
+
+```bash
+helm -n agenthub list
+```
+
+The `APP VERSION` column is the release the chart installs. On charts before 1.19.0 the images
+may differ from it; check what actually runs with the command under
+[Image versions follow the chart](#image-versions-follow-the-chart).
+
+### 2. Do what the releases in between ask before the upgrade
+
+Read the [version notes](#version-notes) of every release between yours and the target. These
+items must be in place **before** you run the upgrade:
+
+| Coming from | Before you upgrade |
+|---|---|
+| Below 1.19.0, with OIDC | Set `ee.admins` to your own sign-in name (`preferred_username`). From 1.19.0 nobody is an administrator unless named; without it, nobody can open the admin area after the upgrade. See [Administration](/admin#designating-the-first-admin). |
+| Below 1.17.0, rendering with `helm template` or a GitOps tool | Set `dataProtection.existingSecret` to a Secret you manage. See [Shared protection keys](#shared-protection-keys-and-secret-recovery). |
+| Below 1.12.0, external object storage by DNS name on a port other than 80 or 443 | Set `agent.storageEgress.cidrs` or `agent.extraEgressPorts`. See [1.12.0](#_1-12-0). |
+| Below 1.9.0 | Check the database connection budget. See [1.9.0](#_1-9-0). |
+| 1.4.0 or older, without OIDC | Nothing to set, but read [the API key](#installs-without-oidc-the-api-key) for how you sign in afterwards. |
+
+### 3. Back up
+
+See [Before every upgrade](#before-every-upgrade). Do it every time, not only for large jumps.
+
+### 4. Upgrade
+
+Use your values file, and name the chart version you want, so the upgrade installs exactly that
+release:
+
+```bash
+helm repo update agenthub
+helm upgrade agenthub agenthub/open-agenthub -n agenthub -f my-values.yaml \
+  --version TARGET_VERSION --wait --timeout 15m
+```
+
+`TARGET_VERSION` is the release you upgrade to, such as `1.22.0`. The longer timeout leaves room
+for the first start after an upgrade: a backend replica may wait for database changes and is
+allowed about 10.5 minutes to become ready. Without a values file, use
+`--reset-then-reuse-values`, never `--reuse-values`; see [the `--reuse-values` trap](#the-reuse-values-trap).
+
+### 5. Check the result
+
+```bash
+helm -n agenthub list
+kubectl -n agenthub rollout status deployment/agenthub-backend
+kubectl -n agenthub get deployment agenthub-backend -o jsonpath='{.spec.template.spec.containers[0].image}'; echo
+```
+
+Then sign in as an administrator. With an Enterprise licence, open **Settings → License** and
+check that the badge says **active** and **Last report error** says **none**.
+
+### 6. Update running sessions
+
+Most releases ship new agent runtime images. A running session keeps the image it started with.
+Such a session shows **outdated image** in the session list and in its header, and its owner can
+click **Update now** there. Pausing and resuming the session has the same effect. With
+`agent.autoUpdateRuntimeImages` on (default `false`), idle interactive sessions are updated
+automatically. The [version notes](#version-notes) say which releases need this.
+
+### 7. Things not to change
+
+- **Keep `agent.workspaceVolume.persistent` off in production.** It enables the experimental
+  [provider switch](/provider-switching); recovery after faults during a switch is still being
+  hardened, and the volume is not a backup.
+- **Do not delete the table `schema_scripts`.** It records which database changes are applied;
+  without it, the next start applies all of them again. See
+  [Schema changes at startup](#schema-changes-at-startup).
+- **Do not delete or regenerate the Secret `agenthub-data-protection`** while you keep the
+  database. Without it, stored secrets cannot be decrypted and the backend does not start.
+
+### If an upgrade goes wrong
+
+`helm rollback agenthub REVISION -n agenthub` (find `REVISION` with `helm history agenthub -n
+agenthub`) returns the deployments to the previous release. An older release is not guaranteed
+to work with database changes a newer one has already made, so the backup from step 3 is the
+dependable way back. Collect the backend log
+(`kubectl -n agenthub logs deployment/agenthub-backend --tail=200`) before you roll back, and see
+[Support](/support).
+
+## Before every upgrade
+
+**Back up three things together.** The database holds sessions, settings and the encrypted
+secrets; the Secret `agenthub-data-protection` holds the key that decrypts them. One without the
+other cannot restore the stored secrets.
+
+1. **The database.** With the bundled Postgres:
+
+   ```bash
+   kubectl -n agenthub exec postgres-0 -c postgres -- \
+     pg_dump -U agenthub -d agenthub -Fc > agenthub-db.dump
+   ```
+
+   With your own Postgres (`externalDatabase.connectionString`), use its usual backup.
+
+2. **The Secret `agenthub-data-protection`** (or the Secret named in
+   `dataProtection.existingSecret`, if you set one):
+
+   ```bash
+   kubectl -n agenthub get secret agenthub-data-protection \
+     -o jsonpath='{.data.tls\.crt}' | base64 -d > agenthub-data-protection.crt
+   kubectl -n agenthub get secret agenthub-data-protection \
+     -o jsonpath='{.data.tls\.key}' | base64 -d > agenthub-data-protection.key
+   ```
+
+   The `.key` file is a private key. Store it like a password, apart from the database dump.
+
+3. **Your values** (skip this if you already keep a values file):
+
+   ```bash
+   helm -n agenthub get values agenthub -o yaml > my-values.yaml
+   ```
+
+Session state, files and history live in object storage. Include its bucket in your backup if
+you need to restore those too.
+
+To restore the key pair into a new installation, create a Secret from it and point the chart at
+it before the backend first starts against the restored database:
+
+```bash
+kubectl -n agenthub create secret tls agenthub-data-protection-restored \
+  --cert=agenthub-data-protection.crt --key=agenthub-data-protection.key
+# then in my-values.yaml:  dataProtection: { existingSecret: agenthub-data-protection-restored }
+```
+
+## Releases and security fixes
+
+How releases are published today. This describes current practice; it is not a commitment to a
+schedule or to response times. What applies to you as a customer is set by your order form.
+
+- **Where:** every release is published on
+  [GitHub releases](https://github.com/open-agenthub/open-agenthub/releases) as `vX.Y.Z`, with
+  release notes. Images are published to `ghcr.io/open-agenthub/open-agenthub/*` with the tags
+  `X.Y.Z` and `X.Y`, the chart as `open-agenthub` version `X.Y.Z` in the Helm repository
+  `https://open-agenthub.github.io/open-agenthub`. Chart `X.Y.Z` runs the images of release `X.Y.Z`.
+- **When:** there is no fixed schedule. Releases are published when changes are ready, sometimes
+  several on one day. Patch versions (`1.21.1`) have so far carried fixes, minor versions
+  (`1.22.0`) new features as well.
+- **What to do:** each release's notes end with an **Upgrading** section, and some start with
+  **Before you upgrade**. The [version notes](#version-notes) on this page collect them.
+- **Security fixes** are published as regular releases. So far, fixes have been released on top
+  of the most recent release, not backported to older versions; staying current is how you
+  receive them. When a fix needs action from you, such as rotating a credential or restarting
+  sessions, the release notes say so.
+- **Staying informed:** the instance does not tell you about new releases. On GitHub, use
+  **Watch → Custom → Releases** on the repository to be notified.
+- **Reporting a vulnerability:** send it privately to `open-agenthub@mail.on-mb.com`, not as a
+  public issue.
 
 ## The `--reuse-values` trap
 
@@ -251,6 +410,99 @@ state; stored objects remain. Watch for the warning in the `helm upgrade` output
 ### 1.14.1
 
 Deploy the new backend and frontend. Running sessions need no runtime update.
+
+### 1.15.0
+
+- Restart running sessions so their runtime masks the session access token and inline MCP
+  credential values in transcripts, uploads and chat relays. The masking is not retroactive: transcripts, uploads and chat messages written earlier are not cleaned.
+- If an agent in a session that was shared or relayed to a chat printed its environment or MCP
+  configuration under an earlier release, rotate the affected MCP credentials at their provider
+  and update them in AgentHub. A restart does not replace a session's own access token; to
+  replace it, duplicate the session and delete the original.
+
+### 1.16.0
+
+- Restart running Codex, Cursor and OpenClaw sessions. The first successful save by the new
+  runtime replaces the session's stored archive; until then, and in your storage's version
+  history and backups, older archives stay as they were.
+- Where archives saved by earlier releases may have been read by someone unauthorised, rotate or
+  revoke the external MCP credentials they contained.
+
+### 1.17.0
+
+- The chart creates the Secret `agenthub-data-protection` and keeps it on uninstall. **Back it
+  up together with the database from now on**; see [Before every upgrade](#before-every-upgrade).
+- Rendering without cluster access (`helm template`, GitOps): set `dataProtection.existingSecret`
+  before upgrading. Without the chart: set `DataProtection__CertificatePem` and
+  `DataProtection__PrivateKeyPem`, the same pair on every replica. The backend does not start
+  without them.
+- Secrets whose keys were already lost before this release must be entered again. See
+  [Shared protection keys and secret recovery](#shared-protection-keys-and-secret-recovery).
+- Restart running sessions.
+
+### 1.17.2
+
+Restart running Codex sessions.
+
+### 1.18.0
+
+Restart running sessions so they report their model lists and, for OpenCode, show the available
+history.
+
+### 1.19.0
+
+- **Before you upgrade, with OIDC:** set `ee.admins` to your own sign-in name. From this release
+  nobody is an administrator unless named in `ee.admins`, under **Admins & roles**, or through an
+  identity-provider group mapped to admin (Enterprise; without a valid licence such a group names
+  nobody). The user names used before OIDC (`admin`, `dev`) become administrators under OIDC only
+  through `ee.admins`.
+- **Before you upgrade, if you follow `latest`:** an empty `image.tag` now means the chart's own
+  release. Set `image.tag` explicitly if you want something else; see
+  [Image versions follow the chart](#image-versions-follow-the-chart).
+- Restart running sessions to get the runtime that can switch models.
+
+### 1.19.1
+
+Restart running Claude Code sessions. Until then, their usage reports are refused and their usage
+is not recorded; a restart does not restore the missing reports. New sessions are not affected.
+
+If you set a custom `telemetry.otlpEndpoint`, metrics go to that collector and do not count in
+AgentHub. Leave it empty for the Usage page; see [telemetry collectors](/chart-values#telemetry-collectors).
+
+### 1.20.0
+
+- Restart running sessions so the session MCP restrictions (Enterprise) apply to them.
+- An identity provider with a certificate from an internal certificate authority can now be
+  trusted with `backend.trustedCaConfigMap`.
+- If you shared links earlier, check the role shown in the link list; existing links keep their
+  role.
+
+### 1.21.0
+
+- Restart running sessions.
+- Leave `agent.workspaceVolume.persistent` off. It enables the experimental provider switch. The
+  chart grants the backend permission to create and delete PersistentVolumeClaims in the sessions
+  namespace.
+
+### 1.21.1
+
+Nothing to do unless you enabled the provider switch; then restart running sessions. Keep it off
+in production.
+
+### 1.21.2
+
+Restart running sessions. Sessions marked before the update keep their status.
+
+### 1.21.3
+
+No session restart needed. The first start on an existing database applies every schema change
+once and records it in `schema_scripts`; later restarts without a change apply none. Do not delete
+`schema_scripts`. See [Schema changes at startup](#schema-changes-at-startup).
+
+### 1.22.0
+
+Restart running sessions. Keep `agent.workspaceVolume.persistent` off in production; the volume is
+not a backup.
 
 ### Archive cleanups after 1.3.0 and 1.4.0
 

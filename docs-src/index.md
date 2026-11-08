@@ -26,7 +26,8 @@ features:
 
 If you have a cluster, go to [Install](/getting-started). If you are upgrading an
 existing release, read [Upgrading](/upgrading) first — there is one Helm pitfall that
-bites almost everyone.
+bites almost everyone. Setting up an instance for a pilot team? Follow
+[Pilot setup](/pilot-setup); for help, see [Support](/support).
 
 New here? The [feature overview](/features) lists every feature, its edition and the page that
 explains it. To learn the daily work, start with [Sessions](/sessions), [Projects](/projects),

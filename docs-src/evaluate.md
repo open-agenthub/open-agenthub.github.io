@@ -3,7 +3,8 @@
 A checklist for teams evaluating Open AgentHub on their own infrastructure: what to prepare,
 the steps from a fresh host to a team signing in, how long each step took when we measured it,
 and the limits you should know before you start. It follows the [Install](/getting-started)
-page; nothing here replaces it.
+page; nothing here replaces it. To set up an instance for a pilot team, continue with
+[Pilot setup](/pilot-setup).
 
 The times below were measured in a deliberately slow environment: an emulated virtual machine
 (4 vCPU, 10 GB RAM, no hardware acceleration), on release 1.20.0 for the install, the team login
