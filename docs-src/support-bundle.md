@@ -22,7 +22,7 @@ memory and never become a file.
 Forward the backend service in one terminal:
 
 ```sh
-kubectl -n agenthub port-forward service/agenthub-backend 8080:8080
+kubectl -n agenthub port-forward service/agenthub-backend 8080:80
 ```
 
 In a second terminal, use Bash's hidden input to pass your credential through standard input:
@@ -54,7 +54,7 @@ upstream error cannot echo credentials into diagnostic output.
 | Pods | Component, phase, readiness, restart counts and number of matching pods in the release namespace; no pod names |
 | Events | Counts of fixed event reason categories in the last 60 minutes; no messages or object names |
 | Helm values | Selected boolean and integer settings, such as replica counts, database pool sizes and feature flags; all other fields omitted |
-| Database | Recognised `schema_scripts` names and application timestamps; no SQL or session data |
+| Database | Recognised `schema_scripts` names and application timestamps; no SQL or session data; `null`/`unavailable` if the tracking query fails |
 | Licence | Verified edition, validity, expiry, included seat count and used seat count; no licence token, customer details or instance key |
 | OIDC | Whether authority, client ID and audience are configured; no URLs, IDs or secrets |
 
@@ -71,7 +71,7 @@ beforehand (DPA), and review the file before sharing it.** Logs are absent by de
 Add `--include-backend-logs --log-lines 200` to the command to examine the last 200 lines from
 each backend pod. The range is 1 to 10000. This requires pod log permissions. Only four exact
 framework lifecycle messages are retained: application started, application shutting down,
-production hosting environment and `/app` content root. Token-like, unknown and multiline
+production hosting environment and `/app` content root. Lines that look like tokens, unknown messages and multiline
 continuation lines are discarded entirely. This intentionally excludes most application logs;
 the bundle also reports how many lines were dropped. No agent/runtime, database or other
 component logs are collected. A warning appears both on the terminal and in the JSON.
