@@ -13,7 +13,7 @@ operators enable it and size it
 There is no start button. Ask the agent to open a page, and it calls `browser_start` itself. While
 the browser pod comes up, the pane says *Preparing browser…* and *The agent requested a browser.
 It appears here automatically.* Once it runs, the pane opens beside the conversation and the
-session bar shows a **Browser** button.
+session bar's **⋯** menu offers **Browser**.
 
 Each session has at most one browser. It keeps running until the agent calls `browser_stop`, or
 the session is paused, finishes or is deleted.
@@ -69,7 +69,7 @@ same browser. If your browser refuses clipboard access, the pane says so.
 
 - **Resize**: drag the seam between browser and conversation (25 to 75 %).
 - **Hide**: the **×** on the BROWSER tab, or Esc, closes the pane — *the agent keeps it*. Reopen it
-  with **Browser** in the session bar.
+  with **⋯ → Browser** in the session bar.
 - **Phone**: Files, Browser and Agent become tabs.
 
 ### Pop out into its own window

@@ -102,7 +102,7 @@ no sense, such as `10m` of memory, are refused when you save.
 
 ## Changing a running session
 
-Open **Edit session** from the session list or the session header.
+Open **Edit session** from the session list or from the **⋯** menu in the session bar.
 
 - **Title**, **Auto approve** and **Auto-delete** apply at once.
 - **Switch account automatically at usage limit** applies at once (see

@@ -71,7 +71,7 @@ branches, patches, bundles and workspace files are not added to native state arc
 
 ## Review and start
 
-1. Open the **⋯** session menu and choose **Switch provider**. If the panel says
+1. Open the **⋯** menu in the session bar and choose **Switch provider…**. If the panel says
    **The session is still starting. Try again in a moment.**, wait and reopen it. A visible
    answer can arrive before startup checks finish; review becomes available once the session is ready.
 2. For temporary workspaces, check repositories and acknowledge omitted files first. Select the other provider, its authentication mode and account, and the model settings.
@@ -167,7 +167,9 @@ A repository-backed resume also restores the current execution's recorded commit
 before native resume. Missing repository checkpoint metadata holds restoration. Work created
 after that code checkpoint is still temporary: uncommitted or unpushed changes, ignored files
 and files outside repositories are not backed up by native archive saves. Keep important code
-pushed. A later switch records a new verified code checkpoint. Visible history cannot
+pushed. Later pushes do not automatically advance the recorded restore point: bring newer
+pushed work into the checkout with normal Git tools after resume. A later reviewed switch
+records a new verified code checkpoint. Visible history cannot
 reconstruct missing code or native model context.
 
 ## Known limits
