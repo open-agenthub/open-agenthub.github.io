@@ -153,7 +153,7 @@ stop without renewal**.
   `ee.license.serviceUrl`). The chart sets no egress policy for the backend namespace; your own
   firewall, proxy or network policy must allow it. An empty value disables reporting, and the
   licence then stops at the token's date.
-- **Use one licence per instance.**
+- **One licence per instance.** Use each licence on one instance; ask support before moving it.
 
 ### When the licence warning shows or reporting fails
 
@@ -164,7 +164,7 @@ By default the card warns seven days before the stop date (`ee.license.reportWar
 |---|---|---|
 | `License service request failed. Check connectivity and service availability.` | The backend could not reach the licence service | Check DNS, firewall, proxy and egress from the backend pods to the host in `ee.license.serviceUrl` |
 | `License service rejected the report (HTTP 403).` | The subscription is no longer active | Check your contract or subscription; contact support |
-| `License service rejected the report (HTTP 409).` | The licence service refused the report for this instance | Contact support |
+| `License service rejected the report (HTTP 409).` | The licence service refused the report for this instance | Contact support with the error and the stop date |
 | `License service rejected the report (HTTP 401).` | The token expired too long ago | Contact support for a new token |
 | `License token has no license id. Re-activate it to enable reporting.` | An old token without metering | Activate the token again, or ask support for a current one |
 

@@ -96,10 +96,10 @@ data**. Include:
    kubectl -n agenthub get pods
    ```
 
-**By default, send no logs.** Logs and `kubectl describe` output can contain environment values,
-events, user names, hostnames and session titles. Send a log excerpt or `describe` output only
-if support asks for a specific excerpt and you have agreed this with your provider beforehand;
-this may require a data processing agreement.
+**By default, send no logs.** Do not send logs or `kubectl describe` output unless support asks
+for a specific excerpt and you have agreed to share it with your provider beforehand; this may
+require a data processing agreement. Logs and `describe` output can contain environment values,
+events, user names, hostnames and session titles.
 
 **Never send:**
 
