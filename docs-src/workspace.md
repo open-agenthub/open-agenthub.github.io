@@ -21,7 +21,8 @@ bar, without restarting the agent.
 
 ## The session bar
 
-The bar above the conversation stays on one line at every window width. It always shows:
+The bar above the conversation stays on one line on desktop and tablet widths; on a phone it
+uses two (title and **⋯** first, the controls below). It always shows:
 
 - the session's title and status,
 - the **Model** chip (see [Models](/models)),
