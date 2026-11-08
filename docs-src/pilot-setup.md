@@ -9,6 +9,24 @@ unlocks) · **Who:** the operator who installs the chart and the first administr
 
 Placeholders in capitals, such as `YOUR_HOST` or `YOUR_USERNAME`, stand for your own values.
 
+## Who operates what
+
+Open AgentHub is self-hosted: you run it on your own infrastructure, and we operate nothing for
+you. We have no access to your systems, accounts, credentials, logs, prompts or files, and we
+record nothing.
+
+| You run and are responsible for | Notes |
+|---|---|
+| Kubernetes, ingress, DNS and TLS certificates | The quickstart can set up a single-node cluster for you |
+| Postgres and S3-compatible object storage, and their backups | See [Before every upgrade](/upgrading#before-every-upgrade) |
+| Your identity provider (OIDC) | See [Team login](#_2-team-login-oidc) |
+| Network security, including egress from the instance | |
+| The agents' provider accounts: your own subscriptions or API keys | See [Provider login](/provider-login) |
+| Upgrades, with `helm upgrade --version` | See [Upgrading](/upgrading) |
+
+What we provide is the software, the Enterprise licence and, for Enterprise customers, the
+support and onboarding described on [Support](/support).
+
 ## 1. Install
 
 Pick one of the two paths on [Install](/getting-started). Both install the current release.
@@ -91,14 +109,21 @@ No chart value switches Enterprise features on.
 
 ### How an instance gets a licence
 
-An administrator opens **Settings → License**. There are two ways to a token:
+An administrator activates the licence under **Settings → License**. Which way applies depends on
+how you buy:
 
-| Way | What happens |
+| You buy | How the token reaches the instance |
 |---|---|
-| **Issued to you** | For a pilot or a contract with manual invoicing, the licence is issued for your organisation and the token is sent to you. Paste it into **License token** and click **Activate**. |
-| **Checkout** | **Get enterprise license** asks for billing email, organisation and seats and redirects to the payment provider. Afterwards the instance comes back to `https://YOUR_HOST/license/activate` and activates the licence itself. If that return did not happen, **Retrieve license** with the same billing email activates a licence that has been paid but not yet activated. The checkout page shows the price and terms that apply before you pay. |
+| **With an order form** (invoice subscription or a licence issued by us) | Either we hand the token to you: paste it into **License token** and click **Activate**. Or you retrieve it yourself: click **Get enterprise license**, enter only the **Billing email** from your order form, and click **Retrieve license**, not **Continue to checkout**. |
+| **Self-service checkout** | **Get enterprise license** asks for billing email, organisation and seats and redirects to the payment provider; the instance then activates the licence itself. The self-service checkout starts new customers on a trial period, so **do not use it if you have an order form**: the order form path above is the one that matches your contract. |
 
-Only an administrator sees **Settings → License**.
+The licence can be active before the first invoice is paid. Only an administrator sees
+**Settings → License**.
+
+::: warning DRAFT: payment and term details
+How invoices, payment and the licence term relate is set by your order form. The order form
+these pages refer to is still a draft and not approved; your signed order form applies.
+:::
 
 ### Licence status
 
@@ -111,23 +136,59 @@ After activation the **Enterprise license** card shows:
 - **Last successful report**, **Enterprise features stop without renewal** and **Last report
   error**.
 
-The instance renews its token by reporting to the licence service, normally once every 24 hours.
-The report contains the token, the number of licensed users and a random key that identifies the
-instance; no user names or content. A licence is bound to the instance that reports it: the same
-token activated on a second instance does not renew there, so use one licence per instance. The
-backend needs outbound HTTPS to the licence service for this (chart value `ee.license.serviceUrl`;
-an empty value disables reporting). If renewal keeps failing, Enterprise features stop at the date
-shown on the card; Community features keep working. By default an admin warning appears seven days
-before that date.
-See [Check renewal health](/admin#check-renewal-health).
+### Daily report and renewal
 
-Every user who signs in gets a seat. **Settings → Users & seats** shows the seats in use against
-the seats included; untick a user to free a seat.
+About 30 seconds after the backend starts, and then once every 24 hours, the instance reports to
+the licence service. The report contains the licence token, the number of seats in use and a
+random key that identifies the instance; no user names, prompts or content. The answer is a
+renewed token, currently valid for 45 days. The card shows the exact date as **Enterprise features
+stop without renewal**.
+
+- **Without a successful report**, the Enterprise features stop at that date. The Community
+  edition keeps running, with all its features and your data.
+- **The backend needs outbound HTTPS** to the licence service (chart value
+  `ee.license.serviceUrl`). The chart sets no egress policy for the backend namespace; your own
+  firewall, proxy or network policy must allow it. An empty value disables reporting, and the
+  licence then stops at the token's date.
+- **One licence per instance.** The licence service binds a licence to the instance that reports
+  it; the same token on a second instance is rejected there.
+
+### When the licence warning shows or reporting fails
+
+By default the card warns seven days before the stop date (`ee.license.reportWarningDays`):
+*Enterprise features stop at … unless the license renews.* Check **Last report error**:
+
+| Last report error | What it means | What to do |
+|---|---|---|
+| `License service request failed. Check connectivity and service availability.` | The backend could not reach the licence service | Check DNS, firewall, proxy and egress from the backend pods to the host in `ee.license.serviceUrl` |
+| `License service rejected the report (HTTP 403).` | The subscription is no longer active | Check your contract or subscription; contact support |
+| `License service rejected the report (HTTP 409).` | The licence is bound to another instance | Use the licence on the instance it was activated on, or contact support |
+| `License service rejected the report (HTTP 401).` | The token expired too long ago | Contact support for a new token |
+| `License token has no license id. Re-activate it to enable reporting.` | An old token without metering | Activate the token again, or ask support for a current one |
+
+Then:
+
+1. Note the date under **Enterprise features stop without renewal**: that is how much time is left.
+2. After fixing connectivity, restart the backend to report at once instead of at the next
+   scheduled time: `kubectl -n agenthub rollout restart deployment/agenthub-backend`. About 30
+   seconds after the start, **Refresh license status** shows the result.
+3. If the error stays, or the stop date is close, contact [support](/support) with the error text
+   and the date. Do not send the licence token.
+
+The backend log shows the same events (`Seat usage report failed.`, `Seat report rejected`).
+More on the card: [Check renewal health](/admin#check-renewal-health).
+
+### Seats
+
+A seat is a user who has signed in at least once and whose seat an administrator has not revoked.
+With a licence, every user gets a seat on sign-in. **Settings → Users & seats** shows the seats in
+use against the seats included; untick a user to revoke the seat. Revoke the seats of people who
+no longer use the instance, since the reported count is the number of seats in use.
 
 ### Manual invoicing
 
-If your organisation does not pay through the online checkout, the licence is issued to you
-and you are invoiced separately.
+If your organisation does not pay through the self-service checkout, the licence comes with your
+order form and you are invoiced separately.
 
 ::: info Terms: per your order form
 Invoicing interval, payment terms, seat count, how seat changes are invoiced, and the licence
@@ -135,8 +196,7 @@ term are set by your order form. This page does not describe them.
 :::
 
 With manual invoicing, **Settings → Billing & invoices** may not apply to you: invoices come
-the way your order form says. The seat count the instance reports is visible under
-**Settings → Users & seats**.
+the way your order form says.
 
 ## 4. Before the team starts
 
@@ -147,4 +207,6 @@ the way your order form says. The seat count the instance reports is visible und
   stays `false`, the chart default.
 - **Agree how you will upgrade.** Read [Upgrading](/upgrading) and plan the first upgrade before
   you need it.
+- **Enterprise: plan the onboarding sessions** within the first 30 days; see
+  [Onboarding](/support#onboarding).
 - **Know where to get help.** See [Support](/support).

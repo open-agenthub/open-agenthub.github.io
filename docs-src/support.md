@@ -3,8 +3,8 @@
 What support covers, how to reach it, and how to report a problem without handing over
 secrets.
 
-**Edition:** Community (public issues) · Enterprise customers (support as agreed in the order
-form) · **Who:** operators and administrators of an instance
+**Edition:** Community (public issues) · Enterprise customers (email support and onboarding, per
+the order form) · **Who:** operators and administrators of an instance
 
 ## Community edition
 
@@ -19,10 +19,34 @@ public issue.
 
 ## Enterprise customers
 
-::: info Channel and response times: set by your order form
-How you reach support (YOUR_SUPPORT_CHANNEL), when it is available, and how quickly you get a
-response are set by your order form. This page does not define them.
+::: warning DRAFT: support terms
+The terms in this section follow a draft order form that is not yet approved. Your signed order
+form applies.
 :::
+
+### How to reach support
+
+- **By email** to `SUPPORT_EMAIL`, on business days.
+- **Acknowledgement:** you get a reply confirming receipt within one business day.
+- **No service level:** there is no guaranteed availability, response time or resolution time,
+  and no 24/7 support.
+
+Support works from what you send. We have no access to your instance, and we do not ask for it;
+see [Who operates what](/pilot-setup#who-operates-what).
+
+### Onboarding
+
+Enterprise customers get two remote sessions of 60 minutes each, within 30 days of the start:
+
+1. **Setup review:** your installation, TLS, OIDC, `ee.admins` and, if you use one, a private
+   certificate authority (`backend.trustedCaConfigMap`). Prepare by following
+   [Pilot setup](/pilot-setup).
+2. **First team workflow:** [sharing](/sharing), [usage limits](/admin#usage-limits), the
+   [agent allowlist](/admin#allowed-agents) and
+   [MCP restrictions for sessions](/sharing#mcp-restrictions-for-the-whole-session).
+
+You operate your systems yourself, also while sharing your screen; we explain and watch, but do
+not take control.
 
 ### In scope
 
@@ -51,7 +75,8 @@ Unless your order form says otherwise:
 
 ## Reporting a problem
 
-Send what is needed to reproduce the problem and leave secrets out. Include:
+Send what is needed to reproduce the problem, and **nothing that contains secrets or personal
+data**. Include:
 
 1. **Versions**: the output of
 
@@ -77,7 +102,8 @@ Send what is needed to reproduce the problem and leave secrets out. Include:
    ```
 
    The backend keeps bot tokens and client secrets out of its log. Read the file before you send
-   it anyway: it can contain user names, hostnames, repository names and session titles.
+   it anyway: it can contain user names, hostnames, repository names and session titles. Replace
+   user names and other personal data, for example with `user1`, before you send it.
 
 **Never send:**
 
@@ -92,7 +118,8 @@ Send what is needed to reproduce the problem and leave secrets out. Include:
 If you sent something by mistake, rotate it: a credential that has left your organisation should
 be treated as exposed.
 
-A way to collect such a report automatically, with secrets removed, is planned.
+A way to collect such a report as one bundle, with secrets removed, will follow. Review that
+bundle too before you send it.
 
 ## Before you contact support
 

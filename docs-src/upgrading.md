@@ -158,11 +158,14 @@ schedule or to response times. What applies to you as a customer is set by your 
 - **When:** there is no fixed schedule. Releases are published when changes are ready, sometimes
   several on one day. Patch versions (`1.21.1`) have so far carried fixes, minor versions
   (`1.22.0`) new features as well.
+- **Who upgrades:** you do. Your instance runs on your infrastructure and we have no access to
+  it; you choose when to run `helm upgrade --version`.
 - **What to do:** each release's notes end with an **Upgrading** section, and some start with
   **Before you upgrade**. The [version notes](#version-notes) on this page collect them.
-- **Security fixes** are published as regular releases. So far, fixes have been released on top
-  of the most recent release, not backported to older versions; staying current is how you
-  receive them. When a fix needs action from you, such as rotating a credential or restarting
+- **Fixes, including security fixes,** are published as regular or patch releases. So far, fixes
+  have been released on top of the most recent release, not backported to older versions;
+  staying current is how you receive them. You are not obliged to upgrade, and there is no
+  promised deadline for a fix. When a fix needs action from you, such as rotating a credential or restarting
   sessions, the release notes say so.
 - **Staying informed:** the instance does not tell you about new releases. On GitHub, use
   **Watch → Custom → Releases** on the repository to be notified.
