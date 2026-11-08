@@ -25,6 +25,7 @@ export default defineConfig({
         items: [
           { text: 'Feature overview', link: '/features' },
           { text: 'Install', link: '/getting-started' },
+          { text: 'Pilot setup', link: '/pilot-setup' },
           { text: 'Evaluation checklist', link: '/evaluate' }
         ]
       },
@@ -89,7 +90,8 @@ export default defineConfig({
       {
         text: 'Reference',
         items: [
-          { text: 'Troubleshooting', link: '/troubleshooting' }
+          { text: 'Troubleshooting', link: '/troubleshooting' },
+          { text: 'Support', link: '/support' }
         ]
       }
     ],

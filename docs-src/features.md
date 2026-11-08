@@ -103,6 +103,9 @@ Roles used on these pages:
 | --- | --- | --- | --- |
 | Chart values: images, database pools, bundled Postgres, storage egress, sign-in, sessions | Community | Operator | [Chart values](/chart-values) |
 | Version notes and archive cleanups | Community | Operator, admin | [Upgrading](/upgrading#version-notes) |
+| Upgrade path, backups before an upgrade, how releases are published | Community | Operator | [Upgrading](/upgrading#upgrade-path-to-the-current-release) |
+| Pilot setup: install, team login, licence, manual invoicing | Community · licence: Enterprise | Operator, admin | [Pilot setup](/pilot-setup) |
+| Support scope and reporting a problem without secrets | Community · Enterprise | Operator, admin | [Support](/support) |
 
 ## Integrations and other topics
 
