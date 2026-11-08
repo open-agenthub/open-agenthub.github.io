@@ -38,7 +38,7 @@ exhausted account must be fixed before retrying.
 
 ## Review and start
 
-1. Open **Switch provider** in the session's Workspace controls. If the panel says
+1. Open the **⋯** menu in the session bar and choose **Switch provider…**. If the panel says
    **The session is still starting. Try again in a moment.**, wait and reopen it. A visible
    answer can arrive before startup checks finish; review becomes available once the session is ready.
 2. Select the other provider, its authentication mode and account, and the model settings.

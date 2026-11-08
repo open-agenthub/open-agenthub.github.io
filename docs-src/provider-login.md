@@ -58,6 +58,12 @@ chat.
 can **rename** it, **make default** for new sessions, or remove it. When you have more than one
 login for an agent, the **New session** dialog offers an **Account** choice.
 
+To move a running session to another login, open the **⋯** menu in its session bar and pick it
+under **Account** (owner only, subscription sessions with more than one login). The list shows
+each login by the name you gave it — or the part of its e-mail before the @ — with the full
+e-mail of the current login underneath. The agent restarts on the other login and resumes the
+conversation.
+
 ## Usage limits and account failover
 
 When a stored login reaches its provider's usage limit, AgentHub marks the account as at its limit
