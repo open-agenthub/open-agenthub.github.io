@@ -16,8 +16,38 @@ Each session opens in one of two interfaces, chosen under **Interface** when you
 - **Terminal**: the agent CLI's own console interface.
 
 The default for new sessions is set per browser under **Settings → Interface**. You can switch a
-running session between the two with the **Workspace** and **Terminal** buttons in its header,
-without restarting the agent.
+running session between the two with the **Workspace** and **Terminal** buttons in its session
+bar, without restarting the agent.
+
+## The session bar
+
+The bar above the conversation stays on one line at every window width. It always shows:
+
+- the session's title and status,
+- the **Model** chip (see [Models](/models)),
+- a small dot for the connection to the agent; hover it, or read it with a screen reader, for
+  the words (*connected*, *connecting…*, *disconnected*),
+- the **Workspace / Terminal / Shell** switch,
+- **Pause** or **Resume**, and **Share** (owner).
+
+Everything else is in the **⋯** menu at the end of the bar:
+
+| Entry | Who sees it |
+| --- | --- |
+| **Account** — the login the session runs on; see [Provider logins](/provider-login#several-accounts-per-provider) | Owner, subscription sessions with several logins |
+| **Switch provider…** — see [Switch provider](/provider-switching) | Owner |
+| **Files**, and **Browser** while the agent's browser runs | Everyone who can open the session |
+| **✉ Messages** | Owner |
+| **Edit session**, **Continue locally** (Claude) | Owner |
+| **Update now**, when the session runs an outdated runtime image | Owner |
+
+A dot on the **⋯** button means something inside wants attention: open messages, an outdated
+image, or a provider switch in progress. On narrow windows **Pause** and **Share** show only their
+icon; their names stay available as tooltips and to screen readers. With the keyboard, open the
+menu with Enter, move with Tab or the arrow keys, and close it with Esc.
+
+A Viewer, and anyone opening a share link, sees the view switch, a **Read-only** mark and a menu
+with **Files** (and **Browser**) only.
 
 In the Workspace, **⌘ Agent terminal** opens the agent's console in a drawer below the
 conversation, and **›_ Shell** opens a separate shell in the session's container. The shell is
@@ -82,15 +112,16 @@ one back into the composer, **Withdraw** removes it.
 
 ## Messages from other sessions
 
-The **✉ Messages** button in the session header (owner only) opens a panel with the messages
-other sessions sent to this one, with a badge for how many are open. **Message this agent** sends
+**⋯ → ✉ Messages** in the session bar (owner only) opens a panel with the messages other
+sessions sent to this one. While messages are open, the **⋯** button carries a dot and the menu
+entry a count. **Message this agent** sends
 your own message; tick **priority** to deliver it into the running prompt now, and **interrupt**
 to stop the current work first. How sessions message each other is described in
 [Built-in tools inside a session](/session-tools).
 
 ## Files, Changes and the browser
 
-The session bar opens companion panes beside the conversation:
+The session bar's **⋯** menu opens companion panes beside the conversation:
 
 - **Files**: the session's files, with previews. See [Session files](/files).
 - **Changes**, a view inside the Files pane: a per-file Git diff of the agent's work in the

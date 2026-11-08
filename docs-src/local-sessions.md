@@ -17,7 +17,7 @@ personal API token or a plugin. Three ways lead to the same result; pick the one
 
 | Way | What you need | Who writes the files |
 | --- | --- | --- |
-| **Continue locally** button on the session page | `curl`, `tar` (built into Linux, macOS, Windows 10+) | A command you paste into a terminal |
+| **⋯ → Continue locally** on the session page | `curl`, `tar` (built into Linux, macOS, Windows 10+) | A command you paste into a terminal |
 | Remote MCP connection (OAuth sign-in) in your local Claude Code | The [built-in MCP endpoint](/mcp) | A command your local Claude Code runs |
 | [Stdio MCP server](/mcp#local-stdio) with a personal API token | A checkout of AgentHub and Node | The MCP server itself |
 
@@ -39,7 +39,7 @@ code does not: commit and push your local changes as usual.
 
 ### In the web app
 
-Open the session and choose **⇩ Continue locally**.
+Open the session, open the **⋯** menu in the session bar and choose **⇩ Continue locally**.
 
 1. Enter the **absolute** path of your local project directory, for example
    `/home/me/project` or `C:\Users\me\project`. The browser remembers it for this session.

@@ -10,7 +10,7 @@ Collaborators of a shared session; Viewers read only
 
 ## Opening the Files pane
 
-Click **Files** in the session bar. The pane opens beside the Workspace or Terminal, with the file
+Open the **⋯** menu in the session bar and choose **Files**. The pane opens beside the Workspace or Terminal, with the file
 list on the left and a preview on the right. Drag the seam between the pane and the conversation
 to resize it (25 to 75 %), and close it with the **×** on its tab or Esc. On a phone the panes
 become tabs: **Files**, **Browser**, **Agent**.
