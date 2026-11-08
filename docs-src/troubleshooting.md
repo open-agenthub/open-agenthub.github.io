@@ -156,3 +156,8 @@ kubectl -n agenthub logs deploy/agenthub-backend --since=5m | grep -i telegram
 
 Bot tokens and client secrets are kept out of these logs deliberately. If you ever see a
 credential in there, that is a bug worth reporting.
+
+## Collect diagnostics for support
+
+An operator can create a local JSON [support bundle](./support-bundle), review it, and choose
+whether to share it. Logs are excluded by default. Nothing is uploaded automatically.
