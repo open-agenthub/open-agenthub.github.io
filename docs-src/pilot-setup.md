@@ -112,10 +112,13 @@ After activation the **Enterprise license** card shows:
   error**.
 
 The instance renews its token by reporting to the licence service, normally once every 24 hours.
-The report contains the token and an aggregate count of licensed users, nothing else. The backend
-needs outbound HTTPS to the licence service for this (chart value `ee.license.serviceUrl`; an empty
-value disables reporting). If renewal keeps failing, Enterprise features stop at the date shown on
-the card; Community features keep working. An admin warning appears seven days before that date.
+The report contains the token, the number of licensed users and a random key that identifies the
+instance; no user names or content. A licence is bound to the instance that reports it: the same
+token activated on a second instance does not renew there, so use one licence per instance. The
+backend needs outbound HTTPS to the licence service for this (chart value `ee.license.serviceUrl`;
+an empty value disables reporting). If renewal keeps failing, Enterprise features stop at the date
+shown on the card; Community features keep working. By default an admin warning appears seven days
+before that date.
 See [Check renewal health](/admin#check-renewal-health).
 
 Every user who signs in gets a seat. **Settings → Users & seats** shows the seats in use against
