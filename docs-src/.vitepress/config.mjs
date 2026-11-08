@@ -83,7 +83,8 @@ export default defineConfig({
         text: 'Operators',
         items: [
           { text: 'Chart values', link: '/chart-values' },
-          { text: 'Upgrading', link: '/upgrading' }
+          { text: 'Upgrading', link: '/upgrading' },
+          { text: 'Support bundle', link: '/support-bundle' }
         ]
       },
       {
