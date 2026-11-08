@@ -1,8 +1,9 @@
 # Collect a support bundle
 
-An operator can create a readable JSON file on their own machine, review it, and choose whether
-to share it. Nothing is uploaded automatically. The default bundle contains no logs, names,
-emails, session titles or session content.
+An operator can create a readable JSON file on their own machine containing an allow-listed set
+of operational metadata, with no logs by default; review it before sharing. Nothing is uploaded
+automatically. Allowed fields such as custom image tags or numeric settings can still hold values
+you did not expect, so review the file before you share it.
 
 **Edition:** Community and Enterprise · **Who:** cluster operator with an AgentHub administrator credential
 
@@ -38,11 +39,12 @@ unset support_credential
 For API-key login, enter the installation's existing API key. For OIDC login, enter a current
 access token for an administrator; a normal user's token receives **403**. Obtain that token
 through your organisation's normal sign-in process. Do not paste the credential into a command
-argument, enable shell tracing, or save it in the bundle. The collector never prints it. You can
-also use your installation's HTTPS origin as `--admin-url`; redirects are refused.
+argument or inline, enable shell tracing, or save it in the bundle. The collector never prints it.
+The collector sends the credential as a bearer token to the backend address you give. It accepts
+only HTTPS or a local port-forward and does not follow redirects. Point it only at your own instance.
 
-The command creates a new file with owner-only permissions and refuses to overwrite an existing
-file. Open and review the JSON before sharing it through a channel agreed with support. Remove
+The command creates a new file with permissions `0600` (owner only) on Linux and macOS file systems
+and refuses to overwrite an existing file. Open and review the JSON before sharing it through a channel agreed with support. Remove
 the local copy when you no longer need it. Collection errors produce a generic message so an
 upstream error cannot echo credentials into diagnostic output.
 
