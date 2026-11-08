@@ -51,7 +51,7 @@ upstream error cannot echo credentials into diagnostic output.
 | Area | Included |
 | --- | --- |
 | Versions | Chart/application version and backend/configured runtime image tags; registry hosts and arbitrary custom tags are omitted |
-| Pods | Component, phase, readiness, restart counts and number of matching pods in the release namespace; no pod names |
+| Pods | Component, phase, readiness, restart counts and pod counts in the release namespace; unknown component labels become `other`; no pod names |
 | Events | Counts of fixed event reason categories in the last 60 minutes; no messages or object names |
 | Helm values | Selected boolean and integer settings, such as replica counts, database pool sizes and feature flags; all other fields omitted |
 | Database | Recognised `schema_scripts` names and application timestamps; no SQL or session data; `null`/`unavailable` if the tracking query fails |
@@ -59,9 +59,8 @@ upstream error cannot echo credentials into diagnostic output.
 | OIDC | Whether authority, client ID and audience are configured; no URLs, IDs or secrets |
 
 Use `--event-minutes N` for a window from 1 to 1440 minutes. Unknown fields and values are omitted
-instead of copied. Custom tags display as `omitted`. No session namespace resources, prompts,
-transcripts, file contents, user lists, email addresses, secret values or Kubernetes Secret data
-are included.
+instead of copied. Custom tags display as `omitted`. The sessions namespace is never queried separately. No session records, prompts, transcripts,
+file contents, user lists, email addresses, secret values or Kubernetes Secret data are included.
 
 ## Optional backend logs
 
