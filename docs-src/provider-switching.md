@@ -69,7 +69,7 @@ branches, patches, bundles and workspace files are not added to native state arc
 
 ## Review and start
 
-1. Open **Switch provider** in the session's Workspace controls. If the panel says
+1. Open the **⋯** session menu and choose **Switch provider**. If the panel says
    **The session is still starting. Try again in a moment.**, wait and reopen it. A visible
    answer can arrive before startup checks finish; review becomes available once the session is ready.
 2. For temporary workspaces, check repositories and acknowledge omitted files first. Select the other provider, its authentication mode and account, and the model settings.
