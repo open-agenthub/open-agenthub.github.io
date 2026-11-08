@@ -1,12 +1,12 @@
 # Switch agent provider
 
-::: warning Experimental, off by default
-The operator must enable switching for the workspace type: repository-backed temporary workspaces (`agent.repositoryProviderSwitchEnabled`) or persistent session workspaces (`agent.workspaceVolume.persistent`). Recovery needs a valid native checkpoint and either fetchable recorded repository commits or the original workspace volume. Native archives do not back up uncommitted code. Keep the option off in production while evaluating the tested recovery limits and your backup procedure. Node and volume loss are not covered.
+::: warning Experimental (available from 1.25.0)
+Repository-backed temporary-workspace switching is available from **1.25.0** and is off by default. The operator must enable switching for the workspace type: repository-backed temporary workspaces (`agent.repositoryProviderSwitchEnabled`) or persistent session workspaces (`agent.workspaceVolume.persistent`). Recovery needs a valid native checkpoint and either fetchable recorded repository commits or the original workspace volume. Native archives do not back up uncommitted code. Keep the option off in production while evaluating the tested recovery limits and your backup procedure. Node and volume loss are not covered.
 :::
 
 The owner can replace Claude with Codex, or Codex with Claude, keeping the same session and
 visible Workspace conversation. The target starts fresh native context with only the reviewed
-handover. Switching back also starts fresh context. Temporary workspaces restore clean, pushed
+handover. Switching back also starts fresh context. From **1.25.0**, temporary workspaces restore clean, pushed
 repository commits on their recorded local branches. Persistent workspaces keep their original
 volume, including dirty and untracked files saved there. Processes and memory do not transfer.
 
@@ -17,10 +17,11 @@ agents and parent sessions cannot switch another owner's session through MCP.
 
 ## Before switching
 
-Use a packaged Claude or Codex **Interactive** session with the **Terminal** interface,
-running without root privileges. Temporary `emptyDir` workspaces need repository-backed
-switching enabled, configured object storage and fetchable repository commits. Existing
-supported sessions can use it after updating their runtime; no PVC migration is needed.
+Use a packaged **Claude Code or Codex Interactive** session with the **Terminal** interface,
+running **without root privileges**. From **1.25.0**, temporary `emptyDir` workspaces require
+operator **opt-in**, **configured repositories**, **configured object storage**, and repository
+commits fetchable with the session's selected Git credentials. Update existing supported
+sessions to the 1.25.0 runtime before using this path; no PVC migration is needed.
 
 Configure the target provider's usable subscription account or API key first in
 [Provider login](/provider-login). Custom model endpoints need a known, sufficiently large
@@ -38,6 +39,8 @@ exhausted account must be fixed before retrying.
 
 ## Save code before switching a temporary workspace
 
+**Experimental (available from 1.25.0)** — requires the opt-in and prerequisites above.
+
 Choose **Check again** in **Switch provider**. AgentHub checks every configured repository:
 its local branch and exact commit, staged and unstaged tracked changes, non-ignored untracked
 files, and whether the commit is available from its remote branch using the Git credentials
@@ -52,12 +55,13 @@ or pushing directly to main or the remote default branch. The source uses its or
 and approvals. If push fails, unpublished work still blocks switching. The message does not
 approve a switch: wait for the source turn to finish, then **Check again** and review the handover.
 
-Ignored files do **not** block switching. The dialog shows counts and a bounded sample of names
-per repository. Acknowledge that these files and listed files outside repositories **will not
-carry over**. File contents are not included. The new agent must recreate dependencies (for
-example, run `npm install`) and build output. Ignored `.env` files and similar local configuration
+Ignored files do **not** block switching. For ignored files and files outside repositories,
+the dialog shows **counts and a bounded sample of detected paths, not a complete inventory**.
+Acknowledge that ignored files and files outside repositories **will not carry over**. File contents are not
+included. The new agent must recreate dependencies (for example, run `npm install`) and build output. Ignored `.env` files and similar local configuration
 do not carry over; supply needed configuration through your intended process. Switching is
-not a secret boundary.
+not a secret boundary: ignored files and repository secrets readable by the agent are not
+isolated from that agent by the switch.
 
 The target clones the selected remote branch and checks out the **recorded commit on the
 recorded local branch**, with its upstream set. It does not use detached HEAD or silently
@@ -163,14 +167,16 @@ native state. If it cannot be recovered, ask your administrator to preserve the 
 before an operator decides whether to delete the session. Deletion removes its workspace
 claim, may delete the volume, and supplies no restore path.
 
-A repository-backed resume also restores the current execution's recorded commit and branch
-before native resume. Missing repository checkpoint metadata holds restoration. Work created
-after that code checkpoint is still temporary: uncommitted or unpushed changes, ignored files
-and files outside repositories are not backed up by native archive saves. Keep important code
-pushed. Later pushes do not automatically advance the recorded restore point: bring newer
-pushed work into the checkout with normal Git tools after resume. A later reviewed switch
-records a new verified code checkpoint. Visible history cannot
-reconstruct missing code or native model context.
+::: warning Temporary-workspace restore point (from 1.25.0)
+A repository-backed resume restores the current execution's **recorded commit and branch**
+before native resume. **Commits pushed later do not move this restore point automatically**.
+After a resume, update the checkout with normal Git tools to bring newer pushed work back in.
+A later reviewed switch records a new verified code checkpoint.
+
+Uncommitted or unpushed changes, ignored files and files outside repositories are not backed
+up by native archive saves. Keep important code pushed. Missing repository checkpoint metadata
+holds restoration. Visible history cannot reconstruct missing code or native model context.
+:::
 
 ## Known limits
 
@@ -182,7 +188,7 @@ when optional checkpoint metadata is damaged.
 
 ## Operator storage settings
 
-To allow repository-backed switching without a PVC:
+From **1.25.0**, opt in to experimental repository-backed switching without a PVC:
 
 ```yaml
 agent:

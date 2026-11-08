@@ -197,7 +197,7 @@ the telemetry environment needed to keep recording usage. New sessions receive i
 
 ## Persistent session workspaces
 
-`agent.repositoryProviderSwitchEnabled` defaults to `false`. Enable it to allow owner-reviewed
+From **1.25.0** (experimental), `agent.repositoryProviderSwitchEnabled` defaults to `false`. Opt in to allow owner-reviewed
 provider switches on temporary workspaces using clean, pushed repository commits and configured
 object storage; it does not allocate PVCs. See [Switch provider](/provider-switching).
 
