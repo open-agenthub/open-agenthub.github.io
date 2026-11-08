@@ -197,6 +197,10 @@ the telemetry environment needed to keep recording usage. New sessions receive i
 
 ## Persistent session workspaces
 
+From **1.25.0** (experimental), `agent.repositoryProviderSwitchEnabled` defaults to `false`. Opt in to allow owner-reviewed
+provider switches on temporary workspaces using clean, pushed repository commits and configured
+object storage; it does not allocate PVCs. See [Switch provider](/provider-switching).
+
 `agent.workspaceVolume.persistent` defaults to `false`. Enabling it gives new supported
 Claude/Codex interactive terminal sessions a claim of `agent.workspaceVolume.size` (default
 `10Gi`). `agent.workspaceVolume.storageClass` defaults to an empty string, using the cluster

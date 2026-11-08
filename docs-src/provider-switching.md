@@ -1,14 +1,14 @@
 # Switch agent provider
 
-::: warning Experimental (1.22.0)
-Switching providers is experimental and off by default: it needs persistent session workspaces (`agent.workspaceVolume.persistent`), which an operator has to enable. Recovery is limited to the tested failure cases, an available workspace volume and a valid saved native checkpoint; it does not cover node or volume loss. An interrupted switch stays held when its runtime identity, shutdown or handover cannot be confirmed; an ambiguous lost target is not recreated automatically. Keep the option off in production while evaluating these recovery limits and your workspace backup procedure.
+::: warning Experimental (available from 1.25.0)
+Repository-backed temporary-workspace switching is available from **1.25.0** and is off by default. The operator must enable switching for the workspace type: repository-backed temporary workspaces (`agent.repositoryProviderSwitchEnabled`) or persistent session workspaces (`agent.workspaceVolume.persistent`). Recovery needs a valid native checkpoint and either fetchable recorded repository commits or the original workspace volume. Native archives do not back up uncommitted code. Keep the option off in production while evaluating the tested recovery limits and your backup procedure. Node and volume loss are not covered.
 :::
 
-The session owner can replace a Claude agent with Codex, or Codex with Claude, while keeping
-the same session and visible Workspace conversation. The new agent starts a fresh native
-conversation on the same workspace volume, including dirty and untracked repository files.
-Only data saved on that volume is preserved; in-memory writes and process state are not transferred.
-Switching back starts another fresh native conversation; it does not resume an earlier agent.
+The owner can replace Claude with Codex, or Codex with Claude, keeping the same session and
+visible Workspace conversation. The target starts fresh native context with only the reviewed
+handover. Switching back also starts fresh context. From **1.25.0**, temporary workspaces restore clean, pushed
+repository commits on their recorded local branches. Persistent workspaces keep their original
+volume, including dirty and untracked files saved there. Processes and memory do not transfer.
 
 This is a **Community** feature. Only the **owner** can review, start, cancel or retry a switch.
 Enterprise sharing links and roles stay attached to the session. Collaborators and Viewers
@@ -17,10 +17,11 @@ agents and parent sessions cannot switch another owner's session through MCP.
 
 ## Before switching
 
-Use a packaged Claude or Codex **Interactive** session with the **Terminal** interface,
-running without root privileges. Its workspace must have been created on a persistent volume.
-Existing sessions using temporary `emptyDir` storage show **switching not available**, with a
-reason. They are not migrated automatically; create a new persistent-workspace session.
+Use a packaged **Claude Code or Codex Interactive** session with the **Terminal** interface,
+running **without root privileges**. From **1.25.0**, temporary `emptyDir` workspaces require
+operator **opt-in**, **configured repositories**, **configured object storage**, and repository
+commits fetchable with the session's selected Git credentials. Update existing supported
+sessions to the 1.25.0 runtime before using this path; no PVC migration is needed.
 
 Configure the target provider's usable subscription account or API key first in
 [Provider login](/provider-login). Custom model endpoints need a known, sufficiently large
@@ -36,12 +37,48 @@ and close shell terminals and helper containers. Busy or uncertain runtime state
 Keep the target account available until the replacement finishes; a rejected login or
 exhausted account must be fixed before retrying.
 
+## Save code before switching a temporary workspace
+
+**Experimental (available from 1.25.0)** — requires the opt-in and prerequisites above.
+
+Choose **Check again** in **Switch provider**. AgentHub checks every configured repository:
+its local branch and exact commit, staged and unstaged tracked changes, non-ignored untracked
+files, and whether the commit is available from its remote branch using the Git credentials
+selected for the session. Read-only repositories are ready when the commit is already there.
+Missing remotes, unpublished commits and failed fetches block switching with a reason;
+unavailable comparisons are shown as unknown. Git access is separate from model-account login.
+
+Commit and push intended work yourself, or choose **Ask the agent to commit and push**.
+Review or edit the prepared message and choose **Send this request**. It proposes a task branch,
+asks for a normal push without force, and requires your explicit confirmation before committing
+or pushing directly to main or the remote default branch. The source uses its ordinary tools
+and approvals. If push fails, unpublished work still blocks switching. The message does not
+approve a switch: wait for the source turn to finish, then **Check again** and review the handover.
+
+Ignored files do **not** block switching. For ignored files and files outside repositories,
+the dialog shows **counts and a bounded sample of detected paths, not a complete inventory**.
+Acknowledge that ignored files and files outside repositories **will not carry over**. File contents are not
+included. The new agent must recreate dependencies (for example, run `npm install`) and build output. Ignored `.env` files and similar local configuration
+do not carry over; supply needed configuration through your intended process. Switching is
+not a secret boundary: ignored files and repository secrets readable by the agent are not
+isolated from that agent by the switch.
+
+The target clones the selected remote branch and checks out the **recorded commit on the
+recorded local branch**, with its upstream set. It does not use detached HEAD or silently
+choose a newer remote tip. Changed repository or omitted-file checks require another check
+and review. The repository-backed path supports HTTP(S) remotes with the selected session Git credentials.
+**SSH remotes are not supported yet**; follow [SSH support (#556)](https://github.com/open-agenthub/open-agenthub/issues/556).
+Initially, the repository path supports 1–32 configured repositories with bounded
+metadata. Submodules, large-file filters, detached HEAD, unsupported checkout layouts and
+index flags that hide tracked changes are refused. Local Git configuration, unpublished
+branches, patches, bundles and workspace files are not added to native state archives.
+
 ## Review and start
 
 1. Open the **⋯** menu in the session bar and choose **Switch provider…**. If the panel says
    **The session is still starting. Try again in a moment.**, wait and reopen it. A visible
    answer can arrive before startup checks finish; review becomes available once the session is ready.
-2. Select the other provider, its authentication mode and account, and the model settings.
+2. For temporary workspaces, check repositories and acknowledge omitted files first. Select the other provider, its authentication mode and account, and the model settings.
 3. Enter the instructions, current task, decisions, pending work and references the next agent
    needs. Review the exact framed handover, including its omission note.
 4. Start the reviewed replacement. Editing the selection invalidates the review.
@@ -54,11 +91,12 @@ not fetch files or attach their contents. Do not include credentials in the hand
 Earlier native messages, raw tool output, attachments, hidden reasoning and native resume
 files are omitted from the handover. Visible history is not the target model's context.
 The new agent can inspect the preserved workspace through its normal permitted tools.
-Only workspace files persist: processes and memory from the old pod are not transferred.
+Only recorded repository commits or files on the persistent volume carry over. Processes and
+memory from the old pod are not transferred.
 Stop background services before switching and restart needed services in the new runtime.
 
-The source agent checkpoints and exits before its pod is removed. AgentHub waits for all
-pods using the workspace to disappear, then starts the other provider in a replacement pod.
+The source agent checkpoints and exits before its pod is removed. AgentHub waits for the source pod
+(and, for a persistent volume, all consumers) to disappear, then starts the other provider in a replacement pod.
 The replacement has a fresh home and only the selected target provider's credentials; source
 native state is never translated or restored into it. Approval mode, tool restrictions, MCP
 access, selected session secrets and network policy remain in effect. Old approvals are not
@@ -84,7 +122,9 @@ and verify needed data independently before an operator chooses deletion.
 
 Before retrying a held switch:
 
-1. Read the reported reason and fix the selected provider account, storage or runtime problem.
+1. Read the reason and repair provider credentials, Git fetch access, storage or runtime state.
+   A removed or rewritten remote branch may require restoring the recorded commit; retry never
+   substitutes another commit.
 2. Keep the same target selection and reviewed handover. Retry continues the existing operation.
 3. If the target pod disappeared after startup might have begun, leave the operation held and
    ask your administrator to inspect it. A missing pod does not prove the handover never ran.
@@ -92,7 +132,7 @@ Before retrying a held switch:
    files before deletion. Native state archives do not contain dirty repositories, and
    deleting the session does not restore or recover them.
 
-A retry cannot recover an unavailable native archive, missing workspace claim or expired
+A retry cannot recover an unavailable native archive, unfetchable recorded commit, missing workspace claim or expired
 credential by using another execution's state. Do not edit native resume files or replace
 an uncertain target manually to make a retry proceed.
 
@@ -127,6 +167,17 @@ native state. If it cannot be recovered, ask your administrator to preserve the 
 before an operator decides whether to delete the session. Deletion removes its workspace
 claim, may delete the volume, and supplies no restore path.
 
+::: warning Temporary-workspace restore point (from 1.25.0)
+A repository-backed resume restores the current execution's **recorded commit and branch**
+before native resume. **Commits pushed later do not move this restore point automatically**.
+After a resume, update the checkout with normal Git tools to bring newer pushed work back in.
+A later reviewed switch records a new verified code checkpoint.
+
+Uncommitted or unpushed changes, ignored files and files outside repositories are not backed
+up by native archive saves. Keep important code pushed. Missing repository checkpoint metadata
+holds restoration. Visible history cannot reconstruct missing code or native model context.
+:::
+
 ## Known limits
 
 A broken checkpoint file stops resume of a completed switch. The session reports that its
@@ -137,7 +188,21 @@ when optional checkpoint metadata is damaged.
 
 ## Operator storage settings
 
-Enable persistent workspaces for newly created supported sessions in Helm values:
+From **1.25.0**, opt in to experimental repository-backed switching without a PVC:
+
+```yaml
+agent:
+  repositoryProviderSwitchEnabled: true
+  workspaceVolume:
+    persistent: false
+```
+
+The admission flag defaults to `false` and is independent of PVC allocation. Configure object
+storage and Git access for the selected repositories. Disabling admission blocks new switches;
+current execution checkpoints are still required for resume. A repository outage or deleted
+remote commit can block restoration, so repository retention is part of recovery availability.
+
+Alternatively, enable persistent workspaces for newly created supported sessions:
 
 ```yaml
 agent:
