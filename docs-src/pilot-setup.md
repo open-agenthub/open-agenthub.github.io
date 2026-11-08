@@ -110,12 +110,15 @@ No chart value switches Enterprise features on.
 ### How an instance gets a licence
 
 An administrator activates the licence under **Settings → License**. Which way applies depends on
-how you buy:
+how you buy.
+
+**If you have an order form, your licence is issued to you; do not use the online checkout,
+which starts a trial for new billing addresses.**
 
 | You buy | How the token reaches the instance |
 |---|---|
 | **With an order form** (invoice subscription or a licence issued by us) | Either we hand the token to you: paste it into **License token** and click **Activate**. Or you retrieve it yourself: click **Get enterprise license**, enter only the **Billing email** from your order form, and click **Retrieve license**, not **Continue to checkout**. |
-| **Self-service checkout** | **Get enterprise license** asks for billing email, organisation and seats and redirects to the payment provider; the instance then activates the licence itself. The self-service checkout starts new customers on a trial period, so **do not use it if you have an order form**: the order form path above is the one that matches your contract. |
+| **Self-service checkout** | **Get enterprise license** asks for billing email, organisation and seats and redirects to the payment provider; the instance then activates the licence itself. It starts a trial for new billing addresses and is not the path for customers with an order form. |
 
 The licence can be active before the first invoice is paid. Only an administrator sees
 **Settings → License**.
@@ -150,8 +153,7 @@ stop without renewal**.
   `ee.license.serviceUrl`). The chart sets no egress policy for the backend namespace; your own
   firewall, proxy or network policy must allow it. An empty value disables reporting, and the
   licence then stops at the token's date.
-- **One licence per instance.** The licence service binds a licence to the instance that reports
-  it; the same token on a second instance is rejected there.
+- **Use one licence per instance.**
 
 ### When the licence warning shows or reporting fails
 
@@ -162,7 +164,7 @@ By default the card warns seven days before the stop date (`ee.license.reportWar
 |---|---|---|
 | `License service request failed. Check connectivity and service availability.` | The backend could not reach the licence service | Check DNS, firewall, proxy and egress from the backend pods to the host in `ee.license.serviceUrl` |
 | `License service rejected the report (HTTP 403).` | The subscription is no longer active | Check your contract or subscription; contact support |
-| `License service rejected the report (HTTP 409).` | The licence is bound to another instance | Use the licence on the instance it was activated on, or contact support |
+| `License service rejected the report (HTTP 409).` | The licence service refused the report for this instance | Contact support |
 | `License service rejected the report (HTTP 401).` | The token expired too long ago | Contact support for a new token |
 | `License token has no license id. Re-activate it to enable reporting.` | An old token without metering | Activate the token again, or ask support for a current one |
 

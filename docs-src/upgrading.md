@@ -96,7 +96,7 @@ automatically. The [version notes](#version-notes) say which releases need this.
 `helm rollback agenthub REVISION -n agenthub` (find `REVISION` with `helm history agenthub -n
 agenthub`) returns the deployments to the previous release. An older release is not guaranteed
 to work with database changes a newer one has already made, so the backup from step 3 is the
-dependable way back. Collect the backend log
+dependable way back. Save the backend log for your own analysis
 (`kubectl -n agenthub logs deployment/agenthub-backend --tail=200`) before you roll back, and see
 [Support](/support).
 

@@ -19,6 +19,9 @@ public issue.
 
 ## Enterprise customers
 
+Support does not access your systems, accounts or data; you run all commands yourself, also
+during a screen share.
+
 ::: warning DRAFT: support terms
 The terms in this section follow a draft order form that is not yet approved. Your signed order
 form applies.
@@ -31,8 +34,7 @@ form applies.
 - **No service level:** there is no guaranteed availability, response time or resolution time,
   and no 24/7 support.
 
-Support works from what you send. We have no access to your instance, and we do not ask for it;
-see [Who operates what](/pilot-setup#who-operates-what).
+Support works from what you send. See [Who operates what](/pilot-setup#who-operates-what).
 
 ### Onboarding
 
@@ -88,22 +90,16 @@ data**. Include:
 2. **What happened**: the steps, what you expected, what you saw, and the time (with time zone).
 3. **Edition and agent**: Community or Enterprise, and which agent the session ran (Claude Code,
    Codex, Cursor, OpenClaw or OpenCode).
-4. **Pod status**:
+4. **Pod status**, as pod names and states only:
 
    ```bash
    kubectl -n agenthub get pods
-   kubectl -n agenthub describe pod POD_NAME
    ```
 
-5. **The backend log around that time**:
-
-   ```bash
-   kubectl -n agenthub logs deployment/agenthub-backend --since=30m > backend.log
-   ```
-
-   The backend keeps bot tokens and client secrets out of its log. Read the file before you send
-   it anyway: it can contain user names, hostnames, repository names and session titles. Replace
-   user names and other personal data, for example with `user1`, before you send it.
+**By default, send no logs.** Logs and `kubectl describe` output can contain environment values,
+events, user names, hostnames and session titles. Send a log excerpt or `describe` output only
+if support asks for a specific excerpt and you have agreed this with your provider beforehand;
+this may require a data processing agreement.
 
 **Never send:**
 
@@ -112,8 +108,9 @@ data**. Include:
   model provider credentials;
 - your values file as it is. If the configuration matters, remove passwords, keys, tokens and
   connection strings first, or name only the values you changed;
-- database dumps, session transcripts or files from a session, unless support asks for a
-  specific item and you agree to share it.
+- logs, `kubectl describe` output, database dumps, session transcripts or files from a session,
+  unless support asks for a specific item and you have agreed this with your provider
+  beforehand (this may require a data processing agreement).
 
 If you sent something by mistake, rotate it: a credential that has left your organisation should
 be treated as exposed.
