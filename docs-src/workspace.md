@@ -166,9 +166,9 @@ Nothing is interrupted unless you click it: a long build or a long answer that k
 output is progress, and does not trigger the notice.
 
 Autonomous and scheduled sessions have nobody watching. After 60 minutes without progress the
-turn is interrupted for you, the run ends as failed, and its terminal says
-`Turn interrupted after N min without progress.` Interactive sessions are never interrupted
-automatically.
+turn is interrupted for you and the run ends as **Failed**. Both its terminal and the failure
+reason in the session list say `Turn interrupted after N min without progress.` Interactive
+sessions are never interrupted automatically.
 
 Operators set both times with
 [`agent.stalledTurnNoticeMinutes` and `agent.stalledTurnInterruptMinutes`](/chart-values#sessions).
