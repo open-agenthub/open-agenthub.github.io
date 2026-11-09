@@ -133,6 +133,14 @@ Prompts expire after about 30 minutes. Answer in the web terminal, in your messe
 switch on [auto approve](/auto-approve) — enabling it also resolves the prompts that are
 already pending.
 
+### The agent shows "Working" for hours and my message is not delivered
+
+The turn has stopped making progress. Codex waits with no time limit on a model response that
+never finishes, and on a model service it cannot reach. After 20 minutes the Workspace shows
+**No progress for N min** with an **Interrupt** button. Click it, or press Esc in the terminal:
+the turn stops, and the agent takes the waiting messages at once. See
+[A turn that makes no progress](/workspace#a-turn-that-makes-no-progress).
+
 ## Provider login
 
 ### `/login` is unavailable in the Workspace interface

@@ -148,6 +148,32 @@ conversation.
 Questions and permission requests from the agent appear in the Workspace as well; see
 [Questions and approvals](/questions-approvals).
 
+## A turn that makes no progress
+
+A turn can stop making progress without ending. For example, the agent may wait for a model
+response that never finishes, or keep retrying a model service it cannot reach. The CLI still
+shows "Working" with its timer running, and the messages you send in that time wait for a turn
+end that never comes.
+
+After 20 minutes without progress, the activity line changes:
+
+- **No progress for N min: the turn may be stuck.**
+- **Waiting for the network for N min**, when the agent cannot reach its model and keeps retrying.
+
+If you can write to the session, the line has an **Interrupt** button. It stops the turn the
+same way Esc in the terminal does. The agent then takes the messages that were waiting at once.
+Nothing is interrupted unless you click it: a long build or a long answer that keeps producing
+output is progress, and does not trigger the notice.
+
+Autonomous and scheduled sessions have nobody watching. After 60 minutes without progress the
+turn is interrupted for you, the run ends as failed, and its terminal says
+`Turn interrupted after N min without progress.` Interactive sessions are never interrupted
+automatically.
+
+Operators set both times with
+[`agent.stalledTurnNoticeMinutes` and `agent.stalledTurnInterruptMinutes`](/chart-values#sessions).
+For now this applies to Codex sessions only.
+
 ## Limits
 
 - The message-by-message conversation is available for Claude, Codex and OpenCode, which keep a
