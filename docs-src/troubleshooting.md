@@ -135,10 +135,10 @@ already pending.
 
 ### The agent shows "Working" for hours and my message is not delivered
 
-The turn has stopped making progress. Codex waits with no time limit on a model response that
-never finishes, and on a model service it cannot reach. After 20 minutes the Workspace shows
+The turn shows no observed progress signals. In our tests, Codex waited with no time limit on a
+model response that never finished, and on a model service it could not reach. After 20 minutes the Workspace shows
 **No progress for N min** with an **Interrupt** button. Click it, or press Esc in the terminal:
-the turn stops, and the agent takes the waiting messages at once. See
+in our tests the turn stopped, and once the CLI was ready again it took the waiting messages. See
 [A turn that makes no progress](/workspace#a-turn-that-makes-no-progress).
 
 ## Provider login

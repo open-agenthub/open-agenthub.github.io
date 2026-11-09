@@ -150,25 +150,30 @@ Questions and permission requests from the agent appear in the Workspace as well
 
 ## A turn that makes no progress
 
-A turn can stop making progress without ending. For example, the agent may wait for a model
+A turn can stop showing progress without ending. For example, the agent may wait for a model
 response that never finishes, or keep retrying a model service it cannot reach. The CLI still
 shows "Working" with its timer running, and the messages you send in that time wait for a turn
 end that never comes.
 
-After 20 minutes without progress, the activity line changes:
+After 20 minutes without observed progress signals (hook events, a growing conversation record,
+screen changes other than the timer), the activity line changes. This is not a guaranteed hang
+detector: a long, quiet tool can still be working without such signals, so operators can adjust
+the times for such jobs.
 
 - **No progress for N min: the turn may be stuck.**
 - **Waiting for the network for N min**, when the agent cannot reach its model and keeps retrying.
 
 If you can write to the session, the line has an **Interrupt** button. It stops the turn the
-same way Esc in the terminal does. The agent then takes the messages that were waiting at once.
-Nothing is interrupted unless you click it: a long build or a long answer that keeps producing
-output is progress, and does not trigger the notice.
+same way Esc in the terminal does. In our tests the agent then took the waiting messages once the
+CLI was ready again. In interactive Codex sessions nothing is interrupted unless you click it; a
+long build or a long answer that keeps producing output counts as progress and did not trigger
+the notice in our tests.
 
-Autonomous and scheduled sessions have nobody watching. After 60 minutes without progress the
-turn is interrupted for you and the run ends as **Failed**. Both its terminal and the failure
+Autonomous and scheduled sessions have nobody watching. By default, after 60 minutes without observed
+progress signals the turn is interrupted for you and the run ends as **Failed**; this can also
+stop legitimate quiet work, and messages are not delivered to that run. Both its terminal and the failure
 reason in the session list say `Turn interrupted after N min without progress.` Interactive
-sessions are never interrupted automatically.
+sessions are never interrupted automatically by this watcher.
 
 Operators set both times with
 [`agent.stalledTurnNoticeMinutes` and `agent.stalledTurnInterruptMinutes`](/chart-values#sessions).
