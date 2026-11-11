@@ -118,6 +118,11 @@ messages are attributed to the sender's account and audited. A share gives no au
 delete or manage another owner's session, change its credentials, or clear its context.
 Removing a share takes effect on the next tool call.
 
+Legacy chat sessions reject normal `agent_send` messages with guidance to type into
+the session's conversation. Open the conversation as the owner or a Collaborator
+and send the message there. An owner can also use `agent_send` with priority for
+a running legacy chat session.
+
 ## Use a share link
 
 `share_link_read` accepts a share URL or its token in the `link` argument and returns
@@ -137,7 +142,9 @@ entries for `history.source = "native"`, or characters for `"scrollback"`. Omit 
 start at the beginning; `-1` requests the latest window.
 
 A Collaborator link also permits `share_link_send` with `link` and `message`. This queues a
-normal message, attributed and audited as **via share link**. Viewer links are read only.
+normal message for a terminal-mode session, attributed and audited as **via share link**.
+For a legacy chat session, open the Collaborator link in your browser and type into the
+conversation. Viewer links are read only.
 Revoked or expired links answer not found. Link tools provide the same role authority as the
 browser share view; they do not add the session to your named shares or permit management.
 

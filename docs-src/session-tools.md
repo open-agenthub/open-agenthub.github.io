@@ -163,8 +163,11 @@ stops working at once.
 | Viewer | yes, a reduced status without prompts or settings | no |
 | Collaborator | yes, a reduced status without prompts or settings | normal priority only |
 
-Priority and interrupt are refused for another user's session, and the message waits in that
-session's inbox. Delete, convert, account switching, context clear, secrets and helper
+Priority and interrupt are refused for another user's session. Normal messages to a shared
+terminal session wait in its inbox. Legacy chat sessions reject normal `agent_send` messages
+even when both sessions have the same owner. Open the conversation as the owner or a
+Collaborator to send the message there. Delete, convert, account switching, context clear, secrets and helper
 containers never work on another user's sessions. Each message to another user's session is
 recorded in an audit log with the sender, the receiver and the time, but not the text. Share
-links never grant MCP access. See [Sharing](/sharing).
+links do not appear in the in-session tools. For explicit link tools in an external client,
+see [MCP](/mcp#use-a-share-link).
