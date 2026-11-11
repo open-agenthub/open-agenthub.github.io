@@ -77,6 +77,50 @@ After the switch:
   startup.
 - With a licence, the key's user keeps a seat under **Users & seats**. Revoke it there once you no
   longer need its data.
+- Hand the data to the person it belongs to, as below.
+
+### Hand over data from API-key mode
+
+What was created with the API key belongs to the configured API-key owner account, rather than
+automatically to a team-login (OIDC) identity. After the switch, an admin moves it to one chosen
+team-login user: **Settings → Users & seats → Hand over data from API-key mode**. Nothing moves by itself,
+and nothing moves because a username happens to match.
+
+1. The target user signs in once, so they appear in the list.
+2. Pause the sessions of the key's user that are still running. The preview names them; a
+   running session blocks the handover.
+3. Choose **From** (the key's user, e.g. `admin`, or `dev` on older installs) and **To**, then
+   **Preview**. The preview lists, per kind, what moves: sessions, projects, skills, MCP servers,
+   webhook triggers, session files, usage history, open requests and shares, plus how many objects
+   and how much stored session data are copied.
+4. **Hand over to …** applies exactly what the preview showed. If anything changed in between,
+   preview again. Earlier handovers are listed under **Handovers**.
+
+Only the ownership changes in the database happen together, in one transaction. Copying stored
+session data and credentials before them, and setting up scheduled sessions again and removing
+the old copies after them, are separate steps. If one of them is interrupted, run the handover
+again (or open a new preview): it completes what is left.
+
+What you should know:
+
+- **Stored credentials move only if you tick _Also hand over stored credentials_.** That covers
+  model provider logins and API keys, Git access tokens and connected Git provider sign-ins, the
+  SSH key, Git name, e-mail and known hosts, and stored secrets. The target user can then use them, for example someone else's model
+  subscription or Git access, so tick it only if they belong to that person. Without the tick they
+  stay with the key's user, and a moved session that needs them asks for a new sign-in or secret
+  when it starts. The preview does not display credential values; after a hand-over with the tick,
+  the user and their agents can use them.
+- **The target's own data wins.** Their API keys, logins and defaults stay as they are. A
+  project, skill or MCP server whose name they already use gets a suffix (` (API key)` or
+  `-api-key`); the preview lists each rename.
+- **Scheduled sessions** keep their schedule. It is paused during the handover and set up again
+  for the new owner.
+- **What stays with the key's user:** personal API tokens (revoke them if nobody needs them),
+  the seat under **Users & seats**, roles and a usage limit set for that name. The audit record of
+  messages between owners stays; the conversation history of the moved sessions moves with them.
+  Slack, Telegram and Signal threads of moved sessions end; if the new owner has a supported chat
+  integration connected, their next question opens a thread there.
+- **Only admins** can hand over data, in both editions, and only on an install that uses OIDC.
 
 ## Admin tabs in Settings
 

@@ -123,6 +123,9 @@ Before sharing the instance with your team:
    OIDC takes precedence over the quickstart API key. Sign in as a configured administrator
    (`ee.admins`) before sharing the URL with your team. Existing API-key-owned sessions keep
    their original owner; changing login does not migrate ownership.
+4. Hand the quickstart data to its owner: once that person has signed in, an admin moves it under
+   **Settings → Users & seats → Hand over data from API-key mode**, see
+   [Hand over data from API-key mode](/admin#hand-over-data-from-api-key-mode).
 
 If the issuer uses a private CA, create a ConfigMap in the **release namespace** with a
 PEM CA bundle under `ca.crt`, then include it in the same Helm upgrade:
