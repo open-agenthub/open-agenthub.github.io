@@ -102,6 +102,22 @@ working; the MCP consent screen now asks for the key.
 Preview such an upgrade with `--dry-run=server`. With `--dry-run=client`, the chart cannot see
 the existing Secret and shows a key and owner it would not actually use.
 
+## Moving from the quickstart API key to team login
+
+Switching an install from the API key to OIDC is a `helm upgrade` with the `oidc.*` values and
+`ee.admins`, as described in [Move the quickstart to team login](/getting-started#move-the-quickstart-to-team-login).
+The switch changes who can sign in, not who owns what: everything created with the key stays
+with the key's user (`admin`, or `dev` on installs from before the API key).
+
+Afterwards:
+
+1. Sign in as the admin named in `ee.admins`, and have the person the pilot data belongs to sign in
+   once.
+2. Pause any session that is still running under the key's user.
+3. Hand the data over under **Settings → Users & seats**, with or without stored credentials:
+   [Hand over data from API-key mode](/admin#hand-over-data-from-api-key-mode).
+4. Revoke the key user's seat and personal API tokens once nothing is left under that name.
+
 ## Checking what an upgrade will change
 
 A chart upgrade brings *every* change since the version you are on, not just the flag you

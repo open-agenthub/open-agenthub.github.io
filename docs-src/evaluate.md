@@ -81,7 +81,8 @@ A good first evaluation, with two or three colleagues:
   the session restarts. The restrictions cover MCP only: they do not block network access or
   secrets that the agent can reach from its shell.
 - **Sessions created with the quickstart API key** stay with the user `admin` after you switch to
-  single sign-on.
+  single sign-on, until an admin hands them to their owner
+  ([Hand over data from API-key mode](/admin#hand-over-data-from-api-key-mode)).
 - **OpenClaw sessions** do not appear in Slack, Telegram or Signal.
 - **The first session start is slow** because the agent image is pulled on first use.
 
